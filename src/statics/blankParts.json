@@ -1,0 +1,113 @@
+{
+  "small-wings":{
+  "name": "malplena",
+  "offset": {
+    "x": 967.5,
+    "y": -1217.5,
+    "width": 1087,
+    "height": 293
+  },
+  "type": "small-wings",
+  "rarity": 5,
+  "filepath": "small-wings/malplena.png",
+  "ipfsCard": "Qme3nrMRdcpsp8vZ8hgEhwML5L98tjjWn2pJhyf7Majk4f",
+  "template_id": 414799
+},
+"big-wings":{
+  "name": "malplena",
+  "offset": {
+    "x": 1030.5,
+    "y": -928,
+    "width": 1903,
+    "height": 528
+  },
+  "type": "big-wings",
+  "rarity": 5,
+  "filepath": "big-wings/malplena.png",
+  "ipfsCard": "QmSrHnBd1gDpmU7HbWuTsZhkUjAjpgryuvGLWicitAhpB9",
+  "template_id": 414800
+},
+"legs":{
+  "name": "malplena",
+  "offset": {
+    "x": 926.5,
+    "y": -1422.5,
+    "width": 485,
+    "height": 513
+  },
+  "type": "legs",
+  "rarity": 5,
+  "filepath": "legs/malplena.png",
+  "ipfsCard": "QmUdgzSx4ZiPxdwLaHa4hxxvb2mfXDoQvnist3efsBmA2t",
+  "template_id": 414801
+},
+"torso":{
+  "name": "malplena",
+  "offset": {
+    "x": 931,
+    "y": -1105.5,
+    "width": 628,
+    "height": 559
+  },
+  "type": "torso",
+  "rarity": 5,
+  "filepath": "torso/malplena.png",
+  "ipfsCard": "QmNpHCord7REQ7VznRnH2NUd7jtwgcHFxR7T8UeE2dwLtz",
+  "template_id": 414802
+},
+"head":{
+  "name": "malplena",
+  "offset": {
+    "x": 941,
+    "y": -685.5,
+    "width": 620,
+    "height": 633
+  },
+  "type": "head",
+  "rarity": 5,
+  "filepath": "head/malplena.png",
+  "ipfsCard": "QmTFvurWUEgxuPsrgMasnDYAopi3MpvjthMdGA5ALBwSdx",
+  "template_id": 414803
+},
+"top":{
+  "name": "malplena",
+  "offset": {
+    "x": 941,
+    "y": -685.5,
+    "width": 620,
+    "height": 633
+  },
+  "type": "top",
+  "rarity": 5,
+  "filepath": "head/malplena.png",
+  "ipfsCard": "QmTFvurWUEgxuPsrgMasnDYAopi3MpvjthMdGA5ALBwSdx",
+  "template_id": 413030
+},
+"mouth":{
+  "name": "malplena",
+  "offset": {
+    "x": 941,
+    "y": -685.5,
+    "width": 620,
+    "height": 633
+  },
+  "type": "mouth",
+  "rarity": 5,
+  "filepath": "head/malplena.png",
+  "ipfsCard": "QmTFvurWUEgxuPsrgMasnDYAopi3MpvjthMdGA5ALBwSdx",
+  "template_id": 413030
+},
+"eyes":{
+  "name": "malplena",
+  "offset": {
+    "x": 841,
+    "y": -699.5,
+    "width": 334,
+    "height": 143
+  },
+  "type": "eyes",
+  "rarity": 5,
+  "filepath": "eyes/malplena.png",
+  "ipfsCard": "QmYfDtLiUpYuGv8Nw2X9eEsednoB8ck2y4Skc9MNM5rtFv",
+  "template_id": 414804
+}}

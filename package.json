@@ -1,0 +1,61 @@
+{
+  "name": "boid-avatars",
+  "version": "0.0.1",
+  "description": "Design and mint NFT avatars for the Boid Universe.",
+  "productName": "Boid Avatars",
+  "author": "jdheeter <johndheeter@gmail.com>",
+  "private": true,
+  "scripts": {
+    "dev": "quasar dev",
+    "build": "quasar build && cp _redirects dist/spa",
+    "lint": "eslint --ext .js,.ts,.vue --fix ./ ",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.0.0",
+    "anchor-link": "^3.4.0",
+    "anchor-link-browser-transport": "^3.3.0",
+    "atomicassets": "^1.4.2",
+    "canvas": "^2.9.1",
+    "eventemitter3": "^4.0.7",
+    "fetch": "^1.1.0",
+    "javascript-time-ago": "^2.3.13",
+    "konva": "^8.3.5",
+    "ms": "^2.1.3",
+    "node-fetch": "^3.2.3",
+    "pinia": "^2.0.11",
+    "pinia-plugin-persist": "^1.0.0",
+    "quasar": "^2.6.0",
+    "require": "^2.4.20",
+    "unfetch": "^4.2.0",
+    "v-animate-css": "^0.0.5",
+    "vanilla-tilt": "^1.7.2",
+    "vanilla-tilt-vue": "^0.1.3",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0",
+    "vue3-konva": "^2.1.7"
+  },
+  "devDependencies": {
+    "@quasar/app-vite": "^1.0.0-alpha.0",
+    "@types/node": "^12.20.21",
+    "@typescript-eslint/eslint-plugin": "^5.10.0",
+    "@typescript-eslint/parser": "^5.17.0",
+    "autoprefixer": "^10.4.2",
+    "eslint": "^8.10.0",
+    "eslint-config-standard": "^17.0.0-1",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-n": "^14.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-vue": "^8.5.0",
+    "pug": "^3.0.2",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-vue": "^6.0.0",
+    "sass": "^1.49.9",
+    "typescript": "^4.5.4"
+  },
+  "engines": {
+    "node": "^18 || ^16 || ^14.19",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  }
+}
