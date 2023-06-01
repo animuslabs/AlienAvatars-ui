@@ -1,0 +1,392 @@
+[
+  {
+    "name": "alien",
+    "offset": {
+      "x": 644.5,
+      "y": -1000,
+      "width": 1291,
+      "height": 2002
+    },
+    "type": "background",
+    "rarity": 2,
+    "ipfsCard": "QmWf7tpeGWospia3BfgdA4t6hd2uUQohfiLzuYnkExzZum",
+    "ipfsRaw": "QmTCHfqrWExHKzjKYn4uBEhi2PNMxbdXzHPVrE7NEeBgTv"
+  },
+  {
+    "name": "reptil",
+    "offset": {
+      "x": 644.5,
+      "y": -1000,
+      "width": 1291,
+      "height": 2002
+    },
+    "type": "background",
+    "rarity": 5,
+    "ipfsCard": "QmXHqZnjWigo1889y5RRMfL555xj3ThZ8wiFLGnCrpGb8F",
+    "ipfsRaw": "QmPBK8SxZRqUu5tocPAVL4iy332Ap41TYVubqNWjmSaCQj"
+  },
+  {
+    "name": "warrior",
+    "offset": {
+      "x": 644.5,
+      "y": -1000,
+      "width": 1291,
+      "height": 2002
+    },
+    "type": "background",
+    "rarity": 4,
+    "ipfsCard": "QmZ7nNw4vmanH3cJAMRvELYuiaGRyQZVF49TWBmCVxXJaP",
+    "ipfsRaw": "QmRUHRHF9YmknWtUXc6R3wSXzVQgYPFztpYiLFibTpG7oP"
+  },
+  {
+    "name": "zombie",
+    "offset": {
+      "x": 644.5,
+      "y": -1000,
+      "width": 1291,
+      "height": 2002
+    },
+    "type": "background",
+    "rarity": 2,
+    "ipfsCard": "QmdtxvtD8oLEyshosYZbnHhPauX79uce4d3a6hUPZx48qz",
+    "ipfsRaw": "QmVYvyJdJJbuqek4dXSNaqLRHq2KjdKVdUBaTYHBqXRQo8"
+  },
+  {
+    "name": "monc",
+    "offset": {
+      "x": 644.5,
+      "y": -1000,
+      "width": 1291,
+      "height": 2002
+    },
+    "type": "background",
+    "rarity": 4,
+    "ipfsCard": "QmaRoHP7gF4w8jNxSWpJtghkaTcMDb71eXyS6pnqB1sZpF",
+    "ipfsRaw": "QmTFq14it5C3JWwyFShScejxR9VF15CexvVjzrwkhvC51t"
+  },
+  {
+    "name": "alien",
+    "offset": {
+      "x": 569.5,
+      "y": -1333,
+      "width": 635,
+      "height": 1016
+    },
+    "type": "legs",
+    "rarity": 2,
+    "ipfsCard": "QmZjKwhmTsbLZjHLMwqAoWDqmAmhRZRogwMMFadUndqhLN",
+    "ipfsRaw": "QmcCph9tYabnaMMtWarfHBQgNJ6DiS5wCyARWqFNNCWXRp"
+  },
+  {
+    "name": "reptil",
+    "offset": {
+      "x": 589.5,
+      "y": -1256,
+      "width": 623,
+      "height": 1188
+    },
+    "type": "legs",
+    "rarity": 5,
+    "ipfsCard": "Qmb31YudgwWiQCp65EhQqVkucDNSERtbgx6qndjU9sprdE",
+    "ipfsRaw": "QmZKtnAD4PwwZavA4X1XgyRzvE93qjBjSGiY8VufCkH8aC"
+  },
+  {
+    "name": "warrior",
+    "offset": {
+      "x": 598.5,
+      "y": -1341,
+      "width": 481,
+      "height": 1084
+    },
+    "type": "legs",
+    "rarity": 2,
+    "ipfsCard": "QmQSp5TNKhaqSTsbmyqqAbHnYA1n53E8VKzSL9dRY72q9x",
+    "ipfsRaw": "QmRr4WF9CarMQG9V5EpZcNvpZHMmmbLRFreQ2zXdjqdJVH"
+  },
+  {
+    "name": "zombie",
+    "offset": {
+      "x": 533,
+      "y": -1338,
+      "width": 496,
+      "height": 1014
+    },
+    "type": "legs",
+    "rarity": 4,
+    "ipfsCard": "QmaseZ72c5LGK1pQ2mmVnPUhAALSGxhjvUe5ZDiZEu6DuY",
+    "ipfsRaw": "QmPk7ZAFZQvAqQ4LUACHiHDjZSfCrHuWPvuW3d1FAFHyqe"
+  },
+  {
+    "name": "monc",
+    "offset": {
+      "x": 636.5,
+      "y": -1314.5,
+      "width": 1179,
+      "height": 1077
+    },
+    "type": "legs",
+    "rarity": 1,
+    "ipfsCard": "QmTwjeenZ1SzKafc3A38FoE3FRQ4rZVpiukWjoE1rrU8dH",
+    "ipfsRaw": "QmNTvpK7kjWc6QP3qFirT81nKjasRcihyiXUHuTwxpDzTM"
+  },
+  {
+    "name": "alien",
+    "offset": {
+      "x": 613.5,
+      "y": -743,
+      "width": 643,
+      "height": 802
+    },
+    "type": "torso",
+    "rarity": 3,
+    "ipfsCard": "QmX8dQqqa6Q6CV42B5YvfmGu3ue6D7XkvYGMtSzr1fimMZ",
+    "ipfsRaw": "QmSpLy8iWPxgvGN3DFnTjAsGyB3SuktDcZYpDzsvLN8VHT"
+  },
+  {
+    "name": "reptil",
+    "offset": {
+      "x": 629.5,
+      "y": -726,
+      "width": 697,
+      "height": 806
+    },
+    "type": "torso",
+    "rarity": 2,
+    "ipfsCard": "QmR2GqKta74j3NULJUc4XPzS1KRqYFcx1E3HMsVJE9rrMp",
+    "ipfsRaw": "QmdeWWjP42ABk5TTuien9CDqyGBqXeVA4FN9HkFauZp13b"
+  },
+  {
+    "name": "warrior",
+    "offset": {
+      "x": 652.5,
+      "y": -740.5,
+      "width": 625,
+      "height": 799
+    },
+    "type": "torso",
+    "rarity": 2,
+    "ipfsCard": "QmR79tgBALcoVzn8evW1z4b3yEcGXY4Mr6M3kcBWqidu8q",
+    "ipfsRaw": "QmbB8bMhAXzNW7FGmzpNBk9U5mdxUA2yUKQpx7TdRCaL66"
+  },
+  {
+    "name": "zombie",
+    "offset": {
+      "x": 612,
+      "y": -730,
+      "width": 644,
+      "height": 820
+    },
+    "type": "torso",
+    "rarity": 5,
+    "ipfsCard": "QmTDCFFw2y4tzmjPGQN5pUhpaFNjUkM2RYZbnbZ7o7jZuf",
+    "ipfsRaw": "QmUi8bWhSvAqofEWrqiPyDmstzsKC1rbR5vYwdWWhDn2s6"
+  },
+  {
+    "name": "monc",
+    "offset": {
+      "x": 601,
+      "y": -733,
+      "width": 716,
+      "height": 800
+    },
+    "type": "torso",
+    "rarity": 2,
+    "ipfsCard": "QmQGPj48P9xxgTpg43J2pYtfP2vwfXBCNM4GdcktNH2ArC",
+    "ipfsRaw": "QmZ2nVzFRT7LkgmQzmpt8LAXptcQvDRDLRxtoih3RF1p27"
+  },
+  {
+    "name": "alien",
+    "offset": {
+      "x": 869,
+      "y": -1693.5,
+      "width": 560,
+      "height": 589
+    },
+    "type": "equipment",
+    "rarity": 1,
+    "ipfsCard": "QmP4KqrtWDV1c2G3BZX8xPuMrR9ZcH5Aor7EcWsKtmi64V",
+    "ipfsRaw": "QmRrLVLTANioABYxRfWL4Z8xpFtvTu3nV4CPkGez6EfS1p"
+  },
+  {
+    "name": "reptil",
+    "offset": {
+      "x": 838,
+      "y": -942.5,
+      "width": 642,
+      "height": 331
+    },
+    "type": "equipment",
+    "rarity": 1,
+    "ipfsCard": "QmQKDWWSMpe55rRyVvtmne196QocEBWtf5fYCFg8yr7sWw",
+    "ipfsRaw": "QmTnop7wCZp1jou9AJ4q11CQzx6p1pXyZea9bq6JbBUXFx"
+  },
+  {
+    "name": "warrior",
+    "offset": {
+      "x": 534,
+      "y": -698,
+      "width": 770,
+      "height": 876
+    },
+    "type": "equipment",
+    "rarity": 2,
+    "ipfsCard": "QmWoL2GN1w1PhqaWGmixswt1bMM1UBaAU3fq4y4KUfbicJ",
+    "ipfsRaw": "QmTjqj1EgCTvTghSoQtwsoLBDRLXB12vX2r8t4jX7L6dEm"
+  },
+  {
+    "name": "zombie",
+    "offset": {
+      "x": 896.5,
+      "y": -1139,
+      "width": 189,
+      "height": 506
+    },
+    "type": "equipment",
+    "rarity": 2,
+    "ipfsCard": "QmZNT8txR1pYXJHZmfAjm87JhDzRcfG8dN9tdf6R9CuzTz",
+    "ipfsRaw": "Qmf3RRT4BJjoNSAokY4fDArnKF3MfhMr7QW1uVQeLZEeQK"
+  },
+  {
+    "name": "monc",
+    "offset": {
+      "x": 760,
+      "y": -1005.5,
+      "width": 370,
+      "height": 311
+    },
+    "type": "equipment",
+    "rarity": 2,
+    "ipfsCard": "Qmds7QNBx4ApYemAJH1M3hYLk4yw8qnCmvaVpSZSkAvFiK",
+    "ipfsRaw": "QmRXcvHsA8pkY5CqhsAcMftgb8LfQD9G1uuBUu1fxZAXFP"
+  },
+  {
+    "name": "alien",
+    "offset": {
+      "x": 600.5,
+      "y": -256.5,
+      "width": 247,
+      "height": 311
+    },
+    "type": "head",
+    "rarity": 1,
+    "ipfsCard": "QmcngRd4W7SjieG6qVDZA1GtupPT9FxTXQ8rgJE2giGtk9",
+    "ipfsRaw": "QmURonCcTbEtQKyzDoL8UapTCkgMukKCsmyMoMhNw7JfiZ"
+  },
+  {
+    "name": "reptil",
+    "offset": {
+      "x": 562,
+      "y": -279.5,
+      "width": 292,
+      "height": 259
+    },
+    "type": "head",
+    "rarity": 2,
+    "ipfsCard": "QmVYzgfmTHvTBth1gZxc25ZWwVPBUAF8LHFQPvDEfGGD1C",
+    "ipfsRaw": "QmRQhUznCF3yAJeGcM8TiwSEbvcmepPZrJCTAY3zLQL4u6"
+  },
+  {
+    "name": "warrior",
+    "offset": {
+      "x": 580,
+      "y": -246,
+      "width": 282,
+      "height": 292
+    },
+    "type": "head",
+    "rarity": 3,
+    "ipfsCard": "QmXA7uNerYHyqURAoowYA1mKmi8Y8ymn27GSC39DKQdGoQ",
+    "ipfsRaw": "QmVf2rEpfh5KmCxatw9Do4fif7o5CXECykPQLDXUMQuq7S"
+  },
+  {
+    "name": "monc",
+    "offset": {
+      "x": 601,
+      "y": -303.5,
+      "width": 308,
+      "height": 385
+    },
+    "type": "head",
+    "rarity": 4,
+    "ipfsCard": "Qmd4gRAhvfjs97aNiMo2Ujf5R2fdG1bcxrZwHr2g23SZAr",
+    "ipfsRaw": "QmVEqzhNvv8ZXLNn5cqvXcS1aQPyPkih4dPj9TcM42RGCr"
+  },
+  {
+    "name": "zombie",
+    "offset": {
+      "x": 594,
+      "y": -263.5,
+      "width": 198,
+      "height": 287
+    },
+    "type": "head",
+    "rarity": 4,
+    "ipfsCard": "QmVGA9FARWTPszHntCa7EPiF2BEMeNGwJeRnnFseb7j3DP",
+    "ipfsRaw": "QmYxhFic8SiJou7fh3Gds3NXnDL6M7bHV3fCwGc5ByXLxG"
+  },
+  {
+    "name": "alien",
+    "offset": {
+      "x": 592,
+      "y": -158.5,
+      "width": 278,
+      "height": 213
+    },
+    "type": "top",
+    "rarity": 5,
+    "ipfsCard": "QmRfLi4Gpu34Dj9p7yXf1EGhXxS2NR5dpU1Wck3Uh1n8vM",
+    "ipfsRaw": "QmUEuUP4rt3Kh1MXBrojuJoSYY2ZY3jJ3FyhWgMHhygDiD"
+  },
+  {
+    "name": "reptil",
+    "offset": {
+      "x": 736,
+      "y": -231,
+      "width": 196,
+      "height": 182
+    },
+    "type": "top",
+    "rarity": 3,
+    "ipfsCard": "QmZaYUeds9xtWpt91AF6b9ML1aJYoug4s3Bq3LH5Y14Cmo",
+    "ipfsRaw": "QmWY8uAhhUopprf1DNYwkLkerN5jrvkztWmsgvzB78PNH9"
+  },
+  {
+    "name": "warrior",
+    "offset": {
+      "x": 628.5,
+      "y": -272,
+      "width": 139,
+      "height": 200
+    },
+    "type": "top",
+    "rarity": 2,
+    "ipfsCard": "QmPpFCztLSFuTEmdU3eBW69J153opK3xYsgLemYF8LyEGW",
+    "ipfsRaw": "QmUqJh9tfAUaF8ZG5LEoPu8htkbNHytWw7psUHAxcPiWeb"
+  },
+  {
+    "name": "zombie",
+    "offset": {
+      "x": 588.5,
+      "y": -112.5,
+      "width": 181,
+      "height": 143
+    },
+    "type": "top",
+    "rarity": 1,
+    "ipfsCard": "Qmcmh7rsDLrWoUpWZPgdHqjyG4SYeA2yrAQhVSwgfSEttu",
+    "ipfsRaw": "QmXAaGkDgh2GD9HhAjfnuzMkxKEnLsAkYzHePCz8HZ5ZQw"
+  },
+  {
+    "name": "monc",
+    "offset": {
+      "x": 585,
+      "y": -189.5,
+      "width": 438,
+      "height": 353
+    },
+    "type": "top",
+    "rarity": 5,
+    "ipfsCard": "QmTZKw8xFJ4D2zqDHpGihjX7DSxwgyCbPvgesWr7K8eRtr",
+    "ipfsRaw": "Qmeq5Lgc3XWvjuEKBfQjBPQsGyprSZaP6fNt9gJwQL6mHn"
+  }
+]
