@@ -43,7 +43,7 @@ export default defineComponent({
       return cardPrice
     },
     meta():PackMeta {
-      const empty = { name: '', edition: '', size: 10000000, img: '' }
+      const empty = { name: '', edition: '', size: 10000000, img: '', rarities: [] }
       try {
         const existing = this.atomic.templateData[this.pack.template_id.toNumber()]
         if (existing) return existing.immutableData as PackMeta

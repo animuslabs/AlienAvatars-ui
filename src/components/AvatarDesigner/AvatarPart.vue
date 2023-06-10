@@ -15,19 +15,20 @@
       fit="scale-down" @click="handlePartSelection()"
       @error="handleLoadError"
       )
-  div(v-if="ownedCount>0 && !designer.filter.showDetails" :label="ownedCount" style="top:-17px;right:-17px; border-radius: 20%; height:40px;min-width:40px;").absolute.q-pa-sm.q-ma-sm.bg-info.bg-grey-9
+    .lt-sm(style="height:40px; width:100%")
+  div(v-if="ownedCount>0 && !designer.filter.showDetails" :label="ownedCount" style="top:-17px;right:-17px; height:40px;min-width:40px;").absolute.q-pa-sm.q-ma-sm.bg-info.bg-accent
     .centered
       p.no-margin  {{ownedCount}}
     q-tooltip
       p.no-margin You Own: {{ownedCount}}
-  div(v-if="ownedCount>0 && designer.filter.showDetails" :label="ownedCount" style="top:-1px;right:-8px; border-radius: 20%; height:40px;min-width:40px;").absolute.q-pa-sm.q-ma-sm.bg-info.bg-grey-9
+  div(v-if="ownedCount>0 && designer.filter.showDetails" :label="ownedCount" style="top:-1px;right:-8px; height:40px;min-width:40px;").absolute.q-pa-sm.q-ma-sm.bg-info.bg-accent
     .centered
       p.no-margin  {{ownedCount}}
       //- p.no-margin Holding: {{ownedCount}}
     q-tooltip
       p You hold {{ownedCount}} of this card.
   div(v-if="designer.filter.showDetails" style="width:190px;")
-    q-card( style="width:240px; height:190px; right:20px; z-index: -1000; border-radius: 10px").boiddarkbg.absolute
+    q-card( style="width:240px; height:190px; right:20px; z-index: -1000;").boiddarkbg.absolute
     div(v-if="designer.filter.showDetails" style="width:120px; height:190px; right:40px;" :class="[isSelected? 'infotext-margin' : 'infotext']").bg-transparent.q-pt-sm
       .row
         .text-h6.text-capitalize {{bodyPart.meta.rarity}}
@@ -60,7 +61,7 @@
 .selected
   border: 3px solid transparent
   filter: drop-shadow(0px 10px 5px rgba(1,1,1,.5))
-  box-shadow: 0 0 0 2px $cyan-5
+  box-shadow: 0 0 0 2px $accent
   transition: border 200ms ease-in
   transform: translateZ(150px)
   transform: scale(1.2)
@@ -70,7 +71,7 @@
   margin-right:20px
   border: 10px solid transparent
   transition: border 250ms ease-out
-  filter: brightness(.9)
+  filter: brightness(.8)
 
 .info-part-table
   width: 100%

@@ -12,7 +12,7 @@ div
               .centered
                 h6.q-mb-md Opened: {{unpack.inserted.toDate().toLocaleString()}}
               .row.reverse.q-gutter-sm.justify-center.q-mr-xl.q-ml-lg
-                .col-auto(v-if="unpack.claimable_template_ids.length>0" v-for="templateId of unpack.claimable_template_ids" style="width:40px;")
+                .col-auto(v-if="unpack.claimable_template_ids.length>0" v-for="templateId of unpack.claimable_template_ids" style="width:80px;")
                   preview-card( :templateId="templateId.toNumber()" :style="previewCardDynamic(templateId.toString())")
                 .col(v-else)
                   .centered.items-center

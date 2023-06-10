@@ -1,8 +1,14 @@
 import { PartCardMeta, atomicState } from 'src/stores/AtomicStore'
 import { contractState } from 'src/stores/ContractStore'
 import { activeNetwork } from 'src/lib/config'
-import { Asset } from 'anchor-link'
+import { Asset, UInt64 } from 'anchor-link'
 import { AvatarPart } from 'src/types/avatarParts'
+import { Rarities } from 'src/stores/DesignerStore'
+import { Dialog } from 'quasar'
+import AvatarRow from 'components/AvatarsBrowser/AvatarRow.vue'
+import ms from 'ms'
+import { Avatars } from 'src/types/avatarContractTypes'
+import * as transact from 'src/lib/transact'
 
 export const sleep = (ms:number) => new Promise(res => setTimeout(res, ms))
 
@@ -29,15 +35,48 @@ export function getCollection() {
   return collection
 }
 
-export function getRarityName(rarNum:number):string {
-  if (rarNum === 1) return 'common'
-  else if (rarNum === 2) return 'rare'
-  else if (rarNum === 3) return 'mythical'
-  else if (rarNum === 4) return 'epic'
-  else if (rarNum === 5) return 'legendary'
+export function showRarityAlert(rarityNeeded:Rarities) {
+  Dialog.create({
+    title: 'Not holding AW Tool NFT'
+
+  })
+}
+
+export function getEligibleToolAssetId(requiredRarity: Rarities): false|string {
+  const tools = atomicState().ownedAwToolsByRarity[requiredRarity]
+  const toolTemplateId = tools[0]
+  if (!toolTemplateId) return false
+  const toolAssets = atomicState().accountAssets[toolTemplateId]
+  if (!toolAssets) return false
+  const toolAssetId = toolAssets[0]
+  if (!toolAssetId) return false
+  return toolAssetId
+}
+
+export async function mintAvatar(avatarRow:Avatars, mintPrice:Asset) {
+  const rarity = getRarityName(avatarRow.rarity.toNumber())
+  const toolAssetId = getEligibleToolAssetId(rarity)
+  if (!toolAssetId) return showRarityAlert(rarity)
+  await transact.mintAvatar(avatarRow.avatar_name, mintPrice, UInt64.from(toolAssetId))
+}
+
+export function getRarityColor(rarityName:Rarities) {
+  if (rarityName === 'Mythical') return '#FAAE6B'
+  else if (rarityName === 'Legendary') return '#2249B4'
+  else if (rarityName === 'Epic') return '#3A6BF1'
+  else if (rarityName === 'Rare') return '#2249B4'
+  else if (rarityName === 'Common') return '#2249B4'
+}
+
+export function getRarityName(rarNum:number):Rarities {
+  if (rarNum === 1) return 'Common'
+  else if (rarNum === 2) return 'Rare'
+  else if (rarNum === 3) return 'Epic'
+  else if (rarNum === 4) return 'Legendary'
+  else if (rarNum === 5) return 'Mythical'
   else {
     // console.error('invalid rarity number: ' + rarNum)
-    return 'legendary'
+    return 'Mythical'
   }
 }
 
@@ -90,4 +129,10 @@ export function partMetaToAvatarPart(meta:PartCardMeta):AvatarPart {
     type: meta.bodypart
   }
   return part
+}
+
+export function avatarRarity(rarities:number[]):number {
+  const totalRarities = rarities.reduce((sum, rarity) => sum + rarity, 0)
+  const averageRarity = totalRarities / rarities.length
+  return Math.floor(averageRarity)
 }

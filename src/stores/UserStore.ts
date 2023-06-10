@@ -8,9 +8,12 @@ class LoggedInState {
   wallet: null | NameType = null
 }
 
+type LoginMethods = 'anchor' | 'cloudWallet'
+
 export const useUser = defineStore({
   id: 'User',
-  state: () => (reactive({ loggedIn: new LoggedInState() })),
+  state: () => (reactive({ loggedIn: new LoggedInState(), loginMethod: 'cloudWallet' as LoginMethods })),
+
   getters: {
     getLoggedIn: (state) => {
       const t = state.loggedIn.account != null
@@ -18,14 +21,18 @@ export const useUser = defineStore({
     }
   },
   actions: {
-    setUser(session:LinkSession | false) {
-      console.log('set user', session)
-      // this.loggedIn
-      this.loggedIn.account = session ? session.auth.actor.toString() : null
-      this.loggedIn.auth = session ? session.auth : null
-      this.loggedIn.chainId = session ? session.chainId.toString() : null
-      this.loggedIn.wallet = session ? session.metadata.name : null
-      console.log(this.loggedIn)
+    setUser(session: LinkSession | false) {
+      if (!session) {
+        this.loggedIn = { account: null, auth: null, chainId: null, wallet: null }
+      } else {
+        console.log('set user', session)
+        // this.loggedIn
+        this.loggedIn.account = session ? session.auth.actor.toString() : null
+        this.loggedIn.auth = session ? session.auth : null
+        this.loggedIn.chainId = session ? session.chainId.toString() : null
+        this.loggedIn.wallet = session ? session.metadata.name : null
+        console.log(this.loggedIn)
+      }
     }
   }
 })

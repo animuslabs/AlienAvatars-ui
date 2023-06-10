@@ -4,6 +4,7 @@ import AnchorLink, { LinkChannelSession, APIClient, ChainId, LinkSession, Permis
 import AnchorLinkBrowserTransport from 'anchor-link-browser-transport'
 import { useUser } from 'src/stores/UserStore'
 import { networks, appname } from 'src/lib/config'
+import { CloudWallet, waxLink } from 'src/lib/cloudWallet'
 const client = new APIClient({ url: 'https://eos.api.animus.is' })
 // const session:LinkChannelSession = {}
 interface StoredSession {
@@ -24,7 +25,7 @@ class LinkManager {
 
   constructor(usrStore:typeof useUser) {
     this.store = usrStore
-    this.try_restore_session()
+    this.setApi(this.link.client)
   }
 
   setApi(client:APIClient) {
@@ -46,6 +47,8 @@ class LinkManager {
       this.setApi(this.session.client)
       this.try_restore_session()
       console.log(session.auth)
+      this.store().loginMethod = 'anchor'
+      LocalStorage.set('lastLogin', 'anchor')
     }
   }
 
@@ -59,7 +62,7 @@ class LinkManager {
       this.session = null
       this.setApi(this.link.client)
       this.store().setUser(false)
-      // this.try_restore_session()
+      LocalStorage.remove('lastLogin')
     } else {
       console.log('you can\'t logout if there is no active session')
     }
@@ -84,6 +87,15 @@ class LinkManager {
       chainId
     )
     // console.log(session);
+
+    if (this.store().loginMethod !== 'anchor') {
+      console.log('method:', this.store().loginMethod)
+
+      waxLink.logout()
+      this.store().loginMethod = 'anchor'
+      LocalStorage.set('lastLogin', 'anchor')
+    }
+
     if (session) {
       this.session = session
       this.setApi(this.session.client)
@@ -100,6 +112,7 @@ class LinkManager {
       this.session = session
       this.setApi(this.session.client)
       this.store().setUser(session)
+      this.store().loginMethod = 'anchor'
       return session
     } else {
       console.log('no saved sessions available')

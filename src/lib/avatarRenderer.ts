@@ -6,13 +6,16 @@ import { Layer } from 'konva/lib/Layer'
 import { Stage, StageConfig } from 'konva/lib/Stage'
 import { Image } from 'konva/lib/shapes/Image'
 import ipfs from 'src/lib/ipfs'
+import { avatarRarity, getRarityName } from 'src/lib/utils'
 
 class AvatarRenderer {
   parts: AvatarPart[]
   stage: Stage
   layer: Layer
   bp_order: Elements[]
-  constructor(parts:AvatarPart[]) {
+  rarity:number
+  constructor(parts: AvatarPart[]) {
+    this.rarity = avatarRarity(parts.map(el => el.rarity))
     this.parts = parts
     const config:StageConfig = {
       width: 2048,
@@ -48,6 +51,8 @@ class AvatarRenderer {
       const bp = await this.loadPart(item)
       this.layer.add(bp)
     }
+    const frame = await this.loadFrame()
+    this.layer.add(frame)
   }
 
   async loadPart(part:AvatarPart):Promise<Image> {
@@ -68,6 +73,30 @@ class AvatarRenderer {
       } catch (error) {
         rej(error)
       }
+    })
+  }
+
+  async loadFrame():Promise<any> {
+    // console.log(part)
+    const src = '/frames/avatar_frame_' + getRarityName(this.rarity) + '.png'
+    console.log(src)
+
+    return new Promise(resolve => {
+      const image:any = new Image({ image: undefined })
+      const width = this.stage.getSize().width
+      const height = this.stage.getSize().height
+
+      image.onload = () => {
+        const p = new Konva.Image({
+          image,
+          width,
+          height
+        })
+
+        resolve(p)
+      }
+
+      image.src = src
     })
   }
 }

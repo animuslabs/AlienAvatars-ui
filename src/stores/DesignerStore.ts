@@ -10,7 +10,7 @@ import { reactive, readonly, ref } from 'vue'
 import { atomicState } from 'src/stores/AtomicStore'
 import allParts from 'src/statics/partsList.json'
 import blankParts from 'src/statics/blankParts.json'
-import { deepClone, getRarityName, partMetaToAvatarPart, throwError } from 'src/lib/utils'
+import { avatarRarity, deepClone, getRarityName, partMetaToAvatarPart, throwError } from 'src/lib/utils'
 import ipfs from 'src/lib/ipfs'
 import { contractState } from 'src/stores/ContractStore'
 
@@ -63,6 +63,17 @@ export function makeElementsObj<T>(defaultVal:T):Record<Elements, T> {
   return res as Record<Elements, T>
 }
 
+export const raritiesList = ['Common', 'Rare', 'Epic', 'Legendary', 'Mythical'] as const
+export type Rarities = typeof raritiesList[number]
+
+export function makeRarityObj<T>(defaultVal:T):Record<Rarities, T> {
+  const res = {}
+  for (const el of raritiesList) {
+    res[el] = defaultVal
+  }
+  return res as Record<Rarities, T>
+}
+
 export function defaultPartsSet() {
   return makeElementsObj<number>(0)
 }
@@ -70,6 +81,10 @@ export function defaultPartsSet() {
 export function defaultPartsData() {
   return makeElementsObj<PartCardMeta>(new PartCardMeta())
 }
+
+// export function defaultAvatarParts() {
+//   return makeElementsObj<PartCardMeta>(new DefaultAv())
+// }
 
 export const defaultSelectedMeta = makeElementsObj<SelectedMetaData>(new SelectedMetaData())
 
@@ -136,9 +151,9 @@ export const designerState = defineStore({
     createTemplateMode: false
   }),
   getters: {
-    parts():AvatarPart[] {
-      return allParts as AvatarPart[]
-    },
+    // parts():AvatarPart[] {
+    //   return allParts as AvatarPart[]
+    // },
     selectedMeta():SelectedMetaType {
       const data:SelectedMetaType = deepClone(defaultSelectedMeta)
       for (const [type, templateId] of Object.entries(this.selectedParts) as [Elements, number][]) {
@@ -171,7 +186,7 @@ export const designerState = defineStore({
     },
     rarityScore():number {
       const rarities = Object.values(this.selectedMeta).map(el => el.rarityScore)
-      return Math.max(...rarities)
+      return avatarRarity(rarities)
     },
     rarity(): string {
       return getRarityName(this.rarityScore)
@@ -194,7 +209,7 @@ export const designerState = defineStore({
         parts = parts.filter(el => el.meta.name.toLowerCase().includes(search))
       }
       // console.log('allEditionTemplates', contractState().allEditionTemplates)
-      parts = parts.filter(el => contractState().allEditionTemplates.includes(parseInt(el.templateId)))
+      // parts = parts.filter(el => contractState().allEditionTemplates.includes(parseInt(el.templateId)))
       return parts
     }
   },
@@ -202,23 +217,20 @@ export const designerState = defineStore({
     clearSelected() {
       this.selectedParts = reactive(defaultPartsSet())
     },
-    getRandomPartsSet():Record<Elements, number> {
-      const partsSet = defaultPartsSet()
+    getRandomPartsSet(): Record<Elements, number> {
+      const partsSet = {} as Record<Elements, number>
       const bps = elementsList
-      for (let i = 0; i < bps.length; i++) {
-        // const items = atomicState().partsByType[bps[i]] // TODO fix back
-        const items = designerState().parts.filter(el => el.type === bps[i])
-        if (items.length) {
-          const item = items[Math.floor(Math.random() * items.length)]
-
-          // @ts-expect-error TODO refactor needed here
-          partsSet[bps[i]] = item.template_id
-        }
-      }
+      bps.forEach(el => {
+        const items = deepClone(atomicState().partsByType[el])
+        const item = items[Math.floor(Math.random() * items.length)]
+        if (item) partsSet[el] = parseInt(item.templateId)
+      })
       return partsSet
     },
     shuffleSelected() {
       const parts = this.getRandomPartsSet()
+      console.log('shuffle parts:', parts)
+
       this.selectedParts = reactive(parts)
     },
     selectPart(template_id:number, type:Elements) {

@@ -8,6 +8,7 @@ export class PartOffset {
 }
 export const elementsList = ['equipment', 'top', 'head', 'torso', 'legs', 'background'] as const
 export type Elements = typeof elementsList[number]
+
 export class AvatarPart {
   type:Elements = 'head'
   'offset': PartOffset = new PartOffset()

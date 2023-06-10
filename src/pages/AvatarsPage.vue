@@ -1,9 +1,11 @@
 <template lang="pug">
 q-layout
-  //- q-separator(size="3px" color="grey-10")
+  q-separator(size="3px" color="grey-10")
+  div {{ atomic.ownedAwToolsByRarity }}
   q-tabs(v-bind="tabs")
     q-route-tab(label="browse" :to="{name:'browseAvatars'}")
     q-route-tab(label="inventory" :to="{name:'avatarInventory',params:{accountName:user.loggedIn.account||'eosio'}}")
+
   router-view
 </template>
 
@@ -18,7 +20,7 @@ import { QTabsProps } from 'quasar'
 
 const tabs: QTabsProps = {
   activeBgColor: 'secondary',
-  activeColor: 'primary',
+  activeColor: 'white',
   indicatorColor: 'transparent',
   narrowIndicator: true,
   inlineLabel: true,

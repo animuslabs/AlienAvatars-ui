@@ -1,5 +1,6 @@
 <template lang="pug">
-q-layout.relative-position
+q-layout(view="hhh LpR fff").layout
+  //- .bg-red(style="height:100px; width:100%")
   q-header
     q-toolbar
       q-img(src="../assets/header.webp" style="height: 100%; width: 180px")
@@ -10,13 +11,20 @@ q-layout.relative-position
       //- q-separator(vertical padding)
       q-btn(v-if="!user.loggedIn.auth" label="login" @click="login")
       q-btn(v-else :icon="`img:${logoImage}`" :label="userAuth" style="width:250px;")
-        q-menu(dense separator).no-border-radius
+        q-menu().no-border-radius
           q-list
+            q-item.text-primary.text-weight-bold(clickable v-close-popup @click="logout")
+              q-item-section(avatar)
+                q-icon(name="logout" color="red")
+              q-item-section
+                q-item-label.text-white Logout
+              q-item-section(side)
+            q-separator
             q-item.text-primary.text-weight-bold(clickable v-close-popup @click="login")
               q-item-section(avatar)
-                q-icon(name="person_add" color="secondary")
+                q-icon(name="person_add" color="white")
               q-item-section
-                q-item-label.text-secondary Add Account
+                q-item-label.text-white Login
               q-item-section(side)
             q-separator
           q-item(v-close-popup v-for="session in link.getSessions()" :key="session.chainId" clickable)
@@ -32,13 +40,15 @@ q-layout.relative-position
     //- q-separator(size="5px" color="black")
     q-separator.absolute-bottom(size="3px" color="secondary" style="bottom:0px")
   q-page-container
-    router-view
+    router-view(style="height:10px;")
 </template>
 
-<style lang="sass">
+<style lang="sass" scoped>
 
 .boid-tabs
   color: $grey-1
+.layout
+  min-height:100px !important
 </style>
 
 <script lang="ts">
@@ -49,8 +59,10 @@ import { useUser } from 'src/stores/UserStore'
 import { getNetworkByChainId } from 'src/lib/config'
 import { link } from 'src/lib/linkManager'
 import { ChainId, PermissionLevel, PermissionLevelType } from 'anchor-link'
-import { QRouteTabProps, QTabsProps } from 'quasar'
-
+import { Dialog, LocalStorage, QRouteTabProps, QTabsProps } from 'quasar'
+import { CloudWallet, waxLink } from 'src/lib/cloudWallet'
+// @ts-ignore
+window.global ||= window
 const tabs: QTabsProps = {
   activeBgColor: 'secondary',
 
@@ -69,17 +81,35 @@ export default defineComponent({
     return { tabs }
   },
   data() {
-    return { user: useUser(), link, showDialog: false }
+    return { user: useUser(), link, showDialog: false, selectedLogin: 'cloudWallet', cloudWallet: new CloudWallet() }
   },
   methods: {
     getNetworkByChainId,
     login() {
       console.log('click login')
-      link.login()
+      Dialog.create(
+        {
+          options: {
+            contextmenu: 'hi',
+            model: this.selectedLogin,
+            title: 'Select Login Method',
+            style: 'font-size:30px;',
+            radiogroup: 'style="width:40px;"',
+            items: [
+              { label: 'Cloud Wallet', value: 'cloudWallet' },
+              { label: 'Anchor', value: 'anchor' }
+            ]
+
+          }
+        }).onOk((val) => {
+        this.selectedLogin = val
+        if (this.selectedLogin === 'anchor') link.login()
+        else if (this.selectedLogin === 'cloudWallet') this.cloudWallet.login()
+      })
     },
     logout() {
-      console.log('click logout, delete session')
-      link.logout()
+      if (this.user.loginMethod === 'anchor') link.logout()
+      else if (this.user.loginMethod === 'cloudWallet') this.cloudWallet.logout()
     },
     deleteSession(permissionlevel: PermissionLevelType, chainId: string) {
       console.log('delete session')

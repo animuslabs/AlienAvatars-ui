@@ -1,7 +1,8 @@
 
 <template lang="pug">
 .centered.bg-black
-  .q-ma-md
+  .relative-position.q-ma-sm
+    q-img(:src="frameUrl").absolute-center.z-top
     v-stage(ref="stage" :config="stageConfig")
       v-layer
         v-image(ref="background" :config="body.background")
@@ -10,14 +11,14 @@
         v-image(ref="head" :config="body.head")
         v-image(ref="top" :config="body.top")
         v-image(ref="equipment" :config="body.equipment")
+        v-image(ref="frame" :config="frameConfig")
       v-layer(ref="tooltips")
-
 </template>
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { defineComponent, watch, reactive } from 'vue'
-import { BodyType, designerState, SelectedMetaData } from 'src/stores/DesignerStore'
+import { BodyPartConfig, BodyType, designerState, SelectedMetaData } from 'src/stores/DesignerStore'
 import { Elements } from 'src/types/avatarParts'
 import { Stage } from 'konva/lib/Stage'
 // import StageDetails from 'src/components/avatarmaker/StageDetails.vue'
@@ -46,11 +47,11 @@ export default defineComponent({
   components: { ActionButton },
   setup() {
     const designer = designerState()
-
-    return { designer }
+    const frameConfig = reactive(new BodyPartConfig())
+    return { designer, frameConfig }
   },
   data() {
-    return { stageConfig, body, scale: 0.245 }
+    return { stageConfig, body, scale: 0.258, modal: false }
   },
   mounted() {
     this.stageConfig.width = 1291 * this.scale
@@ -59,6 +60,9 @@ export default defineComponent({
   computed: {
     newPartSelected():Record<string, number> {
       return Object.assign({}, this.designer.selectedParts) // this is needed to compare the old/new selected parts
+    },
+    frameUrl() {
+      return `/frames/avatar_frame_${this.designer.rarity}.png`
     }
   },
   watch: {
@@ -71,6 +75,7 @@ export default defineComponent({
           console.log('rendering', type, templateId)
           const selectedMeta = this.designer.selectedMeta[type]
           this.drawImage(this.designer.selectedMeta[type])
+          this.drawFrame()
           // const findPartData = this.designer.parts.find(el => el.template_id === templateId && el.type === name)
           // if (!findPartData) {
           //   console.error('cant find part data in json', name, templateId)
@@ -82,6 +87,24 @@ export default defineComponent({
     }
   },
   methods: {
+    async drawFrame() {
+      const image = new window.Image()
+      const frameUrl = `/frames/avatar_frame_${this.designer.rarity}.png`
+      image.src = frameUrl
+      this.$nextTick(() => {
+        const refs = this.$refs as any
+        console.log(refs)
+        const stage: Stage = refs.stage.getStage()
+        // image.height = stage.height()
+        // image.width = stage.width()
+        this.frameConfig.width = stage.width()
+        this.frameConfig.height = stage.height()
+      })
+
+      image.onload = () => {
+        console.log('frame img loaded')
+      }
+    },
     async drawImage(part:SelectedMetaData) {
       // console.log('drawData', part)
 

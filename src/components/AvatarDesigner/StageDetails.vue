@@ -1,6 +1,5 @@
 <template lang="pug">
 div.q-pt-sm
-
   q-item(v-if="showDetails" clickable v-for="(templateId,type) in designer.selectedParts" :key="`t_${type}`" @click="designer.setTab(type)" :dense="true" style="height:80px;").full-width.q-pa-xs
     .row.items-center.q-gutter-sm.no-wrap.full-width
       .col-auto(style="width:75px")
@@ -25,6 +24,7 @@ div.q-pt-sm
     q-separator(spaced color="white")
   q-btn(v-if="showDetails" label="hide details" style="height:60px;" @click="showDetails = false" icon="visibility_off" ).full-width
   q-btn(v-else label="show details" style="height:60px;" @click="showDetails = true" icon="visibility" ).full-width
+  div(style="height:40px; width:100%")
 
 </template>
 

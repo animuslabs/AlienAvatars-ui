@@ -39,6 +39,7 @@ import * as transact from 'src/lib/transact'
 import { atomicState, PackMeta } from 'src/stores/AtomicStore'
 import { sleep } from 'src/lib/utils'
 import ms from 'ms'
+import ipfs from 'src/lib/ipfs'
 
 export default defineComponent({
   setup() {
@@ -79,7 +80,7 @@ export default defineComponent({
       return cardPrice
     },
     meta():PackMeta {
-      const empty = { name: '', edition: '', size: 10, img: '' }
+      const empty = { name: '', edition: '', size: 10, img: '', rarities: [] }
       try {
         const existing = this.atomic.templateData[this.pack.template_id.toNumber()]
         if (existing) return existing.immutableData as PackMeta
@@ -88,7 +89,7 @@ export default defineComponent({
         return empty
       }
     },
-    imgUrl():string { return 'https://ipfs.animus.is/ipfs/' + this.meta.img }
+    imgUrl():string { return ipfs(this.meta.img) }
   },
   emits: ['purchase'],
   methods: {

@@ -39,17 +39,6 @@ export default defineComponent({
       console.log('mint avatar action')
       // const action = {
       //   account: 'waxcontract1',
-      //   name: 'mintavatar',
-      //   authorization: [this.getLoggedIn.auth],
-      //   data: {
-      //     minter: this.getLoggedIn.account,
-      //     id: ''
-      //   }
-      // }
-      // this.$link.transact({ action }).then(({ transaction }) => {
-      //   console.log(`Transaction broadcast! Id: ${transaction.id}`)
-      //   this.fetchUserInventory(this.getLoggedIn.account)
-      // })
     }
   }
 })

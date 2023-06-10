@@ -66,9 +66,9 @@ module.exports = {
 
   // add your custom rules here
   rules: {
-    'no-return-assign':"off",
+    'no-return-assign': "off",
     "@typescript-eslint/ban-ts-comment": "off",
-    'no-useless-return':'off',
+    'no-useless-return': 'off',
     // allow async-await
     'generator-star-spacing': 'off',
     // allow paren-less arrow functions
@@ -76,7 +76,7 @@ module.exports = {
     'one-var': 'off',
     'no-void': 'off',
     'multiline-ternary': 'off',
-    '@typescript-eslint/no-empty-function':'warn',
+    '@typescript-eslint/no-empty-function': 'warn',
     // The core 'import/named' rules
     // does not work with type definitions
     'import/named': 'off',
@@ -101,6 +101,16 @@ module.exports = {
     // allow debugger during development only
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'camelcase': 'off',
-    'no-unreachable': 'off'
+    'no-unreachable': 'off',
+    "@typescript-eslint/no-floating-promises": [
+      "error"
+    ],
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      {
+        "checksVoidReturn": false,
+        "checksConditionals": true
+      }
+    ],
   }
 }

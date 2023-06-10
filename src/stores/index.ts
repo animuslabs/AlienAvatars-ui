@@ -7,6 +7,8 @@ export default store((/* { ssrContext } */) => {
 
   // You can add Pinia plugins here
   console.log('booting.....')
+  console.log('init link')
+
   init()
   return pinia
 })

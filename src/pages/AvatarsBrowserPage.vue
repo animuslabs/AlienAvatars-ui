@@ -1,5 +1,5 @@
 <template lang="pug">
-q-page.bg-primary.relative-position
+q-page.bg-primary.relative-position(style="min-height:max-content;")
   avatars-browser
 
 </template>
@@ -66,7 +66,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.contract.getAvatars()
+    void this.contract.getAvatars()
     // this.atomic.getAllParts()
     // this.atomic.getAllTemplates()
     // this.atomic.getAccountAssets()
@@ -89,10 +89,10 @@ export default defineComponent({
   watch: {
     'user.loggedIn.account': {
       handler(val) {
-        if (val) this.atomic.getAccountAssets(val)
-        else this.atomic.clearAccountAssets()
+        if (val) void this.atomic.getAccountAssets(val)
+        else void this.atomic.clearAccountAssets()
       },
-      immediate: true
+      immediate: false
     }
   }
 })

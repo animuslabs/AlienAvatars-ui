@@ -39,7 +39,7 @@ div
       h6 {{ balanceString }}
     .col-auto
       q-btn(icon="refresh" @click="loadBalance()" :loading="loading")
-  .centered.q-pt-lg.q-gutter-md
+  //- .centered.q-pt-lg.q-gutter-md
     .col-auto
       .centered.items-center(v-if="user.loggedIn.auth")
         .col-auto.q-mr-md
@@ -74,6 +74,7 @@ import { atomicState, PackMeta } from 'src/stores/AtomicStore'
 import * as transact from 'src/lib/transact'
 import { ndxSwap } from 'src/lib/transact'
 import { sleep } from 'src/lib/utils'
+import ipfs from 'src/lib/ipfs'
 const defaultPack = Packs.from({ template_id: 0, base_price: '1 BOID', floor_price: '1 BOID', last_sold: new Date(), pack_name: '', rarity_distribution: [] })
 function getRand(min, max) {
   return Math.random() * (max - min) + min
@@ -115,8 +116,11 @@ export default defineComponent({
     pack():Packs {
       return this.contract.packs[this.global.currentEdition].find(el => el.template_id.toNumber() === this.packId) || defaultPack
     },
-    rarities():number[] {
-      return this.pack.rarity_distribution.map(el => el.toNumber()).reverse()
+    rarities(): number[] {
+      const template = atomicState().getTemplate(this.pack.template_id.toNumber(), false)
+      if (!template) return []
+      const data = template.immutableData as PackMeta
+      return data.rarities.reverse()
     },
     cardPrice(): Asset {
       const cardPrice = Asset.from(this.pack.base_price.toString())
@@ -129,7 +133,7 @@ export default defineComponent({
       return Asset.from(this.pack.base_price.value * this.quantity, this.pack.base_price.symbol)
     },
     meta():PackMeta {
-      const empty = { name: '', edition: '', size: 10, img: '' }
+      const empty = { name: '', edition: '', size: 10, img: '', rarities: [] }
       try {
         const existing = this.atomic.templateData[this.pack.template_id.toNumber()]
         if (existing) return existing.immutableData as PackMeta
@@ -138,7 +142,7 @@ export default defineComponent({
         return empty
       }
     },
-    imgUrl():string { return 'https://ipfs.animus.is/ipfs/' + this.meta.img }
+    imgUrl():string { return ipfs(this.meta.img) }
   },
   methods: {
     async loadBalance() {

@@ -149,6 +149,7 @@ export class Mintavatar extends Struct {
     @Struct.field(Name) minter!: Name
     @Struct.field(Name) avatar_name!: Name
     @Struct.field(Name) scope!: Name
+    @Struct.field(UInt64) holding_tool_id!: UInt64
 }
 
 @Struct.type('receiverand')
@@ -249,7 +250,6 @@ export class Packs extends Struct {
     @Struct.field(Asset) floor_price!: Asset
     @Struct.field(TimePointSec) last_sold!: TimePointSec
     @Struct.field('string') pack_name!: string
-    @Struct.field(UInt8, { array: true }) rarity_distribution!: UInt8[]
 }
 
 @Struct.type('pack_data')

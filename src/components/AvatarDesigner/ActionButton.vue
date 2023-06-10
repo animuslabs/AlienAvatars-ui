@@ -7,7 +7,11 @@
       q-tooltip.bg-primary(anchor="top middle" self="top middle" :offset="[0, 35]" :delay="500")
         | Unique Identifier: {{ getChecksum }}
     .centered(v-else)
-      p.text-black This design was already created by: {{existingTemplateData.creator.toString()}}
+      .col-auto
+        .row
+          p.text-white This template is already owned by
+        .centered
+          p.text-strong {{existingTemplateData.creator.toString()}} named {{ existingTemplateData.avatar_name.toString() }}
   //-  dialog-wrapper(v-model="showMint")
   //-   template(#title)
   //-     | Mint Avatar
@@ -50,7 +54,7 @@ export default defineComponent({
   computed: {
     btnLabel():string {
       const loggedIn = this.user.loggedIn.account
-      if (!loggedIn) return 'Login to create Avatar Template'
+      if (!loggedIn) return 'Login to create Template'
       if (this.isAllowedToCreateTemplate && loggedIn) return 'Create Avatar Template'
       else return 'Missing parts'
     },

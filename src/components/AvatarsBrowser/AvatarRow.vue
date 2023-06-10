@@ -1,160 +1,116 @@
 <template lang="pug">
 .centered
-  q-card.q-ma-md.q-pa-sm.full-width(style="background: radial-gradient(circle, #756F8E 40%, #3E426D 100%")
-    .row(style="height:150px;")
-      .col-auto
-        .row
-          .col-auto(style="width:20px;").gt-sm
-          .col-auto(style="min-width:250px;")
-            .full-width(style="height:30px;" v-if="browser.filter.showDetails")
+  q-card(:style="rowStyle").bg-grey-10
+    .absolute-right(v-if="!browser.filter.showDetails")
+      q-btn(icon="info" @click="showDetails = !showDetails")
+    .q-pa-xs.bg-secondary.relative-position
+      .row.q-pr-sm.full-width
+        .row.items-center.q-gutter-md.full-width
+          //- p.text-capitalize Avatar Template
+          .row.no-wrap
+            h5.text-capitalize.q-pr-sm.no-margin(:style="rarityStyle") {{ avatar.meta.rarity  }}
+            h5.text-capitalize.no-margin {{ avatar.row.avatar_name }}
+          .col-grow
+          .row.no-wrap
+            p Designer:
+          .row.no-wrap
+            h5.no-margin {{ avatar.row.creator }}
+      .titleBar.absolute-top(style="height:100%; width:100%;")
 
-            .row.relative-position.cursor-pointer(@click="showFull=!showFull")
-              q-img(:src="ipfs(avatar.meta.img)" style="pointer-events: none;" ref="avatarImage" )
-              //-   q-tooltip(:delay="300" style="z-index: 9999999; height:340px; width:750px;" anchor="top middle" self="top middle" :offset="[0,400]" :key="avatar.row.avatar_name.toString()" v-model="showFull").bg-transparent
-              //-     q-img( :src="ipfs(avatar.meta.img)" style="width:100%; height:100%; z-index: 9999999999999999; filter:drop-shadow(0px 0px 50px black)" ).absolute-center
-              .absolute-top(style="left:0px;")
-              .absolute-top-left(v-if="owned>0" style="min-width:35px; left:10px;").relative-position
-              .absolute-top-right(v-if="owned>0" style="min-width:35px; height:36px; right:40px; top:-6px;").q-pa-sm.relative-position
-                q-btn(v-if="userOwned" dense icon="download"  @click="downloadImage(ipfs(avatar.meta.img),avatar.row.avatar_name.toString()+'.png')" color="white")
-                  q-tooltip
-                    p Download Avatar Image
-              .absolute-top-right(v-if="owned>0" style="min-width:35px; height:35px; right:10px;").bg-cyan-8.q-pa-sm.relative-position
-                .row.items-center
-                  h5.absolute-center(style="margin-top:2px;") {{owned}}
-                    q-tooltip
-                      p Account owns {{owned}} of this avatar
-      .col
-        .centered.q-gutter-md.q-ml-xl
-          .col-auto
+    .row.q-mt-md
+      .col-auto.q-pl-md
+        q-img(:src="image" style="width:300px;")
+      .col-auto(v-if="showDetails")
+        .q-pa-sm
+          h5.text-center Traits
+          q-separator(color="secondary")
+          q-list.q-ma-md
+            div(v-for="element of elementsList")
+              .row
+                p.text-capitalize {{ element }}
+              .row
+                a(:href="atomicHubTemplate(partsMeta[element].templateId)" target="_blank").text-grey-4
+                  h6.text-capitalize {{ getRarityName(partRarity[element])  }} {{ avatar.meta[element] }}
+      .col-auto.relative-position
+        .q-pa-sm.q-ml-lg
+          div(v-if="showDetails" style="min-width:200px;")
+            h5.text-center Mint
+            q-separator(color="secondary")
+            .row.q-mt-md
+              p Last Mint
             .row
-              p Avatar Tempalate Name
-            .row
-              .text-h4.text-capitalize {{avatar.row.avatar_name}}
-          .col-auto
-            .row
-              p Template Designer
-            .row
-              .text-h4.text-capitalize {{avatar.row.creator}}
+              h5 {{timeAgo.format(avatar.row.modified.toDate())}}
+              q-tooltip
+                p {{avatar.row.modified.toDate().toLocaleString()}}
+            .row.q-mt-sm
+              .col
+                .row
+                  p Minted
+                .row
+                  h5 {{mintedString}}
+              .col
+                .row
+                  p Burned
+                .row
+                  h5 {{avatar.stats.burned}}
+            //- .row.q-mt-sm
+            //-   .col
+            //-     .row
+            //-       p Last Purchase:
+            //-     .row
+            //-       h5 {{avatar.row.}}
+            .row.q-mt-sm
+              p Atomic Hub
+            .row.q-mt-sm
+            .col-auto
+              q-btn(label="template" :href="atomicTemplate" type="a" icon="link" target="_blank" size="md")
+              //- q-separator(vertical spaced color="secondary")
+            .col-auto
+                q-btn(label="market" :href="atomicMarket" type="a" icon="link" target="_blank" size="md")
+            //- q-separator(spaced color="secondary")
+            .absolute(style="bottom:70px; left:25px;")
+              //- q-separator(color="secondary").q-mt-md
+              .row.q-mt-sm
+                p Price
+                div(v-if="!maxSupplyReached")
+              .centered
+                h5 {{mintPrice}}
+            .centered.full-width.q-mt-lg
+              q-btn.absolute.relative-position(:label="mintButtonText" size="lg" @click="mintAvatar()" no-wrap :disable="disableMint" color="accent" :flat="false" style=" width:250px; right:-2px; bottom: -2px; background-color: black;").text-cyan-9
+                .actionBar.absolute-top(style="height:100%; width:100%;")
+              q-tooltip(v-if="!user.loggedIn.account")
 
-          .absolute-bottom(style="bottom:15px;" v-if="!browser.filter.showDetails")
-            q-btn.full-width(:label="mintButtonText" size="lg" @click="mintAvatar()" :disable="disableMint")
-          .col-auto(v-if="browser.filter.showDetails")
-            .centered.q-gutter-sm.q-mt-sm.q-mb-sm
-              .col-auto(style="width:20px;").gt-sm
-              .col-auto
-                  q-card.q-ma-sm.q-pa-md(style="min-width:310px;").full-height.boiddarkbg
-                    .centered
-                      p Traits | Rarity
-                    q-separator(color="secondary" spaced)
-                    .full-width.q-mb-md
-                    .column.q-ml-sm
-                      .row.items-center
-                        .col-auto(style="width:95px;")
-                          .row
-                            div Top:
-                          .row
-                            a.text-capitalize.text-grey-3(:href="atomicHubTemplate(partsMeta['top'].templateId)" target="_blank") {{avatar.meta.top}}
-                        .col-auto(style="width:15px")
-                          h6 {{partsMeta.top.meta.rarity}}
-                        q-separator(color="secondary" vertical spaced="15px")
-                        .col-auto(style="width:110px;")
-                          .row
-                            div Torso:
-                          .row
-                            a.text-capitalize.text-grey-3(:href="atomicHubTemplate(partsMeta.torso.templateId)" target="_blank") {{avatar.meta.torso}}
-                        .col-auto
-                          h6 {{partsMeta.torso.meta.rarity}}
-                    .q-mt-sm
-                    .column.q-ml-sm
-                      .row
-                        .col-auto(style="width:95px;")
-                          .row
-                            div Head:
-                          .row
-                            a.text-capitalize.text-grey-3(:href="atomicHubTemplate(partsMeta.head.templateId)" target="_blank") {{avatar.meta.rarity}} {{avatar.meta.head}}
-                        q-separator(color="secondary" vertical spaced="15px")
-                        .col-auto(style="width:110px;")
-                          .row
-                            div Legs:
-                          .row
-                            a.text-capitalize.text-grey-3(:href="atomicHubTemplate(partsMeta.legs.templateId)" target="_blank") {{avatar.meta.legs}}
-                        .col-auto(style="width:10px")
-                          h6 {{partsMeta.legs.meta.rarityScore}}
-              .col-auto
-                q-card.q-ma-sm.q-pa-md(style="min-width:200px;").boiddarkbg
-                  .centered
-                    p Minting
-                  q-separator(color="secondary" spaced)
-                  .column.no-wrap
-                    .row.q-gutter-sm
-                      .col-auto.q-mr-sm
-                        .row
-                          div Last Mint:
-                        .centered
-                          p.q-pt-sm {{timeAgo.format(avatar.row.modified.toDate())}}
-                          q-tooltip
-                            p {{avatar.row.modified.toDate().toLocaleString()}}
-                      q-separator(color="secondary" vertical spaced)
-                      .col
-                        .row
-                          div Minted:
-                        .centered
-                          h5 {{mintedString}}
-                    .row.q-mt-md
-                      div Atomic Hub:
-                    .centered.q-mt-sm
-                      .col-auto
-                        q-btn(label="template" :href="atomicTemplate" type="a" icon="link" target="_blank" size="md")
-                      q-separator(vertical spaced color="secondary")
-                      .col-auto
-                        q-btn(label="market" :href="atomicMarket" type="a" icon="link" target="_blank" size="md")
-                    //- q-separator(color="teal-10" spaced)
-                    //- .col-grow
-                    .row.q-mt-sm
-                      div Price:
-                    div(v-if="!maxSupplyReached")
-                      .centered
-                        h5 {{mintPrice}}
-
-                      .centered.full-width
-                        q-btn(:label="mintButtonText" size="lg" @click="mintAvatar()" :disable="disableMint").full-width
-                        q-tooltip(v-if="!user.loggedIn.account")
-                          p Login to mint
-                    div(v-else).q-mb-md
-                      .centered
-                        h5 Max Supply Reached
-            .col-auto(style="width:10px;").gt-sm
-          //- .row(v-if="userOwned").items-center
-            //- a( :href="'https://ipfs.animus.is/ipfs/'+ imgUrl" :download="`${'df'}.png`" target="_next") Download Profile Image
-
+      .centered.full-width(v-if="!showDetails")
+        h5 {{mintPrice}}
+      .centered.full-width.q-mt-sm(v-if="!showDetails").bg-accent
+        q-btn(:label="mintButtonText" size="lg" @click="mintAvatar()" :disable="disableMint" color="accent" :flat="false" style=" bottom: 0px; background-color: black;").text-cyan-9
+      .q-mt-sm
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
-import { link } from 'src/lib/linkManager'
+import { atomicState, PartCardMeta } from 'src/stores/AtomicStore'
 import { contractState } from 'src/stores/ContractStore'
-import { atomicState, AvatarMeta, PartCardMeta, PartsMeta, TemplateData } from 'src/stores/AtomicStore'
-import { Avatars } from 'src/types/avatarContractTypes'
-import { activeNetwork } from 'src/lib/config'
-import { globalState } from 'src/stores/GlobaleStore'
-import { Asset, Name } from 'anchor-link'
-import * as transact from 'src/lib/transact'
+import { defineComponent, PropType } from 'vue'
+
+import { Asset } from 'anchor-link'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
-import { avatarBrowserState, AvatarBrowserType } from 'src/stores/AvatarBrowserStore'
-import { calcMintPrice, downloadImage, sleep, atomicHubTemplate } from 'src/lib/utils'
-import { Elements } from 'src/types/avatarParts'
-import { useUser } from 'src/stores/UserStore'
-import { Dialog, QImg } from 'quasar'
-import ms from 'ms'
-import { defaultPartsSet } from 'src/stores/DesignerStore'
+import { QImg } from 'quasar'
+import { activeNetwork } from 'src/lib/config'
 import ipfs from 'src/lib/ipfs'
+import { calculateMintPrice } from 'src/lib/pricing'
+import { atomicHubTemplate, downloadImage, getRarityName, mintAvatar, sleep } from 'src/lib/utils'
+import { avatarBrowserState, AvatarBrowserType } from 'src/stores/AvatarBrowserStore'
+import { defaultPartsSet } from 'src/stores/DesignerStore'
+import { useUser } from 'src/stores/UserStore'
+import { Elements, elementsList } from 'src/types/avatarParts'
+import ms from 'ms'
 
 TimeAgo.addDefaultLocale(en)
 const timeAgo = new TimeAgo('en-US')
 export default defineComponent({
   setup() {
-    return { atomicHubTemplate, contract: contractState(), atomic: atomicState(), timeAgo, browser: avatarBrowserState(), user: useUser(), ipfs }
+    return { getRarityName, elementsList, atomicHubTemplate, contract: contractState(), atomic: atomicState(), timeAgo, browser: avatarBrowserState(), user: useUser(), ipfs }
   },
   props: {
     avatar: {
@@ -167,7 +123,8 @@ export default defineComponent({
       disableMint: false,
       showFull: false,
       show: true,
-      image: ''
+      image: '',
+      showDetails: false
     }
   },
   emits: ['minted'],
@@ -179,6 +136,14 @@ export default defineComponent({
     // console.log('mounted AvatarRow', this.avatar?.meta.name)
   },
   computed: {
+    rarityStyle(): string {
+      // const color = getRarityColor(this.avatar.meta.rarity.toLowerCase())
+      const color = 'white'
+      return 'color:' + color + ';' + ' text-shadow: 1px 1px 8px #3A6BF1;'
+    },
+    rowStyle() {
+      return this.showDetails ? 'max-width:100%;' : 'max-width:330px;'
+    },
     maxSupplyReached() {
       const maxMint = this.avatar.row.max_mint.toNumber()
       const nextMint = this.avatar.row.mint.toNumber() + 1
@@ -217,9 +182,10 @@ export default defineComponent({
     },
     mintPrice():Asset {
       const row = this.avatar.row
-      const edition = this.contract.currentEditionRow
-      if (!edition) return Asset.from('0,BOID')
-      return row.base_price
+      const edition = this.contract.editions[0]
+      if (!edition) return Asset.from('0,TLM')
+      const result = calculateMintPrice(this.avatar.row, edition.avatar_floor_mint_price)
+      return result.price.mint_price
       // return calcMintPrice(row.base_price, row.modified.toDate(), row.rarity.toNumber(), edition.avatar_floor_mint_price)
     },
     mintedString():string {
@@ -255,13 +221,18 @@ export default defineComponent({
     },
     downloadImage,
     async mintAvatar() {
-      await transact.mintAvatar(this.avatar.row.avatar_name, this.mintPrice)
+      await mintAvatar(this.avatar.row, this.mintPrice)
       await sleep(ms('3s'))
       this.$emit('minted')
-      // this.user.loggedIn.account
     }
   },
   watch: {
+    'browser.filter.showDetails': {
+      handler(val) {
+        this.showDetails = val
+      },
+      immediate: true
+    },
     'user.loggedIn.account': {
       handler(val) {
         if (val) this.disableMint = false
@@ -276,4 +247,14 @@ export default defineComponent({
 <style lang="sass" scoped>
 a
   font-size: 20px
+.titleBar
+  background-color: #0786ad
+  opacity: .2
+  background-size: 10px 10px
+  background-image: repeating-linear-gradient(45deg, #8dc7d9 0, #8dc7d9 1px, #0786ad 0, #0786ad 50%)
+.actionBar
+  background-color: black
+  opacity: .1
+  background-size: 10px 10px
+  background-image: repeating-linear-gradient(45deg, #8dc7d9 0, #8dc7d9 1px, #0786ad 0, #0786ad 50%)
 </style>

@@ -5,17 +5,18 @@ import { Name, UInt64 } from 'anchor-link'
 import { markRaw, nextTick, reactive, readonly, Ref, ref, shallowReactive } from 'vue'
 import { contractState } from 'src/stores/ContractStore'
 import { useUser } from 'src/stores/UserStore'
-import { deepClone, getCollection, sleep, throwError } from 'src/lib/utils'
+import { deepClone, getCollection, getRarityName, sleep, throwError } from 'src/lib/utils'
 import { deserialize, ObjectSchema } from 'atomicassets'
 
 import { Elements, elementsList } from 'src/types/avatarParts'
 import ms from 'ms'
 import { atomicApi } from 'src/lib/atomic'
-import { makeElementsObj } from 'src/stores/DesignerStore'
+import { Rarities, makeElementsObj, makeRarityObj } from 'src/stores/DesignerStore'
 import { RemovableRef, useLocalStorage } from '@vueuse/core'
+import { LocalStorage } from 'quasar'
 export type AccountAssetsType = Record<number, string[]>
 
-export interface PackMeta { name: string, edition: string, size: number, img:string }
+export interface PackMeta { name: string, edition: string, size: number, img:string, rarities:number[] }
 export class PackMetaClass {
   name = ' '
   edition = ''
@@ -56,6 +57,7 @@ export class PartCardMeta {
   img2 = ''
   offset = ''
 }
+
 export interface TemplateStats {
   issued:number
   burned:number
@@ -76,10 +78,14 @@ export type AvatarMeta = {
   avatarparts: number[]
   img:string
 }
+export type ToolMeta = {
+  rarity:Rarities
+}
 export type TemplateData = {
   schemaName:string
-  immutableData:PackMeta|PartCardMeta |AvatarMeta
-  maxSupply?:number
+  immutableData:PackMeta|PartCardMeta |AvatarMeta | ToolMeta
+  maxSupply?: number
+  collection:string
 }
 export interface AssetRow {
   asset_id:string,
@@ -116,6 +122,7 @@ type PartsByType = Record<Elements, PartsMeta[]>
 export function defaultPartsByType(): Record<Elements, []> {
   return makeElementsObj<[]>([])
 }
+const defaultEmptyRarities = makeRarityObj<number[]>([])
 
 function isTemplateData(value: unknown): value is TemplateData {
   return value !== undefined
@@ -128,33 +135,66 @@ export interface AtomicData {
   schemas:RemovableRef<{[key:string]:SchemaData[]}>
   templateIssued:{[key:number]:number}
   templateStats:Record<number, TemplateStats|null>
-  initialized:boolean
-  accountAssetsLoaded:string|null
+  initialized:RemovableRef<boolean>
+  accountAssetsLoaded: string | null
+  loadAllCollectionTemplates: string[]
+  accountAssetCollectionSchemas: Record<string, string[]>
+  primaryCollection:string
 }
 export const atomicState = defineStore({
   id: 'atomic',
-  state: ():AtomicData => ({
-    templateData: useLocalStorage('templateData', shallowReactive({})),
-    accountAssets: {},
-    schemas: useLocalStorage('schemas', shallowReactive({})),
-    templateIssued: {},
-    initialized: true,
-    templateStats: useLocalStorage('templateStats', reactive({})),
-    accountAssetsLoaded: null
-  }),
+  state: (): AtomicData => {
+    const collection = contractState().currentConfig.collection_name.toString()
+    const data = {
+      templateData: useLocalStorage('templateData', shallowReactive({})),
+      accountAssets: useLocalStorage('accountAssets', {}),
+      schemas: useLocalStorage('schemas', shallowReactive({})),
+      templateIssued: {},
+      initialized: useLocalStorage('initialized', false),
+      templateStats: useLocalStorage('templateStats', reactive({})),
+      accountAssetsLoaded: null,
+      loadAllCollectionTemplates: [contractState().currentConfig.collection_name.toString()],
+      primaryCollection: collection,
+      accountAssetCollectionSchemas: {
+        'alien.worlds': ['tool.worlds']
+      }
+    }
+    data.accountAssetCollectionSchemas[collection] = ['avatarparts', 'alienavatar', 'partpacks']
+    return data
+  },
   getters: {
     partsByType():PartsByType {
       const returnData = deepClone(emptyPartsByType)
       for (const [templateId, templateData] of Object.entries(this.templateData)) {
         if (!templateData) continue
         const data = templateData.immutableData
-
+        if (templateData.collection !== this.primaryCollection) continue
+        if (templateData.schemaName !== 'avatarparts') continue
         if (!('bodypart' in data)) continue
         // console.log(data.bodypart)
-        returnData[data.bodypart].push({ meta: data, templateId })
+        const valid = contractState().allEditionTemplates.includes(parseInt(templateId))
+        if (valid)returnData[data.bodypart].push({ meta: data, templateId })
+      }
+      return returnData
+    },
+    // organizes AW Tool NFTs held by the user by rarity
+    ownedAwToolsByRarity(): Record<Rarities, number[]> {
+      const returnData = deepClone(defaultEmptyRarities)
+      for (const [templateId, templateData] of Object.entries(this.templateData)) {
+        if (!templateData) continue
+        const data = templateData.immutableData
+        if (templateData.collection !== 'alien.worlds') continue
+        if (templateData.schemaName !== 'tool.worlds') continue
+        if (!('rarity' in data)) continue
+        if (!Object.keys(this.accountAssets).includes(templateId)) continue
+        // console.log(data.bodypart)
+        const meta = data as ToolMeta
+        const valid = contractState().allEditionTemplates.includes(parseInt(templateId))
+        if (valid) returnData[meta.rarity].push(parseInt(templateId))
       }
       return returnData
     }
+
   },
   actions: {
 
@@ -173,25 +213,22 @@ export const atomicState = defineStore({
       }
       return undefined as GetTemplateReturn<T>
     },
-    async getSchema(schemaName:string, force = false) {
+    async getSchema(schemaName:string, collection:Name = contractState().currentConfig.collection_name, force = false) {
       if (!force) if (this.schemas[schemaName]) return
-      const collection = getCollection()
       const search = Name.from(schemaName)
       const schema = await link.rpc.get_table_rows({ scope: collection, code: 'atomicassets', table: 'schemas', json: true, limit: 1, lower_bound: search, upper_bound: search })
       if (!schema.rows[0]) return console.error('error finding schema', schemaName)
       const row:SchemaRow = schema.rows[0]
       this.schemas[schemaName] = markRaw(row.format)
     },
-    async loadTemplate(templateId:number, force = false) {
+    async loadTemplate(templateId:number, collection:Name = contractState().currentConfig.collection_name, force = false) {
       if (!force) if (this.templateData[templateId]) return
-      const collection = contractState().currentConfig.collection_name
-      if (!collection) throw (new Error('load contract config first'))
-      console.log('loadTemplate called for:', templateId, this.templateData[templateId])
+      console.log('loadTemplate called for:', templateId, this.templateData[templateId], collection.toString())
       // return
       const search = UInt64.from(templateId)
-      const template = await link.rpc.get_table_rows({ scope: collection, code: 'atomicassets', table: 'templates', json: true, lower_bound: search })
+      const template = await link.rpc.get_table_rows({ scope: collection, code: 'atomicassets', table: 'templates', json: true, lower_bound: search, upper_bound: search })
       if (!template.rows[0]) return console.error('error finding template', templateId)
-      this.saveTemplateData(template.rows[0])
+      await this.saveTemplateData(template.rows[0], collection)
     },
     async getTemplateIssued(templateId:number) {
       const collection = getCollection()
@@ -209,6 +246,8 @@ export const atomicState = defineStore({
         await sleep(100)
         try {
           const result = await atomicApi.getTemplateStats(collection, templateId.toString())
+          // console.log(logs)
+
           this.templateStats[templateId] = readonly(reactive({ burned: parseInt(result.burned), issued: parseInt(result.assets) }))
         } catch (error) {
           console.error(error)
@@ -220,8 +259,7 @@ export const atomicState = defineStore({
       return new Promise((resolve, reject) => {
         console.log('get account assets')
         try {
-          const collectionName = contractState().config?.collection_name?.toString()
-          if (!collectionName) return
+          const collectionName = contractState().currentConfig.collection_name.toString()
           if (!accountName) {
             const loggedInUser = useUser().loggedIn.account
             if (!loggedInUser) return
@@ -231,19 +269,23 @@ export const atomicState = defineStore({
           // this.clearAccountAssets()
           const emitter = streamFullTable({ tableName: 'assets', contract: 'atomicassets', scope: accountName })
           const newAssets:AssetRow[] = []
-          emitter.on('rows', (rows:AssetRow[]) => {
-            rows.forEach(async row => {
+
+          emitter.on('rows', async(rows: AssetRow[]) => {
+            for (const row of rows) {
               if (parseInt(row.template_id) < 1) return
-              if (row.collection_name !== collectionName) return
+              if (!this.shouldLoadRow(row)) continue
+              // if (!this.accountAssetCollections.includes(row.collection_name)) return
+
+              // if (row.collection_name === 'alien.worlds' && row.schema_name !== 'tool.worlds') return
               const templateId = parseInt(row.template_id)
-              await this.loadTemplate(templateId)
+              await this.loadTemplate(templateId, Name.from(row.collection_name))
               newAssets.push(row)
               const templateExists = this.accountAssets[templateId]
               if (templateExists && templateExists.some(el => el === row.asset_id)) return
               // @ts-ignore
               if (templateExists) this.accountAssets[templateId].push(row.asset_id)
               else this.accountAssets[templateId] = [row.asset_id]
-            })
+            }
           })
           emitter.on('finished', () => {
             console.log('finished loading account assets')
@@ -272,38 +314,32 @@ export const atomicState = defineStore({
         }
       })
     },
+    shouldLoadRow(row: AssetRow) {
+      // console.log('should load row?', row)
+
+      const allowedSchemas = this.accountAssetCollectionSchemas[row.collection_name]
+      if (!allowedSchemas) return false
+      if (!allowedSchemas.includes(row.schema_name)) return false
+      // console.log('Loading row!')
+
+      return true
+    },
     async clearAccountAssets() {
       this.accountAssets = reactive<AccountAssetsType>({})
     },
-    async getAllParts() {
-      return
-      const config = contractState().currentConfig
-      const collectionName = config.collection_name
-      const partsSchema = config.parts_schema
-      if (!collectionName || !partsSchema) return console.error('load config first')
-      const partsSchemaString = partsSchema.toString()
-      const emitter = streamFullTable({ tableName: 'templates', contract: 'atomicassets', scope: collectionName.toString() })
-      emitter.on('rows', (rows:TemplateRow[]) => {
-        console.log('templates:', rows)
-        rows.forEach(async row => {
-          const templateId = parseInt(row.template_id)
-          if (row.schema_name === partsSchemaString) await this.loadTemplate(templateId)
-        })
-      })
-      emitter.on('finished', () => {
-        emitter.removeAllListeners()
-      })
-    },
     async getAllTemplates() {
-      const collection = contractState().currentConfig.collection_name
-      const rows = await getFullTable<TemplateRow>({ tableName: 'templates', contract: 'atomicassets', scope: collection })
-      const schemas:string[] = [...new Set(rows.map(el => el.schema_name))]
-      for (const schema of schemas) { await this.getSchema(schema) }
-      for (const row of rows) { this.saveTemplateData(row) }
-      console.log('finished injest template rows')
-      this.initialized = true
+      for (const coll of this.loadAllCollectionTemplates) {
+        const collection = Name.from(coll)
+        const rows = await getFullTable<TemplateRow>({ tableName: 'templates', contract: 'atomicassets', scope: collection })
+        const schemas: string[] = [...new Set(rows.map(el => el.schema_name))]
+        for (const schema of schemas) { await this.getSchema(schema, collection) }
+        for (const row of rows) { await this.saveTemplateData(row, collection) }
+        console.log('finished injest template rows')
+        this.initialized = true
+        LocalStorage.set('initialized', true)
+      }
     },
-    async saveTemplateData(row:TemplateRow) {
+    async saveTemplateData(row:TemplateRow, collection:Name = contractState().currentConfig.collection_name) {
       // console.log('saveTemplateData-' + row.template_id, row)
       const templateId = parseInt(row.template_id)
       if (this.templateData[templateId]) {
@@ -312,28 +348,27 @@ export const atomicState = defineStore({
         // if ('img' in data) cacheImg(data.img)
       }
       this.templateIssued[templateId] = parseInt(row.issued_supply)
-      await this.getSchema(row.schema_name)
+      await this.getSchema(row.schema_name, collection)
       if (!(row.schema_name in this.schemas)) return console.error('schema not found', row.schema_name)
       // @ts-ignore
       const schemaData: SchemaData[] = this.schemas[row.schema_name]
       const schema = ObjectSchema(schemaData)
       // console.time('deserialize-' + row.template_id)
-      const immutableData: PackMeta | PartCardMeta | AvatarMeta = deserialize(row.immutable_serialized_data, schema)
+      const immutableData: PackMeta | PartCardMeta | AvatarMeta | ToolMeta = deserialize(row.immutable_serialized_data, schema)
       // console.timeEnd('deserialize-' + row.template_id)
       const maxSupply = row.max_supply
       let newData:TemplateData
-      if (maxSupply !== 0) newData = markRaw<TemplateData>({ immutableData, schemaName: row.schema_name, maxSupply })
-      else newData = markRaw<TemplateData>({ immutableData, schemaName: row.schema_name })
-      // if ('img' in immutableData) cacheImg(immutableData.img)
-      // console.log(newData)
-
+      if (maxSupply !== 0) newData = markRaw<TemplateData>({ immutableData, schemaName: row.schema_name, maxSupply, collection: collection.toString() })
+      else newData = markRaw<TemplateData>({ immutableData, schemaName: row.schema_name, collection: collection.toString() })
       this.templateData[templateId] = newData
-      // console.timeEnd('saveTemplateData-' + row.template_id)
     },
-    rmAccountAsset(templateId:number, assetId:string) {
+    rmAccountAsset(templateId: number, assetId: string) {
+      console.log('rmAccountAsset called', templateId, assetId)
+
       if (!(this.accountAssets[templateId] instanceof Array)) return console.error('tried to remove from template the user doesnt own')
       // @ts-ignore
-      this.accountAssets[templateId].splice(this.accountAssets[templateId].findIndex((el) => el === assetId), 1)
+      const deleted = this.accountAssets[templateId].splice(this.accountAssets[templateId].findIndex((el) => el === assetId), 1)
+      console.log('deleted', deleted)
     }
   }
 })

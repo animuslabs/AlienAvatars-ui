@@ -1,39 +1,43 @@
 <template lang="pug">
-q-page.bg-primary.relative-position
+q-page.bg-primary.relative-position.full-height
   div(v-if="!atomic.initialized")
-    h5 loading
+    .centered.q-mt-xl
+      q-spinner(size="80px")
+    .centered
+      h4 Loading Avatar Parts
   div(v-else)
     .centered
       .col(style="width:100vw; max-width:350px; min-width:300px;")
         q-separator(size="3px" color="grey-10")
         .row.items-center.no-wrap(style="height:50px;" v-if="!designer.createTemplateMode")
-          //- q-btn-dropdown(label="favorites" contentStyle="margin:0px" stretch flat icon="favorite")
-          //-     favorites-manager
-          //- q-btn(@click="designer.clearSelected()" icon="person_off") clear
-          //- q-btn( @click="designer.shuffleSelected()" icon="shuffle") shuffle
-          q-btn(@click="designer.clearSelected()" icon="person_off" label="clear" )
+          q-btn(@click="designer.clearSelected()" icon="person_off" )
             q-tooltip
               p Clear
-          //- q-btn( @click="designer.shuffleSelected()" icon="shuffle" label="shuffle" )
+          q-btn( @click="designer.shuffleSelected()" icon="shuffle")
+            q-tooltip
+              p Shuffle
+          //- q-btn( @click="showModal()" icon="open_in_full")
           //-   q-tooltip
-          //-     p Shuffle
+          //-     p Maximize
           .col-grow
           .col-auto.self-end.q-mr-md(style="height:100%")
             .row.items-center(style="height:100%")
-              h6.no-margin.text-capitalize {{getRarityName(designer.rarityScore) }}
+              h6.no-margin.text-capitalize {{ getRarityName(designer.rarityScore) }}
                 q-tooltip(style="z-index: 999999999;")
-                  p Avatar Rarity (Based on the highest rarity part)
+                  p Avatar Rarity (based on the average of individual part rarities)
         q-scroll-area(style="height:100%; min-height: 590px;").relative-position.full-width
           .column.relative-position.full-width(style="overflow: hidden;").bg-primary
             stage
-            .centered.bg-secondary(v-if="!designer.createTemplateMode")
+            .centered.bg-accent(v-if="!designer.createTemplateMode").q-mt-xs.text-cyan-10
               .col-auto
                 action-button(@minting="designer.createTemplateMode=true")
               .col-auto(style="width:20px;")
             //- q-separator(color="amber-12" size="1px")
-            stage-details
+            stage-details.gt-sm
       q-separator(vertical color="secondary" size="3px").gt-sm
-      .col(style="min-width:300px; height:100vh; overflow: hidden;")
+      .lt-md(style="height:30px; width:100%")
+      q-separator
+      .col(style="min-width:300px; height:100%; overflow: hidden;")
         div(v-if="!designer.createTemplateMode")
           parts-browser
         div(v-else)
@@ -69,6 +73,7 @@ import * as transact from 'src/lib/transact'
 import { Asset } from 'anchor-link'
 import CreateTemplate from 'src/components/CreateTemplate.vue'
 import { getRarityName } from 'src/lib/utils'
+import { Dialog } from 'quasar'
 const randCache = <Record<string, number[]>>{}
 function getRand(min, max) {
   return Math.random() * (max - min) + min
@@ -111,6 +116,9 @@ export default defineComponent({
     // console.log(this.getSelectedParts)
   },
   methods: {
+    async showModal() {
+      Dialog.create({ component: stage })
+    },
     async createTemplate() {
       try {
         const templateIds = Object.values(this.designer.selectedParts)

@@ -70,12 +70,12 @@ div
           h5(style="text-transform: capitalize;") Pre Mint from new Template
         q-separator(color="secondary" spaced)
         .centered
-          q-img(:src="'https://ipfs.animus.is/ipfs/'+ getImg" style="width:300px;" )
+          q-img(:src="imgUrl" style="width:300px;" )
         .centered
           h6 Say hello to {{templateName}}
         q-card.q-ma-md.q-pa-md
           p You now own an Avatar template. As the owner you have one hour to pre-mint an Avatar from this template before anyone else.
-          h5 Would you like to pre-mint the #1 mint from this template?
+          h5.q-mt-sm.q-mb-sm Would you like to pre-mint the #1 mint from this template?
           p Mint cost: {{preMintCost||''}}
           .centered.q-gutter-md.items-center.q-mt-md
             q-btn(label="< Back to Designer" @click="designer.createTemplateMode = false")
@@ -109,10 +109,12 @@ import { link } from 'src/lib/linkManager'
 import * as transact from 'src/lib/transact'
 import { calcMintPrice, sleep } from 'lib/utils'
 import { atomicState, AvatarMeta } from 'src/stores/AtomicStore'
-import { contractState } from 'src/stores/ContractStore'
+import { EditionRow, contractState } from 'src/stores/ContractStore'
 import { globalState } from 'src/stores/GlobaleStore'
 import { useUser } from 'src/stores/UserStore'
 import { Avatars } from 'src/types/avatarContractTypes'
+import ipfs from 'src/lib/ipfs'
+import { calculateMintPrice } from 'src/lib/pricing'
 const randCache = <Record<string, number[]>>{}
 function getRand(min, max) {
   return Math.random() * (max - min) + min
@@ -142,20 +144,23 @@ export default defineComponent({
     preMintCost():Asset|null {
       if (this.createdTemplate === 0) return null
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const editionData:any = this.contract._editions.find((el:any) =>
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        el.edition_scope === this.global.currentEdition)
+
+      const editionData = this.contract.currentEditionRow
       if (!editionData) return null
       const avatarRow = this.contract.avatars[this.global.currentEdition].find(el => el.template_id.toNumber() === this.createdTemplate)
       if (!avatarRow) return null
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      return calcMintPrice(avatarRow.base_price, avatarRow.modified.toDate(), avatarRow.rarity.toNumber(), Asset.from(editionData.avatar_floor_mint_price))
+
+      return calculateMintPrice(avatarRow, editionData.avatar_floor_mint_price).price.mint_price
     },
     getImg():string {
       if (this.createdTemplate === 0) return ''
       const meta = this.atomic.templateData[this.createdTemplate]?.immutableData as AvatarMeta
       if (!meta) return ''
       return meta.img
+    },
+    imgUrl() {
+      return ipfs(this.getImg)
     },
     nameValid():boolean {
       return this.templateNameValidation.every(el => el(this.templateName) === true)

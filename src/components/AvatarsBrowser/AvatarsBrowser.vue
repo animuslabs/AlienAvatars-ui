@@ -3,13 +3,14 @@
 .full-height
   .relative-position(style="display: flex; flex-direction:column;" )
     .centered.relative-position(style="height:10px;")
-      filter-options(v-model="designer.filter" style="max-width:950px; z-index: 100;").q-pt-lg.absolute
+      filter-options(v-model="browser.filter" style="max-width:950px; z-index: 100;").q-pt-lg.absolute
       div(style="height:2px; width:100%; top:56px; z-index: ;").absolute.bg-secondary
-    q-scroll-area(style="height:100vh; overflow: auto;").q-ma-sm.q-pl-sm.q-mt-xl
+    q-scroll-area(style="height:90vh; overflow: auto;").q-ma-sm.q-pl-sm.q-mt-xl
       .gt-xs.full-width(style="height:100px")
       .lt-sm.full-width(style="height:160px")
       .centered
-        avatar-row(v-for="(avatar,name) in browser.visibleAvatars" :avatar="avatar" :key="avatar.meta.name" @minted="getData()" ).q-ma-md
+        .col-auto(v-for="(avatar,name) in browser.visibleAvatars")
+          avatar-row( :avatar="avatar" :key="avatar.meta.name" @minted="getData()" ).q-ma-md
       .full-width(style="height:50px")
 
 </template>
@@ -49,7 +50,7 @@ export default defineComponent({
     }
   },
   created() {
-    this.getData()
+    // this.getData()
     this.browser.filter.creatorName = null
   },
   methods: {
@@ -57,15 +58,15 @@ export default defineComponent({
       console.log('refresh all data')
       await this.contract.getConfig()
       await this.contract.getEditions()
-      this.atomic.getAccountAssets()
-      this.contract.getAvatars()
-      this.atomic.getManyTemplateStats(Object.keys(this.browser.visibleAvatars).map(el => parseInt(el)))
+      void this.atomic.getAccountAssets()
+      await this.contract.getAvatars()
+      void this.atomic.getManyTemplateStats(Object.keys(this.browser.visibleAvatars).map(el => parseInt(el)))
     }
   },
   watch: {
     'browser.visibleAvatars'() {
       console.log('update templateStats')
-      this.atomic.getManyTemplateStats(Object.keys(this.browser.visibleAvatars).map(el => parseInt(el)))
+      void this.atomic.getManyTemplateStats(Object.keys(this.browser.visibleAvatars).map(el => parseInt(el)))
     }
   }
 

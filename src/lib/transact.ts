@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Action, Asset, ExtendedAsset, Name, PermissionLevel, UInt64 } from 'anchor-link'
+import { CloudWallet, waxLink } from 'src/lib/cloudWallet'
 import * as config from 'src/lib/config'
 import { link } from 'src/lib/linkManager'
 import { globalState } from 'src/stores/GlobaleStore'
@@ -7,6 +8,23 @@ import { useUser } from 'src/stores/UserStore'
 import { AtomicTransfer } from 'src/types/atomicAssetsTypes'
 import { Buypack, Claimpack, Deposits, Mintavatar, Open, Packs, Withdraw } from 'src/types/avatarContractTypes'
 import { Transfer } from 'src/types/eosioTokenTypes'
+const tapos = {
+  blocksBehind: 3,
+  expireSeconds: 1200
+}
+async function doTransaction(data: { actions: Action[] }) {
+  let result: any
+  try {
+    console.log('loginMethod:', useUser().loginMethod)
+
+    if (useUser().loginMethod === 'anchor') result = await link.transact({ actions: data.actions })
+    else if (useUser().loginMethod === 'cloudWallet') result = await waxLink.api.transact({ actions: JSON.parse(JSON.stringify(data.actions)) }, tapos)
+  } catch (error) {
+    console.error('sign trx error:', error)
+  }
+
+  return result
+}
 
 export async function ndxSwap(eosQuantity:number) {
   const user = useUser()
@@ -20,7 +38,7 @@ export async function ndxSwap(eosQuantity:number) {
     quantity: Asset.from(`${eosQuantity.toFixed(4)} EOS`)
   })
   const action = Action.from({ data, authorization, name: 'transfer', account: 'eosio.token' })
-  const result = await link.transact({ action })
+  const result = await doTransaction({ actions: [action] })
   if (result) console.log(result.transaction.id)
 }
 
@@ -76,6 +94,8 @@ export async function purchasePacks(pack:Packs, quantity = 1) {
   const global = globalState()
   if (!user.loggedIn.auth) throw (new Error('user not logged in'))
   const authorization = [user.loggedIn.auth as PermissionLevel]
+  console.log(authorization.toString())
+
   const avatarContract = config.activeNetwork().contracts.avatarmk
   if (!avatarContract) return console.error('error')
   const userAccount = user.loggedIn.auth?.actor
@@ -87,7 +107,7 @@ export async function purchasePacks(pack:Packs, quantity = 1) {
   const buyData = Buypack.from({ buyer: userAccount, edition_scope: global.currentEdition, template_id: pack.template_id })
   const buyAction = Action.from({ data: buyData, account: avatarContract, authorization, name: 'buypack' })
   for (const empty of [...Array(quantity)]) { actions.push(buyAction) }
-  const result = await link.transact({ actions })
+  const result = await doTransaction({ actions })
   if (result) console.log(result.transaction.id)
 }
 
@@ -103,7 +123,7 @@ export async function withdraw(owner:Name, value:ExtendedAsset) {
     name: 'withdraw',
     authorization
   })
-  const result = await link.transact({ action })
+  const result = await doTransaction({ actions: [action] })
   if (result) console.log(result.transaction.id)
 }
 
@@ -127,7 +147,7 @@ export async function openPacks(packIds:string[]) {
     const transferAction = Action.from({ data: transferData, account: 'atomicassets', authorization, name: 'transfer' })
     actions.push(transferAction)
   }
-  const result = await link.transact({ actions })
+  const result = await doTransaction({ actions })
   if (result) console.log(result.transaction.id)
 }
 export async function claimPack(packId:UInt64) {
@@ -144,7 +164,7 @@ export async function claimPack(packId:UInt64) {
   })
   // TODO fix unsafe avatarContract here
   const action = Action.from({ data, account: avatarContract || '', authorization, name: 'claimpack' })
-  const result = await link.transact({ action })
+  const result = await doTransaction({ actions: [action] })
   if (result) console.log(result.transaction.id)
 }
 export async function claimPacks(packIds:UInt64[]) {
@@ -163,7 +183,7 @@ export async function claimPacks(packIds:UInt64[]) {
     const action = Action.from({ data, account: avatarContract, authorization, name: 'claimpack' })
     actions.push(action)
   }
-  const result = await link.transact({ actions })
+  const result = await doTransaction({ actions })
   if (result) console.log(result.transaction.id)
 }
 export async function createTemplate(templateName:string, partIds:string[], deposit:Asset) {
@@ -185,11 +205,11 @@ export async function createTemplate(templateName:string, partIds:string[], depo
   })
   const transferAction = Action.from({ data: transferData, account: 'atomicassets', authorization, name: 'transfer' })
   actions.push(transferAction)
-  const result = await link.transact({ actions })
+  const result = await doTransaction({ actions })
   if (result) console.log(result.transaction.id.toString())
 }
 
-export async function mintAvatar(avatarName:Name, deposit:Asset) {
+export async function mintAvatar(avatarName:Name, deposit:Asset, holding_tool_id:UInt64) {
   const user = useUser()
   const global = globalState()
   if (!user.loggedIn.auth) throw (new Error('user not logged in'))
@@ -201,11 +221,12 @@ export async function mintAvatar(avatarName:Name, deposit:Asset) {
   const data = Mintavatar.from({
     minter: userAccount,
     avatar_name: avatarName,
-    scope: global.currentEdition
+    scope: global.currentEdition,
+    holding_tool_id
   })
   // @ts-ignore
   const mintAvatarAction = Action.from({ data, account: avatarContract, authorization, name: 'mintavatar' })
   actions.push(mintAvatarAction)
-  const result = await link.transact({ actions })
+  const result = await doTransaction({ actions })
   if (result) console.log(result.transaction.id.toString())
 }

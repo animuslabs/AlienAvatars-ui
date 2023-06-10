@@ -4,7 +4,7 @@ div(style="min-height:1000px")
   .centered.items-center.q-gutter-md
     h4 My Packs
     q-btn(icon="refresh" @click="getAccountAssets()" :loading="loading" v-if="user.loggedIn.account")
-  q-separator(padding)
+  q-separator
   .centered
     h5(v-if="!user.loggedIn.account") Login to view and open your packs
   .q-pa-md.q-ma-md(v-for="pack of ownedPacks" v-if="ownedPacks.length > 0")
@@ -25,7 +25,7 @@ div(style="min-height:1000px")
       .absolute-center
         .column.items-center.justify-center
           q-btn.q-ma-md.bg-black( v-if="pack.meta" :label="'open one pack'" size="lg" @click="openPacks(pack,1)")
-          q-btn.q-ma-md.bg-black(label="open five packs" size="lg" @click="openPacks(pack,5)" style=" width:200px;" :disable="pack.assetIds.length <5")
+          //- q-btn.q-ma-md.bg-black(label="open five packs" size="lg" @click="openPacks(pack,5)" style=" width:200px;" :disable="pack.assetIds.length <5")
         //- q-btn.q-ma-md.bg-black(label="open one pack" size="lg" @click="openPack(pack)" style=" width:200px;")
 </template>
 <style lang="sass">
@@ -50,6 +50,7 @@ import * as transact from 'src/lib/transact'
 import { sleep } from 'src/lib/utils'
 import ms from 'ms'
 import ClaimCards from 'src/components/AvatarDesigner/ClaimCards.vue'
+import ipfs from 'src/lib/ipfs'
 type OwnedPackType = {templateId:number, assetIds:string[], meta?:TemplateData, immutableData?:PackMeta, imgUrl:string}
 let interval
 let interval2
@@ -92,11 +93,6 @@ export default defineComponent({
     if (interval3) clearInterval(interval3)
   },
   methods: {
-    packImg(assetId:string):string {
-      console.log('packImg:', assetId)
-
-      return 'https://ipfs.animus.is/ipfs/QmPM8rFRTrXUHnZ63C4HQmTGDTWaRbTVEpDPz6RDZtWb1U'
-    },
     toggleLoading() {
       this.loading = !this.loading
     },
@@ -105,7 +101,7 @@ export default defineComponent({
       // @ts-ignore
       if (!randCache[rand] || randCache[rand].length === 0) randCache[rand] = [getRand(-6, 8), getRand(-15, 15)]
       return {
-        height: '300px',
+        height: '350px',
         width: '200px',
         // @ts-ignore
         transform: `rotate(${randCache[rand][0]}deg)`,
@@ -118,16 +114,16 @@ export default defineComponent({
     },
     async openPacks(pack:OwnedPackType, quantity:number) {
       const assetIds = pack.assetIds.splice(0, quantity)
+      // assetIds.forEach(el => this.atomic.rmAccountAsset(pack.templateId, el))
       console.log('open pack', assetIds)
       try {
         await transact.openPacks(assetIds)
-        // this.atomic.rmAccountAsset(pack.templateId, assetId)
         console.log('pack opened')
       } catch (error) {
         console.error(error)
       }
       await sleep(ms('2s'))
-      this.getAccountAssets()
+      // this.getAccountAssets()
       this.contract.getUnpacks()
     },
     async getAccountAssets() {
@@ -135,7 +131,7 @@ export default defineComponent({
       try {
         const targetUser = this.user.loggedIn.account
         console.log('get account assets', targetUser)
-        if (!targetUser) return this.toggleLoading()
+        if (!targetUser) return this.loading = false
         await this.atomic.getAccountAssets(targetUser)
       } catch (error) {
         console.error(error)
@@ -161,7 +157,7 @@ export default defineComponent({
           let immutableData:PackMeta|null = null
           // @ts-ignore
           immutableData = meta.immutableData as PackMeta || null
-          const imgUrl = 'https://ipfs.animus.is/ipfs/' + immutableData.img
+          const imgUrl = ipfs(immutableData.img)
           return { templateId: el, assetIds, meta, immutableData, imgUrl } || []
         }).filter(el => el.immutableData)
       } catch (error) {

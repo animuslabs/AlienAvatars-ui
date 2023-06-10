@@ -15,6 +15,7 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "@vueuse/core": "^10.1.2",
+    "@waxio/waxjs": "^1.4.2",
     "anchor-link": "^3.5.1",
     "anchor-link-browser-transport": "^3.5.1",
     "atomicassets": "^1.5.1",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@quasar/app-vite": "^1.0.0",
+    "@types/ms": "^0.7.31",
     "@types/node": "^12.20.21",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
