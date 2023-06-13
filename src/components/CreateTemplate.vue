@@ -97,29 +97,30 @@ import { designerState } from 'src/stores/DesignerStore'
 import { defineComponent } from 'vue'
 
 import { Asset, Name } from 'anchor-link'
-import stage from 'components/AvatarDesigner/DesignStage.vue'
-import PartsBrowser from 'components/AvatarDesigner/PartsBrowser.vue'
-import ms from 'ms'
 import ActionButton from 'components/AvatarDesigner/ActionButton.vue'
+import stage from 'components/AvatarDesigner/DesignStage.vue'
 import FavoritesManager from 'components/AvatarDesigner/FavoritesManager.vue'
+import PartsBrowser from 'components/AvatarDesigner/PartsBrowser.vue'
+import { sleep, mintAvatar } from 'lib/utils'
+import ms from 'ms'
 import PreviewCard from 'src/components/AvatarDesigner/PreviewCard.vue'
 import StageDetails from 'src/components/AvatarDesigner/StageDetails.vue'
 import { activeNetwork } from 'src/lib/config'
+import ipfs from 'src/lib/ipfs'
 import { link } from 'src/lib/linkManager'
+import { calculateMintPrice } from 'src/lib/pricing'
 import * as transact from 'src/lib/transact'
-import { calcMintPrice, sleep } from 'lib/utils'
-import { atomicState, AvatarMeta } from 'src/stores/AtomicStore'
-import { EditionRow, contractState } from 'src/stores/ContractStore'
+import { AvatarMeta, atomicState } from 'src/stores/AtomicStore'
+import { contractState } from 'src/stores/ContractStore'
 import { globalState } from 'src/stores/GlobaleStore'
 import { useUser } from 'src/stores/UserStore'
 import { Avatars } from 'src/types/avatarContractTypes'
-import ipfs from 'src/lib/ipfs'
-import { calculateMintPrice } from 'src/lib/pricing'
 const randCache = <Record<string, number[]>>{}
 function getRand(min, max) {
   return Math.random() * (max - min) + min
 }
 let interval
+let avatarRow = null as Avatars | null
 export default defineComponent({
   setup() { return { contract: contractState(), atomic: atomicState(), designer: designerState(), user: useUser(), global: globalState() } },
   components: { stage, FavoritesManager, ActionButton, StageDetails, PartsBrowser, PreviewCard },
@@ -184,8 +185,8 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.contract.getAvatars()
-    this.contract.getEditions()
+    void this.contract.getAvatars()
+    void this.contract.getEditions()
   },
   unmounted() {
     if (interval) clearInterval(interval)
@@ -193,9 +194,12 @@ export default defineComponent({
   methods: {
     async initPreMint() {
       if (!this.preMintCost) return console.error('problem in initPremint')
-      await transact.mintAvatar(Name.from(this.templateName), this.preMintCost)
+      // await transact.mintAvatar(Name.from(this.templateName), this.preMintCost)
+      const row = avatarRow
+      if (!avatarRow) return console.error('error loading avatar row')
+      await mintAvatar(avatarRow, this.preMintCost)
       this.designer.createTemplateMode = false
-      this.$router.push({ name: 'browseAvatars' })
+      await this.$router.push({ name: 'browseAvatars' })
     },
     async findCreatedTemplate() {
       const result = await link.rpc.get_table_rows({
@@ -210,11 +214,13 @@ export default defineComponent({
       })
       console.log(result.rows)
       const newTemplate = result.rows[0]
+
       if (newTemplate) {
+        avatarRow = newTemplate
         // @ts-ignore
         this.createdTemplate = newTemplate.template_id.toNumber() // eslint-disable-line @typescript-eslint/no-unsafe-member-access
-        this.contract.getAvatars()
-        this.atomic.loadTemplate(this.createdTemplate)
+        await this.contract.getAvatars()
+        await this.atomic.loadTemplate(this.createdTemplate)
         await sleep(ms('5s'))
         this.page = 3
         if (interval) clearInterval(interval)
@@ -227,7 +233,7 @@ export default defineComponent({
         const partIds = templateIds.map(templateId => this.atomic.accountAssets[templateId][0])
         // @ts-ignore
         await transact.createTemplate(this.templateName, partIds, this.templateCreationCost)
-        this.atomic.getAccountAssets()
+        void this.atomic.getAccountAssets()
         interval = setInterval(this.findCreatedTemplate, ms('2s'))
         this.page = 2
       } catch (error) {
@@ -249,8 +255,8 @@ export default defineComponent({
   watch: {
     'user.loggedIn.account': {
       handler(val) {
-        if (val) this.atomic.getAccountAssets(val)
-        else this.atomic.clearAccountAssets()
+        if (val) void this.atomic.getAccountAssets(val)
+        else void this.atomic.clearAccountAssets()
       },
       immediate: true
     }

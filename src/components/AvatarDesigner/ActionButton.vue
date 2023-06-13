@@ -36,6 +36,7 @@ import { Avatars } from 'src/types/avatarContractTypes'
 import { useUser } from 'src/stores/UserStore'
 import { activeNetwork } from 'src/lib/config'
 import { globalState } from 'src/stores/GlobaleStore'
+import { Dialog } from 'quasar'
 
 export default defineComponent({
   components: { dialogWrapper, mintAvatar },
@@ -64,7 +65,7 @@ export default defineComponent({
       const enc = Serializer.encode({ object: templateIds, type: 'uint32[]' }).hexString
       return Checksum256.hash(enc)
     },
-    isAllowedToCreateTemplate():boolean {
+    isAllowedToCreateTemplate(): boolean {
       return Object.values(this.designer.selectedParts).every((el) => Object.keys(this.atomic.accountAssets).find((el2) => el === parseInt(el2)))
     },
     buttonsLoading():boolean {
@@ -73,15 +74,24 @@ export default defineComponent({
   },
   emits: ['minting'],
   methods: {
+    triggerToolWarning() {
+      Dialog.create({
+        title: `Not holding ${this.designer.rarity} Alien Worlds Tool NFT`,
+        message: `You can't create an Avatar Template of ${this.designer.rarity} rarity
+        because you are not holding an Alien Worlds tool NFT of ${this.designer.rarity} rarity.
+        Add a ${this.designer.rarity} AW tool NFT to your account inventory and try again.`
+      })
+    },
     startMinting() {
       console.log('minting')
-
+      const toolAvailable = this.atomic.ownedAwToolsByRarity[this.designer.rarity][0]
+      // if (!toolAvailable) return this.triggerToolWarning()
       this.$emit('minting')
     },
     async fetchAvatars() {
       if (!this.getChecksum) return
       this.loading = true
-      console.log(this.getChecksum.toString())
+      // console.log(this.getChecksum.toString())
 
       const res = await this.link.rpc.get_table_rows({
         json: true,
@@ -95,7 +105,7 @@ export default defineComponent({
         table: 'avatars',
         limit: 1
       })
-      console.log(res)
+      // console.log(res)
 
       if (res?.rows.length === 1) this.existingTemplateData = Avatars.from(res.rows[0])
       else this.existingTemplateData = null
@@ -106,7 +116,7 @@ export default defineComponent({
     getChecksum: {
       immediate: true,
       handler(newVal, oldVal) {
-        if (newVal !== oldVal) this.fetchAvatars()
+        if (newVal !== oldVal) void this.fetchAvatars()
       }
     }
   }

@@ -1,6 +1,6 @@
 import { Asset } from 'anchor-link'
 import { defineStore } from 'pinia'
-import { calcMintPrice } from 'src/lib/utils'
+import { calculateMintPrice } from 'src/lib/pricing'
 import { atomicState, AvatarMeta, TemplateData, TemplateStats } from 'src/stores/AtomicStore'
 import { contractState } from 'src/stores/ContractStore'
 import { globalState } from 'src/stores/GlobaleStore'
@@ -46,9 +46,9 @@ export const avatarBrowserState = defineStore('avatarBrowser', {
         if (!templateData) continue
         const meta = templateData.immutableData as AvatarMeta
         const stats = atomicState().templateStats[templateId] || { burned: 0, issued: 0 }
-        const price = calcMintPrice(row.base_price, row.modified.toDate(), row.rarity.toNumber(), edition.avatar_floor_mint_price)
+        const price = calculateMintPrice(row, edition.avatar_floor_mint_price)
         if (!price) continue
-        avatarsRecord[row.avatar_name.toString()] = { meta, row, stats, price }
+        avatarsRecord[row.avatar_name.toString()] = { meta, row, stats, price: price.price.mint_price }
       }
       let list:AvatarBrowserType[] = Object.values(avatarsRecord)
       if (this.filter.ownedOnly) list = list.filter(el => atomicState().accountAssets[el.row.template_id.toNumber()])
@@ -79,9 +79,9 @@ export const avatarBrowserState = defineStore('avatarBrowser', {
         if (!templateData) continue
         const meta = templateData.immutableData as AvatarMeta
         const stats = atomicState().templateStats[templateId] || { burned: 0, issued: 0 }
-        const price = calcMintPrice(row.base_price, row.modified.toDate(), row.rarity.toNumber(), edition.avatar_floor_mint_price)
+        const price = calculateMintPrice(row, edition.avatar_floor_mint_price)
         if (!price) continue
-        avatarsRecord[row.avatar_name.toString()] = { meta, row, stats, price }
+        avatarsRecord[row.avatar_name.toString()] = { meta, row, stats, price: price.price.mint_price }
       }
       let list:AvatarBrowserType[] = Object.values(avatarsRecord)
       list = list.filter(el => atomicState().accountAssets[el.row.template_id.toNumber()])

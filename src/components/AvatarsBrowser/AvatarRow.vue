@@ -1,25 +1,32 @@
 <template lang="pug">
-.centered
-  q-card(:style="rowStyle").bg-grey-10
-    .absolute-right(v-if="!browser.filter.showDetails")
+.centered.full-width(style="max-width:80vw")
+  q-card(:style="rowStyle").bg-grey-10.relative-position
+    .absolute-right.z-top(v-if="!browser.filter.showDetails" style="right:0px; height:0px;" )
       q-btn(icon="info" @click="showDetails = !showDetails")
-    .q-pa-xs.bg-secondary.relative-position
+    .q-pa-sm.bg-secondary.relative-position
       .row.q-pr-sm.full-width
         .row.items-center.q-gutter-md.full-width
           //- p.text-capitalize Avatar Template
-          .row.no-wrap
-            h5.text-capitalize.q-pr-sm.no-margin(:style="rarityStyle") {{ avatar.meta.rarity  }}
-            h5.text-capitalize.no-margin {{ avatar.row.avatar_name }}
+          .row.no-wrap(v-if="showDetails")
+            h4.text-capitalize.q-pr-sm.no-margin(:style="rarityStyle") {{ avatar.meta.rarity  }}
+            h4.text-capitalize.no-margin {{ avatar.row.avatar_name }}
+          div(v-else)
+            .row
+              h6.text-capitalize.q-pr-sm.no-margin(:style="rarityStyle") {{ avatar.meta.rarity  }}
+            .row
+              h5.text-capitalize.no-margin {{ avatar.row.avatar_name }}
           .col-grow
-          .row.no-wrap
-            p Designer:
-          .row.no-wrap
-            h5.no-margin {{ avatar.row.creator }}
+          .row.no-wrap.items-center(v-if="showDetails")
+            .row.no-wrap.q-mr-sm
+              p Designer:
+            .row.no-wrap
+              h4.no-margin {{ avatar.row.creator }}
       .titleBar.absolute-top(style="height:100%; width:100%;")
 
     .row.q-mt-md
-      .col-auto.q-pl-md
-        q-img(:src="image" style="width:300px;")
+      .col.q-pl-md.q-pr-md(style="min-width:200px; width:300px;")
+        .centered.full-width
+          q-img(:src="imgUrl2" @click="showMaximized()").cursor-pointer
       .col-auto(v-if="showDetails")
         .q-pa-sm
           h5.text-center Traits
@@ -27,11 +34,11 @@
           q-list.q-ma-md
             div(v-for="element of elementsList")
               .row
-                p.text-capitalize {{ element }}
-              .row
+                p.text-capitalize {{ element }} - {{ getRarityName(partRarity[element])  }}
+              .row(style="min-width:185px;")
                 a(:href="atomicHubTemplate(partsMeta[element].templateId)" target="_blank").text-grey-4
-                  h6.text-capitalize {{ getRarityName(partRarity[element])  }} {{ avatar.meta[element] }}
-      .col-auto.relative-position
+                  h6.text-capitalize {{ avatar.meta[element] }}
+      .col-auto.relative-position(v-if="showDetails")
         .q-pa-sm.q-ml-lg
           div(v-if="showDetails" style="min-width:200px;")
             h5.text-center Mint
@@ -39,9 +46,9 @@
             .row.q-mt-md
               p Last Mint
             .row
-              h5 {{timeAgo.format(avatar.row.modified.toDate())}}
-              q-tooltip
-                p {{avatar.row.modified.toDate().toLocaleString()}}
+              h5(style="font-size: 18px;") {{timeAgo.format(avatar.row.modified.toDate())}}
+            .row
+              p {{avatar.row.modified.toDate().toLocaleString()}}
             .row.q-mt-sm
               .col
                 .row
@@ -74,14 +81,14 @@
                 p Price
                 div(v-if="!maxSupplyReached")
               .centered
-                h5 {{mintPrice}}
+                h5(style="font-size: 15px;") {{printAsset(mintPrice)}}
             .centered.full-width.q-mt-lg
               q-btn.absolute.relative-position(:label="mintButtonText" size="lg" @click="mintAvatar()" no-wrap :disable="disableMint" color="accent" :flat="false" style=" width:250px; right:-2px; bottom: -2px; background-color: black;").text-cyan-9
                 .actionBar.absolute-top(style="height:100%; width:100%;")
               q-tooltip(v-if="!user.loggedIn.account")
-
+      div(style="height:500px;")
       .centered.full-width(v-if="!showDetails")
-        h5 {{mintPrice}}
+        h5 {{printAsset(mintPrice)}}
       .centered.full-width.q-mt-sm(v-if="!showDetails").bg-accent
         q-btn(:label="mintButtonText" size="lg" @click="mintAvatar()" :disable="disableMint" color="accent" :flat="false" style=" bottom: 0px; background-color: black;").text-cyan-9
       .q-mt-sm
@@ -95,11 +102,11 @@ import { defineComponent, PropType } from 'vue'
 import { Asset } from 'anchor-link'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en.json'
-import { QImg } from 'quasar'
+import { Dialog, QImg } from 'quasar'
 import { activeNetwork } from 'src/lib/config'
 import ipfs from 'src/lib/ipfs'
 import { calculateMintPrice } from 'src/lib/pricing'
-import { atomicHubTemplate, downloadImage, getRarityName, mintAvatar, sleep } from 'src/lib/utils'
+import { atomicHubTemplate, downloadImage, getRarityName, mintAvatar, sleep, printAsset } from 'src/lib/utils'
 import { avatarBrowserState, AvatarBrowserType } from 'src/stores/AvatarBrowserStore'
 import { defaultPartsSet } from 'src/stores/DesignerStore'
 import { useUser } from 'src/stores/UserStore'
@@ -110,7 +117,7 @@ TimeAgo.addDefaultLocale(en)
 const timeAgo = new TimeAgo('en-US')
 export default defineComponent({
   setup() {
-    return { getRarityName, elementsList, atomicHubTemplate, contract: contractState(), atomic: atomicState(), timeAgo, browser: avatarBrowserState(), user: useUser(), ipfs }
+    return { printAsset, getRarityName, elementsList, atomicHubTemplate, contract: contractState(), atomic: atomicState(), timeAgo, browser: avatarBrowserState(), user: useUser(), ipfs }
   },
   props: {
     avatar: {
@@ -213,9 +220,33 @@ export default defineComponent({
           data[type] = templates.find(el => el.meta.bodypart === type && el.meta.name === this.avatar.meta[type]) || { meta: new PartCardMeta(), templateId: 0 }
         })
       return data
+    },
+    imgUrl2(): string {
+      return ipfs(this.avatar.meta.img)
     }
   },
   methods: {
+    async showMaximized() {
+      Dialog.create({
+        maximized: false,
+        html: true,
+        message: `
+        <div class="centered q-pa-lg">
+          <div>
+          <div class="centered">
+            <img src="${await this.imgUrl()}" style="padding:10px; max-height:70vh; max-width:80vw" >  </img>
+           </div>
+
+          <div class="centered">
+            <h4 class="text-capitalize"> ${this.avatar.meta.rarity} ${this.avatar.row.avatar_name.toString()} </h4>
+          </div>
+          </div>
+        </div>
+        `,
+        class: 'bg-black',
+        style:'max-width: 90vw; width: height:75vh;'
+      })
+    },
     async imgUrl():Promise<string> {
       return await ipfs(this.avatar.meta.img) as string
     },
@@ -247,14 +278,5 @@ export default defineComponent({
 <style lang="sass" scoped>
 a
   font-size: 20px
-.titleBar
-  background-color: #0786ad
-  opacity: .2
-  background-size: 10px 10px
-  background-image: repeating-linear-gradient(45deg, #8dc7d9 0, #8dc7d9 1px, #0786ad 0, #0786ad 50%)
-.actionBar
-  background-color: black
-  opacity: .1
-  background-size: 10px 10px
-  background-image: repeating-linear-gradient(45deg, #8dc7d9 0, #8dc7d9 1px, #0786ad 0, #0786ad 50%)
+
 </style>

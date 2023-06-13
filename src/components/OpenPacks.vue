@@ -2,6 +2,7 @@
 div(style="min-height:1000px")
   ClaimCards
   .centered.items-center.q-gutter-md
+    //- div {{ atomic.accountAssets }}
     h4 My Packs
     q-btn(icon="refresh" @click="getAccountAssets()" :loading="loading" v-if="user.loggedIn.account")
   q-separator
@@ -9,7 +10,7 @@ div(style="min-height:1000px")
     h5(v-if="!user.loggedIn.account") Login to view and open your packs
   .q-pa-md.q-ma-md(v-for="pack of ownedPacks" v-if="ownedPacks.length > 0")
     .row
-      h5(v-if="pack.meta") {{pack.meta.immutableData.name}}
+      h5(v-if="pack.meta") {{pack.immutableData?.name}}
       .col-grow
       h5 You own: {{pack.assetIds.length}}
     q-separator(color="secondary")
@@ -17,7 +18,7 @@ div(style="min-height:1000px")
       | Each Pack Contains: {{pack.immutableData.size}} Cards
     .row.no-wrap.relative-position(style="overflow: hidden;")
       .col-auto.relative-position(v-for="asset of pack.assetIds" style="width:40px; margin-left: 20px;").q-ma-md
-        q-img.relative-position(:src="pack.imgUrl" v-if="asset" :style="packCardDynamic(asset.toString())")
+        q-img.relative-position(:src="pack.imgUrl" v-if="asset" :style="packCardDynamic(asset.toString())" no-transition no-spinner)
           //- q-img()
           //- .absolute-center
           //-   q-icon(name="question_mark" size="184px")
@@ -73,16 +74,16 @@ export default defineComponent({
     console.log('openpacks mounted1')
     this.loading = true
     await sleep(1000)
-    this.contract.getPacks()
+    await this.contract.getPacks()
     console.log('openpacks mounted2')
     if (!this.user.loggedIn.account) return
-    await this.getAccountAssets()
-    console.log('openpacks mounted3')
-    console.log('get template??????', this.atomic.templateData[621073])
+    // await this.getAccountAssets()
+    // console.log('openpacks mounted3')
+    // console.log('get template??????', this.atomic.templateData[621073])
 
-    await this.atomic.loadTemplate(621073)
-    console.log('got template?', this.atomic.templateData[621073])
-    console.log('openpacks mounted4')
+    // await this.atomic.loadTemplate(621073)
+    // console.log('got template?', this.atomic.templateData[621073])
+    // console.log('openpacks mounted4')
     this.loading = false
     // interval2 = setInterval(this.getAccountAssets, ms('5m'))
     // interval3 = setInterval(this.contract.getUnpacks, ms('30s'))
@@ -112,19 +113,21 @@ export default defineComponent({
         // 'z-index': 100
       }
     },
-    async openPacks(pack:OwnedPackType, quantity:number) {
-      const assetIds = pack.assetIds.splice(0, quantity)
+    async openPacks(pack:OwnedPackType, quantity = 1) {
+      // const assetIds =
       // assetIds.forEach(el => this.atomic.rmAccountAsset(pack.templateId, el))
-      console.log('open pack', assetIds)
+      // console.log('open pack', assetIds)
       try {
-        await transact.openPacks(assetIds)
+        await transact.openPacks([pack.assetIds[0]] as string[])
+        pack.assetIds.splice(0, 1)
         console.log('pack opened')
       } catch (error) {
-        console.error(error)
+        console.error('caught transact error', error)
+        console.log(pack.assetIds.length)
       }
-      await sleep(ms('2s'))
+      await sleep(ms('3s'))
       // this.getAccountAssets()
-      this.contract.getUnpacks()
+      await this.contract.getUnpacks()
     },
     async getAccountAssets() {
       this.loading = true
@@ -167,10 +170,10 @@ export default defineComponent({
     }
   },
   watch: {
-    'user.loggedIn.account'(val) {
+    async 'user.loggedIn.account'(val) {
       if (val) {
-        this.getAccountAssets()
-        this.contract.getUnpacks()
+        await this.getAccountAssets()
+        await this.contract.getUnpacks()
       }
     }
   },

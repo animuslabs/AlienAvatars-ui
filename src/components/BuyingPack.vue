@@ -1,26 +1,28 @@
 
 <template lang='pug'>
-div
+div.relative-position
+  .absolute-position.dimmed.full-width.full-height(v-if="fullLoading").z-top
+    q-spinner( size="200px").absolute-center
   .row.q-ma-md
-  .row.q-gutter-lg.items-center
+  .row.q-gutter-lg
     .col-auto(style="width:220px; height:300px;").relative-position
       .absolute-center(style="width: 230px; height:300px;")
-        q-img(:src="imgUrl" v-for="card of quantity" no-spinner no-transition :style="packCardDynamic(card.toString())" )
+        q-img(:src="imgUrl" v-for="card of quantity" no-spinner no-transition :style="packCardDynamic(card.toString())" ).q-mt-xl
 
-    BuyPackCard(:pack="pack" statsOnly)
-    .col-auto.q-pa-sm(style="max-width:300px")
+    BuyPackCard(:pack="pack" statsOnly).q-pt-lg
+    .col-auto.q-pa-sm.q-pt-xl
       .row
-        .col-auto(style="width:100px;")
-          p Rarity Score
-        .col.q-ml-md
-          p Chance
-      .centered.bg-red
+        .col-auto.q-ml-lg
+          h5 Rarity
+        .col(style="margin-left:100px;")
+          h5 Chance
       div(v-for="rarity, index of rarities")
-        .row
-          .col-auto(style="width:100px;")
-            h6.q-ml-lg {{ index + 1 }}
-          .col
+        .row.full-width
+          .col(style="width:100px;")
+            h6.q-ml-lg {{ getRarityName(index + 1)  }}
+          .col(style="margin-left:65px;")
             h6.q-ml-md {{ rarity }}%
+      p(style="max-width:260px;").q-ma-md The rarity percentages show above are the percent change that each card in the pack is of a certain rarity.
   .centered.items-center(style="margin-top:80px;")
     .col-auto
       h5 {{purchaseString}}
@@ -73,8 +75,9 @@ import { Asset } from 'anchor-link'
 import { atomicState, PackMeta } from 'src/stores/AtomicStore'
 import * as transact from 'src/lib/transact'
 import { ndxSwap } from 'src/lib/transact'
-import { sleep } from 'src/lib/utils'
+import { deepClone, getRarityName, sleep } from 'src/lib/utils'
 import ipfs from 'src/lib/ipfs'
+import ms from 'ms'
 const defaultPack = Packs.from({ template_id: 0, base_price: '1 BOID', floor_price: '1 BOID', last_sold: new Date(), pack_name: '', rarity_distribution: [] })
 function getRand(min, max) {
   return Math.random() * (max - min) + min
@@ -82,13 +85,14 @@ function getRand(min, max) {
 const randCache = <Record<string, number[]>>{}
 export default defineComponent({
   setup(props) {
-    return { contract: contractState(), global: globalState(), user: useUser(), atomic: atomicState(), ndxSwap }
+    return { getRarityName, contract: contractState(), global: globalState(), user: useUser(), atomic: atomicState(), ndxSwap }
   },
   emits: ['back', 'balance'],
   data() {
     return {
       quantity: 1,
-      loading: false
+      loading: false,
+      fullLoading: false
     }
   },
   props: {
@@ -117,10 +121,15 @@ export default defineComponent({
       return this.contract.packs[this.global.currentEdition].find(el => el.template_id.toNumber() === this.packId) || defaultPack
     },
     rarities(): number[] {
-      const template = atomicState().getTemplate(this.pack.template_id.toNumber(), false)
+      // const template = this.atomic.getTemplate(this.pack.template_id.toNumber(), false)
+      const template = this.atomic.templateData[this.pack.template_id.toNumber()]
       if (!template) return []
-      const data = template.immutableData as PackMeta
-      return data.rarities.reverse()
+      const data = deepClone(template.immutableData as PackMeta)
+      console.log(data)
+      const reversed = data.rarities.reverse()
+      console.log('reversed', reversed)
+
+      return reversed
     },
     cardPrice(): Asset {
       const cardPrice = Asset.from(this.pack.base_price.toString())
@@ -173,8 +182,16 @@ export default defineComponent({
       }
     },
     async purchasePacks() {
-      await transact.purchasePacks(this.pack, this.quantity)
-      this.$router.push({ name: 'openPacks' })
+      this.$q.loading.show()
+      try {
+        await transact.purchasePacks(this.pack, this.quantity)
+        await sleep(ms('3s'))
+        await this.atomic.getAccountAssets()
+        await this.$router.push({ name: 'openPacks' })
+      } catch (error) {
+        console.log(error)
+      }
+      this.$q.loading.hide()
     }
   },
   components: { BuyPackCard }

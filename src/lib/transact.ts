@@ -19,8 +19,9 @@ async function doTransaction(data: { actions: Action[] }) {
 
     if (useUser().loginMethod === 'anchor') result = await link.transact({ actions: data.actions })
     else if (useUser().loginMethod === 'cloudWallet') result = await waxLink.api.transact({ actions: JSON.parse(JSON.stringify(data.actions)) }, tapos)
-  } catch (error) {
+  } catch (error:any) {
     console.error('sign trx error:', error)
+    throw new Error(error)
   }
 
   return result

@@ -11,7 +11,7 @@
 
 const { configure } = require('quasar/wrappers')
 
-module.exports = configure(function(/* ctx */) {
+module.exports = configure(function (/* ctx */) {
   return {
     eslint: {
 
@@ -77,7 +77,7 @@ module.exports = configure(function(/* ctx */) {
       config: {
         ripple: false,
         loading: {
-
+          delay: 400
         }
       },
       // Quasar plugins

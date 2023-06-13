@@ -29,11 +29,11 @@
       p You hold {{ownedCount}} of this card.
   div(v-if="designer.filter.showDetails" style="width:190px;")
     q-card( style="width:240px; height:190px; right:20px; z-index: -1000;").boiddarkbg.absolute
-    div(v-if="designer.filter.showDetails" style="width:120px; height:190px; right:40px;" :class="[isSelected? 'infotext-margin' : 'infotext']").bg-transparent.q-pt-sm
+    div(v-if="designer.filter.showDetails" style="width:120px; height:190px; right:40px;" :class="[isSelected? 'infotext-margin' : 'infotext']").bg-transparent.q-pt-sm.full-width
       .row
         .text-h6.text-capitalize {{bodyPart.meta.rarity}}
-      .row
-        .text-h6.text-capitalize  {{detailSheet.name}}
+      .row.full-width
+        .text-h6.text-capitalize.ellipsis  {{detailSheet.name}}
       //- q-separator( color="amber-12")
       .row.q-gutter-md.q-pt-sm
         .col

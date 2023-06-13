@@ -168,7 +168,7 @@ export const designerState = defineStore({
           this.atomicState.loadTemplate(templateId, true)
           continue
         }
-        console.log(templateData)
+        // console.log(templateData)
 
         const partData: SelectedMetaData = {
           rarity: templateData.rarity,
@@ -188,7 +188,7 @@ export const designerState = defineStore({
       const rarities = Object.values(this.selectedMeta).map(el => el.rarityScore)
       return avatarRarity(rarities)
     },
-    rarity(): string {
+    rarity(): Rarities {
       return getRarityName(this.rarityScore)
     },
     visibleParts():PartsMeta[] {
@@ -229,7 +229,7 @@ export const designerState = defineStore({
     },
     shuffleSelected() {
       const parts = this.getRandomPartsSet()
-      console.log('shuffle parts:', parts)
+      // console.log('shuffle parts:', parts)
 
       this.selectedParts = reactive(parts)
     },

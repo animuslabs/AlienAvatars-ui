@@ -1,8 +1,9 @@
 
 <template lang="pug">
 .centered.bg-black
+  //- div {{ designer.selectedMeta }}
   .relative-position.q-ma-sm
-    q-img(:src="frameUrl").absolute-center.z-top
+    q-img(:src="frameUrl" v-if="!designer.selectedMeta.background.name.includes('Ghost')").absolute-center.z-top
     v-stage(ref="stage" :config="stageConfig")
       v-layer
         v-image(ref="background" :config="body.background")
@@ -35,7 +36,7 @@ async function animateImage(node: Konva.Node, reverse = false) {
 async function animateSlot(part:SelectedMetaData, image:any, vue:any) {
   vue.$nextTick(async() => {
     const torsoImg = (vue.$refs[part.part.type] as any).getNode() as Konva.Node
-    animateImage(torsoImg, true)
+    await animateImage(torsoImg, true)
     await sleep(200)
     image.src = part.rawPath
   })
@@ -69,13 +70,13 @@ export default defineComponent({
     newPartSelected: {
       immediate: true,
       deep: true,
-      handler(newVal:Record<Elements, number>, oldVal:Record<Elements, number>|null) {
+      async handler(newVal:Record<Elements, number>, oldVal:Record<Elements, number>|null) {
         for (const [type, templateId] of Object.entries(newVal)) {
           if (oldVal && oldVal[type] === templateId) continue
-          console.log('rendering', type, templateId)
+          // console.log('rendering', type, templateId)
           const selectedMeta = this.designer.selectedMeta[type]
-          this.drawImage(this.designer.selectedMeta[type])
-          this.drawFrame()
+          await this.drawImage(this.designer.selectedMeta[type])
+          await this.drawFrame()
           // const findPartData = this.designer.parts.find(el => el.template_id === templateId && el.type === name)
           // if (!findPartData) {
           //   console.error('cant find part data in json', name, templateId)
@@ -91,19 +92,15 @@ export default defineComponent({
       const image = new window.Image()
       const frameUrl = `/frames/avatar_frame_${this.designer.rarity}.png`
       image.src = frameUrl
-      this.$nextTick(() => {
+      void this.$nextTick(() => {
         const refs = this.$refs as any
-        console.log(refs)
+        // console.log(refs)
         const stage: Stage = refs.stage.getStage()
         // image.height = stage.height()
         // image.width = stage.width()
         this.frameConfig.width = stage.width()
         this.frameConfig.height = stage.height()
       })
-
-      image.onload = () => {
-        console.log('frame img loaded')
-      }
     },
     async drawImage(part:SelectedMetaData) {
       // console.log('drawData', part)
@@ -117,7 +114,7 @@ export default defineComponent({
       // await sleep(200)
       image.onload = async() => {
         const torsoImg = (this.$refs[part.part.type] as any).getNode() as Konva.Node
-        animateImage(torsoImg, false)
+        void animateImage(torsoImg, false)
         // set image only when it is loaded
         this.body[t].image = image
         this.body[t].x = part.offset.x * this.scale - (part.offset.width * this.scale) / 2

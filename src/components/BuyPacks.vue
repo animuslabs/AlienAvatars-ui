@@ -11,7 +11,7 @@ div
           h5 Common Packs
         .col-grow
         .col-auto
-          q-btn( v-if="contract.config" label="atomic hub" color="cyan-6" icon="link" type="a" target="_blank" :href="atomicHubSchemaMarket(contract.config.pack_schema.toString())")
+          q-btn( v-if="contract.config" label="atomic hub" icon="link" type="a" target="_blank" :href="atomicHubSchemaMarket(contract.config.pack_schema.toString())")
       q-separator(color="secondary").q-mb-sm
       .row
         p Rarity distribution is the same among all common packs but the price per card is lower for larger packs. Finding rare parts in common packs is not likely.
@@ -78,7 +78,7 @@ export default defineComponent({
   async mounted() {
     balanceInterval = setInterval(this.updateAll, 10000)
     await this.contract.getPacks()
-    this.updateAll()
+    void this.updateAll()
     // console.log(this.$route.query)
     if (this.$route.query.buyingPack) {
       console.log()
@@ -104,11 +104,11 @@ export default defineComponent({
     },
     async updateAll() {
       console.log('updateAll')
-      this.upddateStats()
-      this.updateBalance()
+      void this.updateStats()
+      void this.updateBalance()
     },
-    async upddateStats() {
-      this.atomic.getManyTemplateStats(this.contract.packs[this.global.currentEdition].map(el => el.template_id.toNumber()))
+    async updateStats() {
+      await this.atomic.getManyTemplateStats(this.contract.packs[this.global.currentEdition].map(el => el.template_id.toNumber()))
     },
     async updateBalance() {
       const payment = this.contract.config?.payment_token || ExtendedSymbol.from({ contract: 'boidcomtoken', sym: '4,BOID' })

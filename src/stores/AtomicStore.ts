@@ -255,64 +255,44 @@ export const atomicState = defineStore({
         }
       }
     },
-    async getAccountAssets(accountName?:string):Promise<void> {
-      return new Promise((resolve, reject) => {
-        console.log('get account assets')
-        try {
-          const collectionName = contractState().currentConfig.collection_name.toString()
-          if (!accountName) {
-            const loggedInUser = useUser().loggedIn.account
-            if (!loggedInUser) return
-            accountName = loggedInUser
-          }
-          this.accountAssetsLoaded = accountName
-          // this.clearAccountAssets()
-          const emitter = streamFullTable({ tableName: 'assets', contract: 'atomicassets', scope: accountName })
-          const newAssets:AssetRow[] = []
+    async getAccountAssets(accountName: string | null = useUser().loggedIn.account): Promise<void> {
+      if (!accountName) return
+      this.accountAssetsLoaded = accountName
+      const rows = await getFullTable<AssetRow>({ tableName: 'assets', contract: 'atomicassets', scope: accountName })
+      const newAssets: AssetRow[] = []
+      await this.clearAccountAssets()
+      for (const row of rows) {
+        if (parseInt(row.template_id) < 1) return
+        if (!this.shouldLoadRow(row)) continue
+        // if (!this.accountAssetCollections.includes(row.collection_name)) return
 
-          emitter.on('rows', async(rows: AssetRow[]) => {
-            for (const row of rows) {
-              if (parseInt(row.template_id) < 1) return
-              if (!this.shouldLoadRow(row)) continue
-              // if (!this.accountAssetCollections.includes(row.collection_name)) return
+        // if (row.collection_name === 'alien.worlds' && row.schema_name !== 'tool.worlds') return
+        const templateId = parseInt(row.template_id)
+        await this.loadTemplate(templateId, Name.from(row.collection_name))
+        newAssets.push(row)
+        const templateExists = this.accountAssets[templateId]
+        if (templateExists && templateExists.some(el => el === row.asset_id)) return
+        // @ts-ignore
+        if (templateExists) this.accountAssets[templateId].push(row.asset_id)
+        else this.accountAssets[templateId] = [row.asset_id]
+      }
 
-              // if (row.collection_name === 'alien.worlds' && row.schema_name !== 'tool.worlds') return
-              const templateId = parseInt(row.template_id)
-              await this.loadTemplate(templateId, Name.from(row.collection_name))
-              newAssets.push(row)
-              const templateExists = this.accountAssets[templateId]
-              if (templateExists && templateExists.some(el => el === row.asset_id)) return
-              // @ts-ignore
-              if (templateExists) this.accountAssets[templateId].push(row.asset_id)
-              else this.accountAssets[templateId] = [row.asset_id]
-            }
-          })
-          emitter.on('finished', () => {
-            console.log('finished loading account assets')
+      console.log('finished loading account assets')
 
-            emitter.removeAllListeners()
-            const templates = Object.keys(this.accountAssets)
-            for (const template of templates) {
-              // remove duplicates
-              this.accountAssets[template] = reactive([...new Set(this.accountAssets[template])])
-              if (!(this.accountAssets[template] instanceof Array)) continue
-              const assets:string[] = this.accountAssets[template]
-              // delete any assets from the store that were not found in this stream
-              assets.forEach((el:string, i:number) => {
-                const keep = newAssets.some((el2) => el2.asset_id === el)
-                if (!keep) assets.splice(i, 1)
-              })
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-              if (this.accountAssets[template].length === 0) delete this.accountAssets[template]
-            }
-            resolve()
-          })
-        } catch (error) {
-          console.error(error)
-          reject()
-          // setTimeout(() => this.getAccountAssets(accountName), 5000)
-        }
-      })
+      const templates = Object.keys(this.accountAssets)
+      for (const template of templates) {
+        // remove duplicates
+        this.accountAssets[template] = reactive([...new Set(this.accountAssets[template])])
+        if (!(this.accountAssets[template] instanceof Array)) continue
+        const assets:string[] = this.accountAssets[template]
+        // delete any assets from the store that were not found in this stream
+        assets.forEach((el:string, i:number) => {
+          const keep = newAssets.some((el2) => el2.asset_id === el)
+          if (!keep) assets.splice(i, 1)
+        })
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        if (this.accountAssets[template].length === 0) delete this.accountAssets[template]
+      }
     },
     shouldLoadRow(row: AssetRow) {
       // console.log('should load row?', row)

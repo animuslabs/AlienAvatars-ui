@@ -1,7 +1,7 @@
 {
   "name": "alienavatars-ui",
   "version": "0.0.1",
-  "description": "A Quasar Project",
+  "description": "A customizable NFT PFP project exclusive to the Alien Worlds community.",
   "productName": "Alien Avatars",
   "author": "jdheeter <johndheeter@gmail.com>",
   "private": true,

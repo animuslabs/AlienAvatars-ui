@@ -1,5 +1,5 @@
 <template lang="pug">
-q-page
+q-page.bg-primary
   //- q-separator(size="3px" color="grey-10")
   .row.items-center.justify-center.q-mb-md.bg-primary
     q-tabs(v-bind="tabs" v-model="currentTab")

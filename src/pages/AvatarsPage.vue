@@ -1,11 +1,10 @@
 <template lang="pug">
-q-layout
-  q-separator(size="3px" color="grey-10")
-  div {{ atomic.ownedAwToolsByRarity }}
+q-layout.bg-primary
+  q-separator(size="2px" color="grey-10")
+  //- div {{ atomic.ownedAwToolsByRarity }}
   q-tabs(v-bind="tabs")
     q-route-tab(label="browse" :to="{name:'browseAvatars'}")
     q-route-tab(label="inventory" :to="{name:'avatarInventory',params:{accountName:user.loggedIn.account||'eosio'}}")
-
   router-view
 </template>
 
@@ -36,9 +35,9 @@ export default defineComponent({
     // this.getData()
   },
   methods: {
-    getData() {
-      this.contract.getEditions()
-      this.contract.getAvatars()
+    async getData() {
+      // await this.contract.getEditions()
+      await this.contract.getAvatars()
       // this.atomic.getAllTemplates()
       // this.atomic.getAccountAssets()
     }

@@ -58,7 +58,7 @@ function getData(ipfsIndex:number, cid:string) {
 }
 
 export default (cid = '', retry = false):string => {
-  if (defaultIndex < 0) pingGateways()
+  if (defaultIndex < 0) void pingGateways()
   // console.log(defaultIndex)
   console.log()
   if (retry) {

@@ -29,7 +29,7 @@ export const networks:NetworkConfig[] = [
   {
     name: 'waxtestnet',
     chainId: 'f16b1833c747c43682f4386fca9cbb327929334a762755ebec17f6f23c9b8a12',
-    nodeUrl: 'https://testnet.wax.pink.gg',
+    nodeUrl: 'https://waxtestnet.greymass.com',
     logo: 'https://bloks.io/img/chains/wax.png',
     contracts: { avatarmk: Name.from('alienavatars') },
     atomicMarket: 'https://wax-test.atomichub.io',

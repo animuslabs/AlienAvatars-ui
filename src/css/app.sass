@@ -1,6 +1,6 @@
 // app global css in Sass form
 body
-  background-color: primary
+  background-color: $primary
 p
   font-size: 16px
   margin-bottom: 0px
@@ -18,8 +18,9 @@ h4
 h5
   margin-top: 0px
   margin-bottom: 0px
-  font-family: 'Questrial'
+  font-family: 'Orbitron'
   font-size: 21px
+  letter-spacing: 3px
 h6
   margin: 0px
   margin-top: 5px
@@ -53,12 +54,29 @@ h6
 @font-face
   font-family: Questrial
   src: url(./fonts/Questrial-Regular.ttf)
+@font-face
+  font-family: Orbitron
+  src: url(./fonts/orbitron.ttf)
 
 .font-Questrial
   font-family: 'Questrial'
 
 body.body--dark
-  background: #3E426D
+  background: $primary
 
 .boiddarkbg
   background: #223055
+
+.titleBar
+  background-color: #0786ad
+  opacity: .2
+  background-size: 10px 10px
+  background-image: repeating-linear-gradient(45deg, #8dc7d9 0, #8dc7d9 1px, #0786ad 0, #0786ad 50%)
+.actionBar
+  background-color: black
+  opacity: .1
+  background-size: 10px 10px
+  background-image: repeating-linear-gradient(45deg, #8dc7d9 0, #8dc7d9 1px, #0786ad 0, #0786ad 50%)
+
+.q-table--dark .q-table__bottom, .q-table--dark thead, .q-table--dark tr, .q-table--dark th, .q-table--dark td
+  border-color: $cyan

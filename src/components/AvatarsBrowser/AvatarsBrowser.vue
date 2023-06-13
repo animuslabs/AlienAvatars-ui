@@ -1,6 +1,6 @@
 
 <template lang="pug">
-.full-height
+.full-height.bg-primary
   .relative-position(style="display: flex; flex-direction:column;" )
     .centered.relative-position(style="height:10px;")
       filter-options(v-model="browser.filter" style="max-width:950px; z-index: 100;").q-pt-lg.absolute
@@ -8,7 +8,7 @@
     q-scroll-area(style="height:90vh; overflow: auto;").q-ma-sm.q-pl-sm.q-mt-xl
       .gt-xs.full-width(style="height:100px")
       .lt-sm.full-width(style="height:160px")
-      .centered
+      .centered.q-gutter-md
         .col-auto(v-for="(avatar,name) in browser.visibleAvatars")
           avatar-row( :avatar="avatar" :key="avatar.meta.name" @minted="getData()" ).q-ma-md
       .full-width(style="height:50px")
@@ -52,6 +52,7 @@ export default defineComponent({
   created() {
     // this.getData()
     this.browser.filter.creatorName = null
+    if(this.$q.platform.is.mobile) this.browser.filter.showDetails = false
   },
   methods: {
     async getData() {
@@ -65,8 +66,8 @@ export default defineComponent({
   },
   watch: {
     'browser.visibleAvatars'() {
-      console.log('update templateStats')
-      void this.atomic.getManyTemplateStats(Object.keys(this.browser.visibleAvatars).map(el => parseInt(el)))
+      // console.log('update templateStats')
+      // void this.atomic.getManyTemplateStats(Object.keys(this.browser.visibleAvatars).map(el => parseInt(el)))
     }
   }
 

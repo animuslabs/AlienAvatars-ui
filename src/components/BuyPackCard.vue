@@ -7,7 +7,7 @@
             q-img(v-if="!statsOnly" :src="imgUrl" style="width:170px;" noSpinner).q-ma-md.q-ml-lg
         .col-auto.q-ma-md.q-mr-lg
           .row.justify-center
-            h6(style="text-transform: capitalize;") {{ pack.pack_name.toString() }}
+            h5(style="text-transform: capitalize;") {{ pack.pack_name.toString() }}
           q-separator(color="primary")
           div(style="height:100%; overflow: auto;").q-ma-sm.q-pl-sm
             p Contains Cards:
@@ -19,7 +19,7 @@
             p Minted:
             h6.no-margin {{ availableString }}
       .row.justify-center.bg-secondary
-        q-btn( v-if="!statsOnly" :label="buyLabel" @click="purchase()"  :disable="disableBuy").full-width
+        q-btn( v-if="!statsOnly" :label="buyLabel" @click="purchase()"  :disable="disableBuy" icon="payments").full-width.bg-accent.text-secondary
         q-tooltip(v-if="!user.loggedIn.account")
           h6 Login required
 

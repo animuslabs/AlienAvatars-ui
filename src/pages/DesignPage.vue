@@ -36,8 +36,9 @@ q-page.bg-primary.relative-position.full-height
             stage-details.gt-sm
       q-separator(vertical color="secondary" size="3px").gt-sm
       .lt-md(style="height:30px; width:100%")
-      q-separator
+
       .col(style="min-width:300px; height:100%; overflow: hidden;")
+        q-separator(size="3px" color="grey-10")
         div(v-if="!designer.createTemplateMode")
           parts-browser
         div(v-else)
@@ -55,25 +56,24 @@ q-page.bg-primary.relative-position.full-height
 </style>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { mapState, mapActions } from 'pinia'
 import { designerState } from 'src/stores/DesignerStore'
+import { defineComponent } from 'vue'
 
+import { Asset } from 'anchor-link'
+import ActionButton from 'components/AvatarDesigner/ActionButton.vue'
 import stage from 'components/AvatarDesigner/DesignStage.vue'
 import FavoritesManager from 'components/AvatarDesigner/FavoritesManager.vue'
-import ActionButton from 'components/AvatarDesigner/ActionButton.vue'
-import StageDetails from 'src/components/AvatarDesigner/StageDetails.vue'
-import { contractState } from 'src/stores/ContractStore'
-import { atomicState } from 'src/stores/AtomicStore'
 import PartsBrowser from 'components/AvatarDesigner/PartsBrowser.vue'
-import { useUser } from 'src/stores/UserStore'
-import PreviewCard from 'src/components/AvatarDesigner/PreviewCard.vue'
-import { globalState } from 'src/stores/GlobaleStore'
-import * as transact from 'src/lib/transact'
-import { Asset } from 'anchor-link'
-import CreateTemplate from 'src/components/CreateTemplate.vue'
-import { getRarityName } from 'src/lib/utils'
 import { Dialog } from 'quasar'
+import PreviewCard from 'src/components/AvatarDesigner/PreviewCard.vue'
+import StageDetails from 'src/components/AvatarDesigner/StageDetails.vue'
+import CreateTemplate from 'src/components/CreateTemplate.vue'
+import * as transact from 'src/lib/transact'
+import { getRarityName } from 'src/lib/utils'
+import { atomicState } from 'src/stores/AtomicStore'
+import { contractState } from 'src/stores/ContractStore'
+import { globalState } from 'src/stores/GlobaleStore'
+import { useUser } from 'src/stores/UserStore'
 const randCache = <Record<string, number[]>>{}
 function getRand(min, max) {
   return Math.random() * (max - min) + min
@@ -112,8 +112,7 @@ export default defineComponent({
     // await this.atomic.getAllParts()
     // await this.atomic.getAllTemplates()
     // await this.atomic.getAccountAssets()
-    // this.selectRandomAvater()
-    // console.log(this.getSelectedParts)
+
   },
   methods: {
     async showModal() {
@@ -146,10 +145,10 @@ export default defineComponent({
   watch: {
     'user.loggedIn.account': {
       handler(val) {
-        if (val) this.atomic.getAccountAssets(val)
-        else this.atomic.clearAccountAssets()
+        if (val) void this.atomic.getAccountAssets(val)
+        else void this.atomic.clearAccountAssets()
       },
-      immediate: true
+      immediate: false
     }
   }
 })

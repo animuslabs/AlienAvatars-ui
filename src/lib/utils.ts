@@ -37,8 +37,10 @@ export function getCollection() {
 
 export function showRarityAlert(rarityNeeded:Rarities) {
   Dialog.create({
-    title: 'Not holding AW Tool NFT'
-
+    title: `Not holding ${rarityNeeded} Alien Worlds Tool NFT`,
+    message: `You can't mint an Avatar Template of ${rarityNeeded} rarity
+        because you are not holding an Alien Worlds tool NFT of ${rarityNeeded} rarity.
+        Add a ${rarityNeeded} AW tool NFT to your account inventory and try again.`
   })
 }
 
@@ -79,26 +81,16 @@ export function getRarityName(rarNum:number):Rarities {
     return 'Mythical'
   }
 }
-
-export function calcMintPrice(
-  basePrice:Asset,
-  lastModified:Date,
-  rarity:number,
-  floorMintPrice:Asset
-):Asset {
-  console.log('basePrice', basePrice)
-  console.log('lastModified', lastModified)
-  console.log('rarity', rarity)
-  console.log('floorMintPrice', floorMintPrice)
-  const now = Math.floor(Date.now() / 1000)
-  const modified_sec = Date.parse(lastModified.toString()) / 1000
-  if (now < modified_sec) throw new Error("avatar modified date can't be in the future")
-  const days_passed = Math.floor((now - modified_sec) / 86400) // days since last modification
-  const pv = basePrice.value
-  const r = 0.01 * (5 / rarity)
-  const decay_step = days_passed <= 7 ? 0 : days_passed - 7
-  const p = pv * Math.pow(1 - r, decay_step)
-  return Asset.from(Math.max(p, floorMintPrice.value), basePrice.symbol)
+export function getRarityScore(rarity:Rarities):number {
+  if (rarity === 'Common') return 1
+  else if (rarity === 'Rare') return 2
+  else if (rarity === 'Epic') return 3
+  else if (rarity === 'Legendary') return 4
+  else if (rarity === 'Mythical') return 5
+  else {
+    // console.error('invalid rarity number: ' + rarNum)
+    return 5
+  }
 }
 
 export async function downloadImage(imageSrc:string, name:string) {
@@ -135,4 +127,28 @@ export function avatarRarity(rarities:number[]):number {
   const totalRarities = rarities.reduce((sum, rarity) => sum + rarity, 0)
   const averageRarity = totalRarities / rarities.length
   return Math.floor(averageRarity)
+}
+
+export function templateMaxMint(rarityScore: number) {
+  return Math.floor(5 * Math.pow(6 - rarityScore, 1))
+}
+
+export function templateBasePrice(edition_floor_mint:Asset, rarityScore:number):Asset {
+  return Asset.from(edition_floor_mint.value * Math.pow(rarityScore, 2), contractState().currentConfig.payment_token.sym)
+}
+
+export function printAsset(asset: Asset): string {
+  const assetString = asset.toString()
+  const parts = assetString.split(' ')
+  const amountString = parts[0]
+  if (!amountString) return assetString
+  const amount = parseFloat(amountString)
+  const currency = parts[1]
+
+  const formattedAmount = amount.toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 4
+  })
+
+  return `${formattedAmount} ${currency}`
 }

@@ -52,11 +52,12 @@ import { avatarBrowserState, AvatarBrowserType, BrowserFilterParams } from 'src/
 import AvatarRow from 'src/components/AvatarsBrowser/AvatarRow.vue'
 import { Avatars } from 'src/types/avatarContractTypes'
 import { globalState } from 'src/stores/GlobaleStore'
-import { calcMintPrice, sleep } from 'src/lib/utils'
+import { sleep } from 'src/lib/utils'
 import { Asset, ExtendedAsset, Name } from 'anchor-link'
 import { useUser } from 'src/stores/UserStore'
 import { activeNetwork } from 'src/lib/config'
 import * as transact from 'src/lib/transact'
+import { calculateMintPrice } from 'src/lib/pricing'
 const tabs: QTabsProps = {
   activeBgColor: 'secondary',
   activeColor: 'primary',
@@ -76,7 +77,7 @@ export default defineComponent({
   data() {
     return {
       targetAccount: this.$route.params.accountName as string || ' ',
-      loading: true
+      loading: false
     }
   },
   async created() {
@@ -86,7 +87,7 @@ export default defineComponent({
     // this.getData()
 
     this.browser.filter.showDetails = true
-    await sleep(500)
+    await sleep(1500)
     void this.atomic.getAccountAssets(this.$route.params.accountName as string)
   },
   computed: {
@@ -110,13 +111,13 @@ export default defineComponent({
       if (!edition) return []
       for (const row of this.contract.avatars[globalState().currentEdition]) {
         const templateId = row.template_id.toNumber()
-        const templateData = atomicState().templateData[templateId]
+        const templateData = this.atomic.templateData[templateId]
         if (!templateData) continue
         const meta = templateData.immutableData as AvatarMeta
-        const stats = atomicState().templateStats[templateId] || { burned: 0, issued: 0 }
-        const price = calcMintPrice(row.base_price, row.modified.toDate(), row.rarity.toNumber(), edition.avatar_floor_mint_price)
+        const stats = this.atomic.templateStats[templateId] || { burned: 0, issued: 0 }
+        const price = calculateMintPrice(row, edition.avatar_floor_mint_price)
         if (!price) continue
-        avatarsRecord[row.avatar_name.toString()] = { meta, row, stats, price }
+        avatarsRecord[row.avatar_name.toString()] = { meta, row, stats, price: price.price.mint_price }
       }
       const list:AvatarBrowserType[] = Object.values(avatarsRecord)
       return list
