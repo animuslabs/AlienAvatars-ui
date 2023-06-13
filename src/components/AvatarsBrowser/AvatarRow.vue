@@ -2,7 +2,7 @@
 .centered.full-width(style="max-width:80vw")
   q-card(:style="rowStyle").bg-grey-10.relative-position
     .absolute-right.z-top(v-if="!browser.filter.showDetails" style="right:0px; height:0px;" )
-      q-btn(icon="info" @click="showDetails = !showDetails")
+      q-btn(:icon="showDetails?'chevron_left':'chevron_right'" @click="showDetails = !showDetails").text-secondary.bg-accent
     .q-pa-sm.bg-secondary.relative-position
       .row.q-pr-sm.full-width
         .row.items-center.q-gutter-md.full-width
@@ -21,13 +21,14 @@
               p Designer:
             .row.no-wrap
               h4.no-margin {{ avatar.row.creator }}
+          .row(style="width:40px;" v-if="showDetails")
       .titleBar.absolute-top(style="height:100%; width:100%;")
 
     .row.q-mt-md
-      .col.q-pl-md.q-pr-md(style="min-width:200px; width:300px;")
+      .col.q-pl-md.q-pr-md(style="min-width:200px; width:400px;")
         .centered.full-width
           q-img(:src="imgUrl2" @click="showMaximized()").cursor-pointer
-      .col-auto(v-if="showDetails")
+      .col(v-if="showDetails" style="min-width:200px;")
         .q-pa-sm
           h5.text-center Traits
           q-separator(color="secondary")
@@ -38,8 +39,8 @@
               .row(style="min-width:185px;")
                 a(:href="atomicHubTemplate(partsMeta[element].templateId)" target="_blank").text-grey-4
                   h6.text-capitalize {{ avatar.meta[element] }}
-      .col-auto.relative-position(v-if="showDetails")
-        .q-pa-sm.q-ml-lg
+      .col.relative-position(v-if="showDetails" style="min-width:250px;")
+        .q-pa-sm.q-ml-lg.q-mr-lg
           div(v-if="showDetails" style="min-width:200px;")
             h5.text-center Mint
             q-separator(color="secondary")

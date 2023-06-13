@@ -38,7 +38,7 @@ const tabs: QTabsProps = {
   stretch: true,
   contentClass: 'boid-tabs'
 }
-
+let interval:any
 export default defineComponent({
   components: { part, filterOptions, urlButton, AvatarRow },
   setup() {
@@ -50,6 +50,13 @@ export default defineComponent({
     }
   },
   created() {
+    // alert('loaded')
+    // this.$q.loading.show()
+    setTimeout(() => {
+      void this.atomic.getManyTemplateStats(Object.keys(this.browser.visibleAvatars).map(el => parseInt(el)))
+      this.$q.loading.hide()
+    },3000)
+    interval = setInterval(this.getData,10000)
     // this.getData()
     this.browser.filter.creatorName = null
     if(this.$q.platform.is.mobile) this.browser.filter.showDetails = false

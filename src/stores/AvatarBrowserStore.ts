@@ -1,6 +1,7 @@
 import { Asset } from 'anchor-link'
 import { defineStore } from 'pinia'
 import { calculateMintPrice } from 'src/lib/pricing'
+import { deepClone } from 'src/lib/utils'
 import { atomicState, AvatarMeta, TemplateData, TemplateStats } from 'src/stores/AtomicStore'
 import { contractState } from 'src/stores/ContractStore'
 import { globalState } from 'src/stores/GlobaleStore'
@@ -10,7 +11,7 @@ export class BrowserFilterParams {
   ownedOnly = false
   sortMethod = ''
   sortDescending = false
-  showDetails = true
+  showDetails = false
   searchName: null |string = null
   showRarities: number[] = [1, 2, 3, 4, 5]
   sortByRarity = true
@@ -67,6 +68,7 @@ export const avatarBrowserState = defineStore('avatarBrowser', {
         console.log(search)
         list = list.filter(el => el.row.creator.toString() === search)
       }
+
       return list
     },
     ownedAvatars():AvatarBrowserType[] {

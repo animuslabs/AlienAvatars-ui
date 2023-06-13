@@ -78,6 +78,10 @@ module.exports = configure(function (/* ctx */) {
         ripple: false,
         loading: {
           delay: 400
+        },
+        loadingBar: {
+          color: '$accent',
+          position: 'center'
         }
       },
       // Quasar plugins

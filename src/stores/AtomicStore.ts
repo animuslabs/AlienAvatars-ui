@@ -147,7 +147,8 @@ export const atomicState = defineStore({
     const collection = contractState().currentConfig.collection_name.toString()
     const data = {
       templateData: useLocalStorage('templateData', shallowReactive({})),
-      accountAssets: useLocalStorage('accountAssets', {}),
+      // accountAssets: useLocalStorage('accountAssets', {}),
+      accountAssets:{},
       schemas: useLocalStorage('schemas', shallowReactive({})),
       templateIssued: {},
       initialized: useLocalStorage('initialized', false),

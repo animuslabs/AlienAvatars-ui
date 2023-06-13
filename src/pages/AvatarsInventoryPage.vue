@@ -81,14 +81,17 @@ export default defineComponent({
     }
   },
   async created() {
+    this.$q.loading.show()
     this.atomic.accountAssets = reactive({})
     this.browser.$patch({ filter: new BrowserFilterParams() })
     this.browser.filter.creatorName = this.targetAccount
-    // this.getData()
 
     this.browser.filter.showDetails = true
     await sleep(1500)
-    void this.atomic.getAccountAssets(this.$route.params.accountName as string)
+    await this.atomic.getAccountAssets(this.$route.params.accountName as string)
+    await this.getData()
+    this.$q.loading.hide()
+
   },
   computed: {
     atomicInventory():string {
