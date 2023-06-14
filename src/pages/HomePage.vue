@@ -1,7 +1,7 @@
 <template lang="pug">
 q-page.bg-primary
   .centered.q-pt-lg
-    q-img(src="/aaBanner.webp" style="width:800px; max-width:auto; border:2px solid #0786ad;").q-ma-md
+    q-img(src="/aaBanner.webp" style="width:800px; max-width:auto;").q-ma-md
   .centered.relative-position.full-width
     a.centered.q-pa-md.q-ma-md.items-center.teaserbg.cursor-pointer.non-selectable(style="width:800px; max-width:auto; height:80px" href="https://www.youtube.com/watch?v=oKi9BjQaXNY" target="_blank").text-white
     .centered.absolute-center.items-center.no-pointer-events
