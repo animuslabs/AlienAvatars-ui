@@ -83,7 +83,7 @@ export default defineComponent({
     startMinting() {
       console.log('minting')
       const toolAvailable = this.atomic.ownedAwToolsByRarity[this.designer.rarity][0]
-      // if (!toolAvailable) return this.triggerToolWarning()
+      if (!toolAvailable) return this.triggerToolWarning()
       this.$emit('minting')
     },
     async fetchAvatars() {

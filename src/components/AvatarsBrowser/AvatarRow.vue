@@ -1,5 +1,5 @@
 <template lang="pug">
-.centered.full-width(style="max-width:80vw")
+.centered.full-width(style="max-width:80vw; zoom:75%;")
   q-card(:style="rowStyle").bg-grey-10.relative-position
     .absolute-right.z-top(v-if="!browser.filter.showDetails" style="right:0px; height:0px;" )
       q-btn(:icon="showDetails?'chevron_left':'chevron_right'" @click="showDetails = !showDetails").text-secondary.bg-accent
@@ -27,8 +27,8 @@
     .row.q-mt-md
       .col.q-pl-md.q-pr-md(style="min-width:200px; width:400px;")
         .centered.full-width
-          q-img(:src="imgUrl2" @click="showMaximized()").cursor-pointer
-      .col(v-if="showDetails" style="min-width:200px;")
+          q-img(:src="imgUrl2" @click="showMaximized()" style="max-height:447px; max-width: 288px;").cursor-pointer
+      .col(v-if="showDetails && showExtras" style="min-width:200px;")
         .q-pa-sm
           h5.text-center Traits
           q-separator(color="secondary")
@@ -39,7 +39,7 @@
               .row(style="min-width:185px;")
                 a(:href="atomicHubTemplate(partsMeta[element].templateId)" target="_blank").text-grey-4
                   h6.text-capitalize {{ avatar.meta[element] }}
-      .col.relative-position(v-if="showDetails" style="min-width:250px;")
+      .col.relative-position(v-if="showDetails && showExtras" style="min-width:250px;")
         .q-pa-sm.q-ml-lg.q-mr-lg
           div(v-if="showDetails" style="min-width:200px;")
             h5.text-center Mint
@@ -74,7 +74,7 @@
               q-btn(label="template" :href="atomicTemplate" type="a" icon="link" target="_blank" size="md")
               //- q-separator(vertical spaced color="secondary")
             .col-auto
-                q-btn(label="market" :href="atomicMarket" type="a" icon="link" target="_blank" size="md")
+              q-btn(label="market" :href="atomicMarket" type="a" icon="link" target="_blank" size="md")
             //- q-separator(spaced color="secondary")
             .absolute(style="bottom:70px; left:25px;")
               //- q-separator(color="secondary").q-mt-md
@@ -132,7 +132,8 @@ export default defineComponent({
       showFull: false,
       show: true,
       image: '',
-      showDetails: false
+      showDetails: false,
+      showExtras: false
     }
   },
   emits: ['minted'],
@@ -150,18 +151,18 @@ export default defineComponent({
       return 'color:' + color + ';' + ' text-shadow: 1px 1px 8px #3A6BF1;'
     },
     rowStyle() {
-      return this.showDetails ? 'max-width:100%;' : 'max-width:330px;'
+      return (this.showDetails ? 'max-width:100%; ' : 'max-width:330px;') + ' transition: all 150ms ease-out;'
     },
     maxSupplyReached() {
       const maxMint = this.avatar.row.max_mint.toNumber()
       const nextMint = this.avatar.row.mint.toNumber() + 1
       return maxMint < nextMint
     },
-    atomicMarket():string {
+    atomicMarket(): string {
       const config = this.contract.config
       return `${activeNetwork().atomicMarket}/market?collection_name=${config?.collection_name.toString() || 'boidavatars'}&schema_name=${config?.avatar_schema.toString() || 'boidavatars'}&template_id=${this.avatar.row.template_id.toNumber()}`
     },
-    atomicTemplate():string {
+    atomicTemplate(): string {
       // https://wax-test.atomichub.io/explorer/template/boidavatars4/417184
       const config = this.contract.config
       return `${activeNetwork().atomicMarket}/explorer/template/${config?.collection_name.toString() || 'boidavatars'}/${this.avatar.row.template_id.toNumber()}`
@@ -171,7 +172,7 @@ export default defineComponent({
       if ((this.atomic.accountAssets[this.avatar.row.template_id.toNumber()]?.length > 0 || false) && this.user.loggedIn.account && this.atomic.accountAssetsLoaded === this.user.loggedIn.account) return true
       else return false
     },
-    rarityColor():string[] {
+    rarityColor(): string[] {
       const rarity = this.avatar.meta.rarityScore
       if (rarity === 1) return ['bg-grey-8']
       if (rarity === 2) return ['bg-green-8']
@@ -181,14 +182,14 @@ export default defineComponent({
       else return ['bg-grey-10']
       return []
     },
-    owned():number {
+    owned(): number {
       if (!this.user.loggedIn) return 0
       return this.atomic.accountAssets[this.avatar.row.template_id.toNumber()]?.length || 0
     },
-    mintButtonText():string {
+    mintButtonText(): string {
       return `mint ${this.avatar.row.avatar_name.toString()} #${this.avatar.row.mint.toNumber() + 1}`
     },
-    mintPrice():Asset {
+    mintPrice(): Asset {
       const row = this.avatar.row
       const edition = this.contract.editions[0]
       if (!edition) return Asset.from('0,TLM')
@@ -196,13 +197,13 @@ export default defineComponent({
       return result.price.mint_price
       // return calcMintPrice(row.base_price, row.modified.toDate(), row.rarity.toNumber(), edition.avatar_floor_mint_price)
     },
-    mintedString():string {
+    mintedString(): string {
       return this.avatar.row.mint.toString() + '/' + this.avatar.row.max_mint.toString()
     },
     // meta():TemplateData {
     //   return this.atomic.templateData[this.avatar.template_id.toNumber()]
     // },
-    partRarity():Record<Elements, number> {
+    partRarity(): Record<Elements, number> {
       const templates = Object.values(this.atomic.templateData).filter(el => el?.schemaName === this.contract.config?.parts_schema?.toString() || 'avatarparts').map(el => ({ meta: el?.immutableData as PartCardMeta, schemaName: el?.schemaName }))
       const parts = defaultPartsSet()
       Object.keys(parts).forEach((type) => {
@@ -210,12 +211,12 @@ export default defineComponent({
       })
       return parts
     },
-    partsMeta():Record<Elements, {meta:PartCardMeta, templateId:number}> {
+    partsMeta(): Record<Elements, { meta: PartCardMeta, templateId: number }> {
       const templates = Object.entries(this.atomic.templateData)
         .filter(([key, val]) => val?.schemaName === this.contract.config?.parts_schema?.toString() || 'avatarparts')
         .map(([key, val]) => ({ meta: val?.immutableData as PartCardMeta, templateId: parseInt(key) }))
       const parts = defaultPartsSet()
-      const data:Record<string, {meta:PartCardMeta, templateId:number}> = {}
+      const data: Record<string, { meta: PartCardMeta, templateId: number }> = {}
       Object.keys(parts)
         .forEach((type) => {
           data[type] = templates.find(el => el.meta.bodypart === type && el.meta.name === this.avatar.meta[type]) || { meta: new PartCardMeta(), templateId: 0 }
@@ -249,7 +250,7 @@ export default defineComponent({
 
       })
     },
-    async imgUrl():Promise<string> {
+    async imgUrl(): Promise<string> {
       return await ipfs(this.avatar.meta.img) as string
     },
     downloadImage,
@@ -260,8 +261,17 @@ export default defineComponent({
     }
   },
   watch: {
+    async 'showDetails'(val) {
+      if (val) {
+        this.showExtras = false
+        await sleep(200)
+        this.showExtras = true
+      } else {
+        this.showExtras = false
+      }
+    },
     'browser.filter.showDetails': {
-      handler(val) {
+      async handler(val) {
         this.showDetails = val
       },
       immediate: true
