@@ -2,6 +2,8 @@
 //- div {{atomic.partsByType['big-wings'].length}}
 //- q-btn(@click="atomic.getAllTemplates()" label="get all templates")
 router-view
+.image-container(@click="hideOverlay()" id="overlay").z-max
+  img.image-popup(id="zoomed-image")
 </template>
 
 <style lang="sass">
@@ -51,6 +53,16 @@ export default defineComponent({
     this.loading = false
   },
   methods: {
+    hideOverlay() {
+      var overlay = document.getElementById('overlay') as HTMLDivElement;
+      var imagePopup = document.querySelector('.image-popup') as HTMLElement;
+      var body = document.querySelector('body') as HTMLElement;
+
+      overlay.style.display = 'none'
+      imagePopup.style.display = 'none';
+      body.classList.remove('disable-scroll');
+
+    }
 
   },
   watch: {

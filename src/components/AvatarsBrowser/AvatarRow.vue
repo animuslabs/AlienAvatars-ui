@@ -27,7 +27,7 @@
     .row.q-mt-md
       .col.q-pl-md.q-pr-md(style="min-width:200px; width:400px;")
         .centered.full-width
-          q-img( no-transition v-if="showExtras" :src="imgUrl2" @click="showMaximized()" style="max-height:447px; max-width: 288px;").cursor-pointer
+          q-img( no-transition v-if="showExtras" :src="imgUrl2" @click="showMaximized($event)" style="max-height:447px; max-width: 288px;").cursor-pointer
       .col(v-if="showDetails && showExtras" style="min-width:200px;")
         .q-pa-sm
           h5.text-center Traits
@@ -93,6 +93,8 @@
       .centered.full-width.q-mt-sm(v-if="!showDetails").bg-accent
         q-btn(:label="mintButtonText" size="lg" @click="mintAvatar()" :disable="disableMint" color="accent" :flat="false" style=" bottom: 0px; background-color: black;").text-cyan-9
       .q-mt-sm
+  //- div(id="overlay" @click="hideImage()").z-max
+  //-   img(id="zoomed-image")
 
 </template>
 
@@ -229,27 +231,42 @@ export default defineComponent({
     }
   },
   methods: {
-    async showMaximized() {
-      Dialog.create({
-        maximized: false,
-        html: true,
-        message: `
-        <div class="centered q-pa-lg">
-          <div>
-          <div class="centered">
-            <img src="${await this.imgUrl()}" style="margin:0px; max-height:80vh; max-width:100%" >  </img>
-           </div>
+    async hideImage() {
+      var overlay = document.getElementById('overlay') as HTMLDivElement;
 
-          <div class="centered">
-            <h4 class="text-capitalize"> ${this.avatar.meta.rarity} ${this.avatar.row.avatar_name.toString()} </h4>
-          </div>
-          </div>
-        </div>
-        `,
-        class: 'bg-black no-outline',
-        style: 'width:95vw; margin:30px; height:90%; overflow:hidden'
+      overlay.style.display = 'none'
+    },
+    async showMaximized(image: HTMLImageElement) {
+      var overlay = document.getElementById('overlay') as HTMLDivElement;
+      var zoomedImage = document.getElementById('zoomed-image') as HTMLImageElement;
+      var body = document.querySelector('body') as HTMLElement;
+      var imagePopup = document.querySelector('.image-popup') as HTMLElement;
 
-      })
+      zoomedImage.src = this.imgUrl2; // eslint-disable-line @typescript-eslint/no-unsafe-member-access
+      overlay.style.display = 'block';
+      imagePopup.style.display = 'block';
+      body.classList.add('disable-scroll');
+
+      // Dialog.create({
+      //   maximized: false,
+      //   html: true,
+      //   message: `
+      //   <div class="centered q-pa-lg">
+      //     <div>
+      //     <div class="centered">
+      //       <img src="${await this.imgUrl()}" style="margin:0px; max-height:80vh; max-width:100%" >  </img>
+      //      </div>
+
+      //     <div class="centered">
+      //       <h4 class="text-capitalize"> ${this.avatar.meta.rarity} ${this.avatar.row.avatar_name.toString()} </h4>
+      //     </div>
+      //     </div>
+      //   </div>
+      //   `,
+      //   class: 'bg-black no-outline',
+      //   style: 'width:95vw; margin:30px; height:90%; overflow:hidden'
+
+      // })
     },
     async imgUrl(): Promise<string> {
       return await ipfs(this.avatar.meta.img) as string
@@ -285,7 +302,8 @@ export default defineComponent({
 </script>
 
 <style lang="sass" scoped>
-a
-  font-size: 20px
+/* a
+  font-size: 20px */
+
 
 </style>
