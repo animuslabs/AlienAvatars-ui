@@ -235,7 +235,7 @@ export default defineComponent({
         <div class="centered q-pa-lg">
           <div>
           <div class="centered">
-            <img src="${await this.imgUrl()}" style="margin:0px; max-height:70vh; max-width:80vw" >  </img>
+            <img src="${await this.imgUrl()}" style="margin:0px; max-height:80vh; max-width:100%" >  </img>
            </div>
 
           <div class="centered">
@@ -244,8 +244,9 @@ export default defineComponent({
           </div>
         </div>
         `,
-        class: 'bg-black',
-        style:'width:85vw; margin:30px; height:85vh;'
+        class: 'bg-black no-outline',
+        style: 'width:95vw; margin:30px; height:90%; overflow:hidden'
+
       })
     },
     async imgUrl():Promise<string> {
