@@ -19,6 +19,7 @@
     "anchor-link": "^3.5.1",
     "anchor-link-browser-transport": "^3.5.1",
     "atomicassets": "^1.5.1",
+    "eventemitter3": "^5.0.1",
     "konva": "^9.0.2",
     "pinia": "^2.1.3",
     "quasar": "^2.6.0",
