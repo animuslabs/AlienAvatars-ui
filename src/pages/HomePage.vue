@@ -2,7 +2,13 @@
 q-page.bg-primary
   .centered.q-pt-lg
     q-img(src="/aaBanner.webp" style="width:800px; max-width:auto; border:2px solid #0786ad;").q-ma-md
-
+  .centered.relative-position.full-width
+    a.centered.q-pa-md.q-ma-md.items-center.teaserbg.cursor-pointer.non-selectable(style="width:800px; max-width:auto; height:80px" href="https://www.youtube.com/watch?v=oKi9BjQaXNY" target="_blank").text-white
+    .centered.absolute-center.items-center.no-pointer-events
+      .col-auto(style="max-width:90vw")
+        h5 Watch the Special Transmission
+      .col-auto
+        q-icon(name="play_arrow" size="40px")
   .row.justify-center.q-pb-md
     q-card.col-auto.q-ma-md.bg-grey-10
       .row.items-center.justify-center.bg-secondary.relative-position.q-pa-sm
@@ -69,6 +75,20 @@ q-page.bg-primary
   .row.q-pb-xl
 
 </template>
+
+<style lang="sass" scoped>
+.teaserbg
+  background-color: red
+  background-image: url(/teaser.webp)
+  background-size: cover
+  filter: brightness(85%)
+
+  transition: all 1s ease
+
+.teaserbg:hover
+  filter: brightness(140%)
+  transition: all 1s ease
+</style>
 
 <script lang="ts">
 import { defineComponent, ref, reactive } from 'vue'

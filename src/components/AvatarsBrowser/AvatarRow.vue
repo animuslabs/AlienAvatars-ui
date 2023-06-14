@@ -85,7 +85,7 @@
                 h5(style="font-size: 15px;") {{printAsset(mintPrice)}}
             .centered.full-width.q-mt-lg
               q-btn.absolute.relative-position(:label="mintButtonText" size="lg" @click="mintAvatar()" no-wrap :disable="disableMint" color="accent" :flat="false" style=" width:250px; right:-2px; bottom: -2px; background-color: black;").text-cyan-9
-                .actionBar.absolute-top(style="height:100%; width:100%;")
+                //- .actionBar.absolute-top(style="height:100%; width:100%;")
               q-tooltip(v-if="!user.loggedIn.account")
       div(style="height:500px;")
       .centered.full-width(v-if="!showDetails")
@@ -235,7 +235,7 @@ export default defineComponent({
         <div class="centered q-pa-lg">
           <div>
           <div class="centered">
-            <img src="${await this.imgUrl()}" style="padding:10px; max-height:70vh; max-width:80vw" >  </img>
+            <img src="${await this.imgUrl()}" style="margin:0px; max-height:70vh; max-width:80vw" >  </img>
            </div>
 
           <div class="centered">
@@ -245,7 +245,7 @@ export default defineComponent({
         </div>
         `,
         class: 'bg-black',
-        style:'max-width: 90vw; width: height:75vh;'
+        style:'width:85vw; margin:30px; height:85vh;'
       })
     },
     async imgUrl():Promise<string> {

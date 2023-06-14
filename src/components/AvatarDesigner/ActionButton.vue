@@ -4,8 +4,6 @@
   q-spinner(v-if="loading" size="lg" color="white" key="loader")
   div(v-else)
     q-btn.pulse(size="xl" v-if="!existingTemplateData" :label="btnLabel" :disable="!isAllowedToCreateTemplate" key="create_template" @click="startMinting()" :loading="buttonsLoading" )
-      q-tooltip.bg-primary(anchor="top middle" self="top middle" :offset="[0, 35]" :delay="500")
-        | Unique Identifier: {{ getChecksum }}
     .centered(v-else)
       .col-auto
         .row

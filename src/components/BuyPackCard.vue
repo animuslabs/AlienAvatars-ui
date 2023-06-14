@@ -18,8 +18,8 @@
             h6.no-margin {{ cardPrice }}
             p Minted:
             h6.no-margin {{ availableString }}
-      .row.justify-center.bg-secondary
-        q-btn( v-if="!statsOnly" :label="buyLabel" @click="purchase()"  :disable="disableBuy" icon="payments").full-width.bg-accent.text-secondary
+      .row.justify-center.bg-accent
+        q-btn( v-if="!statsOnly" :label="buyLabel" @click="purchase()"  :disable="disableBuy" icon="payments").full-width.bg-accent.text-cyan-9
         q-tooltip(v-if="!user.loggedIn.account")
           h6 Login required
 
@@ -40,6 +40,7 @@ import { atomicState, PackMeta } from 'src/stores/AtomicStore'
 import { sleep } from 'src/lib/utils'
 import ms from 'ms'
 import ipfs from 'src/lib/ipfs'
+import { setTimeout } from 'timers'
 
 export default defineComponent({
   setup() {
@@ -52,7 +53,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.fetchMeta()
+    setTimeout(this.fetchMeta,3000)
   },
   computed: {
     soldOut():boolean {
@@ -106,7 +107,7 @@ export default defineComponent({
     },
     async fetchMeta() {
       if (!this.contract.config) return
-      this.atomic.loadTemplate(parseInt(this.pack.template_id.toString()))
+      void this.atomic.loadTemplate(parseInt(this.pack.template_id.toString()))
     }
   },
   props: {
@@ -123,8 +124,7 @@ export default defineComponent({
   watch: {
     'contract.config'() {
       console.log('get pack meta:', this.pack.pack_name.toString())
-
-      this.fetchMeta()
+      void this.fetchMeta()
     }
   }
 })

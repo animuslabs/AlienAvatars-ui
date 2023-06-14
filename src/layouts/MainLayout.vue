@@ -103,17 +103,17 @@ export default defineComponent({
           }
         }).onOk((val) => {
         this.selectedLogin = val
-        if (this.selectedLogin === 'anchor') link.login()
-        else if (this.selectedLogin === 'cloudWallet') this.cloudWallet.login()
+        if (this.selectedLogin === 'anchor') void link.login()
+        else if (this.selectedLogin === 'cloudWallet') void this.cloudWallet.login()
       })
     },
     logout() {
-      if (this.user.loginMethod === 'anchor') link.logout()
-      else if (this.user.loginMethod === 'cloudWallet') this.cloudWallet.logout()
+      if (this.user.loginMethod === 'anchor') void link.logout()
+      else if (this.user.loginMethod === 'cloudWallet') void this.cloudWallet.logout()
     },
     deleteSession(permissionlevel: PermissionLevelType, chainId: string) {
       console.log('delete session')
-      link.deleteSession(PermissionLevel.from(permissionlevel), ChainId.from(chainId))
+      void link.deleteSession(PermissionLevel.from(permissionlevel), ChainId.from(chainId))
     }
   },
   computed: {
