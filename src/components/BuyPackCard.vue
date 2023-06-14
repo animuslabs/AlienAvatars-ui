@@ -26,7 +26,6 @@
 </template>
 <script lang="ts">
 import { Action, AnyAction, Asset, Name } from 'anchor-link'
-import { atomicRpc } from 'src/lib/atomic'
 import { contractState } from 'src/stores/ContractStore'
 import { Buypack, Open, Packs } from 'src/types/avatarContractTypes'
 import { Transfer } from 'src/types/eosioTokenTypes'
@@ -40,7 +39,6 @@ import { atomicState, PackMeta } from 'src/stores/AtomicStore'
 import { sleep } from 'src/lib/utils'
 import ms from 'ms'
 import ipfs from 'src/lib/ipfs'
-import { setTimeout } from 'timers'
 
 export default defineComponent({
   setup() {

@@ -14,7 +14,6 @@ q-card.relative-position(style="display: flex; flex-direction:column;" )
 </template>
 <script lang="ts">
 import { Action, AnyAction, Asset, Name } from 'anchor-link'
-import { atomicRpc } from 'src/lib/atomic'
 import { contractState } from 'src/stores/ContractStore'
 import { Buypack, Open, Packs } from 'src/types/avatarContractTypes'
 import { Transfer } from 'src/types/eosioTokenTypes'
@@ -64,7 +63,7 @@ export default defineComponent({
       }
     },
     async fetchMeta() {
-      atomicState().loadTemplate(parseInt(this.pack.template_id.toString()))
+      await atomicState().loadTemplate(parseInt(this.pack.template_id.toString()))
     }
   },
   props: {

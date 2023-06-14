@@ -13,10 +13,7 @@ q-page
 import { defineComponent, ref, reactive, markRaw } from 'vue'
 import { link } from 'src/lib/linkManager'
 import { atomicState } from 'src/stores/AtomicStore'
-import { contractState } from 'src/stores/ContractStore'
-import { atomicRpc } from 'src/lib/atomic'
-import RpcTemplate from 'atomicassets/build/API/Rpc/Template'
-import router from 'src/router'
+
 import { useRoute, useRouter } from 'vue-router'
 import { designerState } from 'src/stores/DesignerStore'
 const sleep = (ms:number) => new Promise(res => setTimeout(res, ms))

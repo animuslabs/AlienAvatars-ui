@@ -6,10 +6,7 @@ import { getLogoForToken } from 'src/statics/tokens'
 import { designerState } from 'src/stores/DesignerStore'
 import { useUser } from 'src/stores/UserStore'
 import { Deposits } from '../types/avatarContractTypes'
-import { atomicRpc } from 'src/lib/atomic'
-import { getFullTable } from 'src/lib/eosio'
-import { AtomicAssetRow } from '../types/atomicAssetsTypes'
-import { networks } from 'src/lib/config'
+
 
 class InitState {
   account:NameType|null = null
