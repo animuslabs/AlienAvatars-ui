@@ -8,7 +8,7 @@
     q-scroll-area(style="height:90vh; overflow: auto;").q-ma-sm.q-pl-sm.q-mt-xl
       .gt-xs.full-width(style="height:100px")
       .lt-sm.full-width(style="height:160px")
-      .centered.q-gutter-md
+      .centered.q-gutter-lg
         .col-auto(v-for="(avatar,name) in browser.visibleAvatars")
           avatar-row( :avatar="avatar" :key="avatar.meta.name" @minted="getData()" ).q-ma-md.q-pb-xl
       .full-width(style="height:50px")
