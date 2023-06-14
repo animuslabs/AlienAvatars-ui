@@ -27,7 +27,7 @@
     .row.q-mt-md
       .col.q-pl-md.q-pr-md(style="min-width:200px; width:400px;")
         .centered.full-width
-          q-img(:src="imgUrl2" @click="showMaximized()" style="max-height:447px; max-width: 288px;").cursor-pointer
+          q-img( no-transition v-if="showExtras" :src="imgUrl2" @click="showMaximized()" style="max-height:447px; max-width: 288px;").cursor-pointer
       .col(v-if="showDetails && showExtras" style="min-width:200px;")
         .q-pa-sm
           h5.text-center Traits
@@ -87,12 +87,13 @@
               q-btn.absolute.relative-position(:label="mintButtonText" size="lg" @click="mintAvatar()" no-wrap :disable="disableMint" color="accent" :flat="false" style=" width:250px; right:-2px; bottom: -2px; background-color: black;").text-cyan-9
                 //- .actionBar.absolute-top(style="height:100%; width:100%;")
               q-tooltip(v-if="!user.loggedIn.account")
-      div(style="height:500px;")
+      .row(style="height:458px; width:1px;").bg-red
       .centered.full-width(v-if="!showDetails")
         h5 {{printAsset(mintPrice)}}
       .centered.full-width.q-mt-sm(v-if="!showDetails").bg-accent
         q-btn(:label="mintButtonText" size="lg" @click="mintAvatar()" :disable="disableMint" color="accent" :flat="false" style=" bottom: 0px; background-color: black;").text-cyan-9
       .q-mt-sm
+
 </template>
 
 <script lang="ts">
@@ -132,8 +133,8 @@ export default defineComponent({
       showFull: false,
       show: true,
       image: '',
-      showDetails: false,
-      showExtras: false
+      showDetails: true,
+      showExtras: true
     }
   },
   emits: ['minted'],
@@ -151,7 +152,7 @@ export default defineComponent({
       return 'color:' + color + ';' + ' text-shadow: 1px 1px 8px #3A6BF1;'
     },
     rowStyle() {
-      return (this.showDetails ? 'max-width:100%; ' : 'max-width:330px;') + ' transition: all 150ms ease-out;'
+      return (this.showDetails ? 'max-width:100%; width:897px;' : 'max-width:330px; ') + ' transition: all 80ms ease;' + ' max-height:591px;'
     },
     maxSupplyReached() {
       const maxMint = this.avatar.row.max_mint.toNumber()
@@ -262,13 +263,9 @@ export default defineComponent({
   },
   watch: {
     async 'showDetails'(val) {
-      if (val) {
-        this.showExtras = false
-        await sleep(200)
-        this.showExtras = true
-      } else {
-        this.showExtras = false
-      }
+      this.showExtras = false
+      await sleep(50)
+      this.showExtras = true
     },
     'browser.filter.showDetails': {
       async handler(val) {

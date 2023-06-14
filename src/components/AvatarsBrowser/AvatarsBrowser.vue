@@ -10,7 +10,7 @@
       .lt-sm.full-width(style="height:160px")
       .centered.q-gutter-md
         .col-auto(v-for="(avatar,name) in browser.visibleAvatars")
-          avatar-row( :avatar="avatar" :key="avatar.meta.name" @minted="getData()" ).q-ma-md
+          avatar-row( :avatar="avatar" :key="avatar.meta.name" @minted="getData()" ).q-ma-md.q-pb-xl
       .full-width(style="height:50px")
 
 </template>
@@ -38,7 +38,7 @@ const tabs: QTabsProps = {
   stretch: true,
   contentClass: 'boid-tabs'
 }
-let interval:any
+let interval: any
 export default defineComponent({
   components: { part, filterOptions, urlButton, AvatarRow },
   setup() {
@@ -55,11 +55,11 @@ export default defineComponent({
     setTimeout(() => {
       void this.atomic.getManyTemplateStats(Object.keys(this.browser.visibleAvatars).map(el => parseInt(el)))
       this.$q.loading.hide()
-    },3000)
-    interval = setInterval(this.getData,10000)
+    }, 3000)
+    interval = setInterval(this.getData, 10000)
     // this.getData()
     this.browser.filter.creatorName = null
-    if(this.$q.platform.is.mobile) this.browser.filter.showDetails = false
+    if (this.$q.platform.is.mobile) this.browser.filter.showDetails = false
   },
   methods: {
     async getData() {
