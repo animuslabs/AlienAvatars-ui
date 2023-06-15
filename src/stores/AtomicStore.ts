@@ -157,7 +157,8 @@ export const atomicState = defineStore({
       loadAllCollectionTemplates: [contractState().currentConfig.collection_name.toString()],
       primaryCollection: collection,
       accountAssetCollectionSchemas: {
-        'alien.worlds': ['tool.worlds']
+        // 'alien.worlds': ['tool.worlds'],
+        'alientestnft':['tool.worlds']
       }
     }
     data.accountAssetCollectionSchemas[collection] = ['avatarparts', 'alienavatar', 'partpacks']
@@ -184,14 +185,14 @@ export const atomicState = defineStore({
       for (const [templateId, templateData] of Object.entries(this.templateData)) {
         if (!templateData) continue
         const data = templateData.immutableData
-        if (templateData.collection !== 'alien.worlds') continue
+        // if (templateData.collection !== 'alien.worlds') continue
+        if (templateData.collection !== 'alientestnft') continue
         if (templateData.schemaName !== 'tool.worlds') continue
         if (!('rarity' in data)) continue
         if (!Object.keys(this.accountAssets).includes(templateId)) continue
-        // console.log(data.bodypart)
+        console.log(data)
         const meta = data as ToolMeta
-        const valid = contractState().allEditionTemplates.includes(parseInt(templateId))
-        if (valid) returnData[meta.rarity].push(parseInt(templateId))
+        returnData[meta.rarity].push(parseInt(templateId))
       }
       return returnData
     }
@@ -260,10 +261,14 @@ export const atomicState = defineStore({
       if (!accountName) return
       this.accountAssetsLoaded = accountName
       const rows = await getFullTable<AssetRow>({ tableName: 'assets', contract: 'atomicassets', scope: accountName })
+      // console.log('user asset rows',rows);
+
       const newAssets: AssetRow[] = []
       await this.clearAccountAssets()
       for (const row of rows) {
-        if (parseInt(row.template_id) < 1) return
+        // console.log(row);
+
+        if (parseInt(row.template_id) < 1) continue
         if (!this.shouldLoadRow(row)) continue
         // if (!this.accountAssetCollections.includes(row.collection_name)) return
 

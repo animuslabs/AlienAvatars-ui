@@ -2,7 +2,7 @@
 q-layout.bg-primary
   q-separator(size="2px" color="grey-10")
   //- div {{ atomic.ownedAwToolsByRarity }}
-  q-tabs(v-bind="tabs")
+  q-tabs(v-bind="tabs" @click="getData()")
     q-route-tab(label="browse" :to="{name:'browseAvatars'}")
     q-route-tab(label="inventory" :to="{name:'avatarInventory',params:{accountName:user.loggedIn.account||'eosio'}}")
   router-view
@@ -36,10 +36,21 @@ export default defineComponent({
   },
   methods: {
     async getData() {
+      console.log('getData called');
+
       // await this.contract.getEditions()
       await this.contract.getAvatars()
+      void this.atomic.getAccountAssets()
       // this.atomic.getAllTemplates()
       // this.atomic.getAccountAssets()
+    }
+  },
+  watch: {
+    'atomic.initialized': {
+      handler() {
+        void this.getData()
+      },
+      immediate: true
     }
   }
 })

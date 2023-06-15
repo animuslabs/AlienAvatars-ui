@@ -10,7 +10,7 @@
       .lt-sm.full-width(style="height:160px")
       .centered.q-gutter-lg
         .col-auto(v-for="(avatar,name) in browser.visibleAvatars")
-          avatar-row( :avatar="avatar" :key="avatar.meta.name" @minted="getData()" ).q-ma-md.q-pb-xl
+          avatar-row( :avatar="avatar" :key="avatar.meta.name" @minted="getData()" ).q-ma-md
       .full-width(style="height:50px")
 
 </template>
@@ -56,10 +56,13 @@ export default defineComponent({
       void this.atomic.getManyTemplateStats(Object.keys(this.browser.visibleAvatars).map(el => parseInt(el)))
       this.$q.loading.hide()
     }, 3000)
-    interval = setInterval(this.getData, 10000)
+    interval = setInterval(this.getData, 30000)
     // this.getData()
     this.browser.filter.creatorName = null
     if (this.$q.platform.is.mobile) this.browser.filter.showDetails = false
+  },
+  unmounted() {
+    if (interval) clearInterval(interval)
   },
   methods: {
     async getData() {

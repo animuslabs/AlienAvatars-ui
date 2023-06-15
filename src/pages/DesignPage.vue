@@ -87,21 +87,21 @@ export default defineComponent({
       templateName: '',
       parts: [],
       templateNameValidation: [
-        (value:string) => value.length < 13 || 'Name must be less than 13 characters',
-        (value:string) => !value.search(/(^[a-z1-5.]{0,11}[a-z1-5]$)|(^[a-z1-5.]{12}[a-j1-5]$)/) || 'invalid name',
-        (value:string) => !contractState().avatars[globalState().currentEdition].find(el => el.avatar_name.toString() === value) || 'name not available'
+        (value: string) => value.length < 13 || 'Name must be less than 13 characters',
+        (value: string) => !value.search(/(^[a-z1-5.]{0,11}[a-z1-5]$)|(^[a-z1-5.]{12}[a-j1-5]$)/) || 'invalid name',
+        (value: string) => !contractState().avatars[globalState().currentEdition].find(el => el.avatar_name.toString() === value) || 'name not available'
       ]
     }
   },
   computed: {
-    nameValid():boolean {
+    nameValid(): boolean {
       return this.templateNameValidation.every(el => el(this.templateName) === true)
     },
     templateInput: {
-      set(val:string):void {
+      set(val: string): void {
         this.templateName = val
       },
-      get():string {
+      get(): string {
         return this.templateName
       }
     }
@@ -111,7 +111,6 @@ export default defineComponent({
     // await this.contract.getEditions()
     // await this.atomic.getAllParts()
     // await this.atomic.getAllTemplates()
-    // await this.atomic.getAccountAssets()
 
   },
   methods: {
@@ -130,7 +129,7 @@ export default defineComponent({
       }
     },
 
-    previewCardDynamic(rand:string) {
+    previewCardDynamic(rand: string) {
       // @ts-ignore
       if (!randCache[rand] || randCache[rand].length === 0) randCache[rand] = [getRand(-5, 5), getRand(-10, 10)]
       return {
@@ -149,6 +148,12 @@ export default defineComponent({
         else void this.atomic.clearAccountAssets()
       },
       immediate: false
+    },
+    'atomic.initialized': {
+      handler() {
+        void this.atomic.getAccountAssets()
+      },
+      immediate: true
     }
   }
 })

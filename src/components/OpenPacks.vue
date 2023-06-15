@@ -22,12 +22,12 @@ div(style="min-height:1000px")
           //- q-img()
           //- .absolute-center
           //-   q-icon(name="question_mark" size="184px")
-      // div {{pack}}
+          // div {{pack}}
       .absolute-center
         .column.items-center.justify-center
-          q-btn.q-ma-md.bg-black( v-if="pack.meta" :label="'open one pack'" size="lg" @click="openPacks(pack,1)")
-          //- q-btn.q-ma-md.bg-black(label="open five packs" size="lg" @click="openPacks(pack,5)" style=" width:200px;" :disable="pack.assetIds.length <5")
-        //- q-btn.q-ma-md.bg-black(label="open one pack" size="lg" @click="openPack(pack)" style=" width:200px;")
+          q-btn.q-ma-md.bg-accent.text-secondary( icon="style" v-if="pack.meta" :label="'open one pack'" size="lg" @click="openPacks(pack,1)")
+            //- q-btn.q-ma-md.bg-black(label="open five packs" size="lg" @click="openPacks(pack,5)" style=" width:200px;" :disable="pack.assetIds.length <5")
+            //- q-btn.q-ma-md.bg-black(label="open one pack" size="lg" @click="openPack(pack)" style=" width:200px;")
 </template>
 <style lang="sass">
 .fade-enter-active,
@@ -52,7 +52,7 @@ import { sleep } from 'src/lib/utils'
 import ms from 'ms'
 import ClaimCards from 'src/components/AvatarDesigner/ClaimCards.vue'
 import ipfs from 'src/lib/ipfs'
-type OwnedPackType = {templateId:number, assetIds:string[], meta?:TemplateData, immutableData?:PackMeta, imgUrl:string}
+type OwnedPackType = { templateId: number, assetIds: string[], meta?: TemplateData, immutableData?: PackMeta, imgUrl: string }
 let interval
 let interval2
 let interval3
@@ -77,6 +77,7 @@ export default defineComponent({
     await this.contract.getPacks()
     console.log('openpacks mounted2')
     if (!this.user.loggedIn.account) return
+    await this.atomic.getAccountAssets()
     // await this.getAccountAssets()
     // console.log('openpacks mounted3')
     // console.log('get template??????', this.atomic.templateData[621073])
@@ -97,8 +98,8 @@ export default defineComponent({
     toggleLoading() {
       this.loading = !this.loading
     },
-    packCardDynamic(rand:string) {
-      console.log(rand)
+    packCardDynamic(rand: string) {
+      // console.log(rand)
       // @ts-ignore
       if (!randCache[rand] || randCache[rand].length === 0) randCache[rand] = [getRand(-6, 8), getRand(-15, 15)]
       return {
@@ -113,7 +114,7 @@ export default defineComponent({
         // 'z-index': 100
       }
     },
-    async openPacks(pack:OwnedPackType, quantity = 1) {
+    async openPacks(pack: OwnedPackType, quantity = 1) {
       // const assetIds =
       // assetIds.forEach(el => this.atomic.rmAccountAsset(pack.templateId, el))
       // console.log('open pack', assetIds)
@@ -157,7 +158,7 @@ export default defineComponent({
           const assetIds = this.atomic.accountAssets[el] || []
           const meta = this.atomic.templateData[el]
           if (!meta) console.error('missing template:', el)
-          let immutableData:PackMeta|null = null
+          let immutableData: PackMeta | null = null
           // @ts-ignore
           immutableData = meta.immutableData as PackMeta || null
           const imgUrl = ipfs(immutableData.img)

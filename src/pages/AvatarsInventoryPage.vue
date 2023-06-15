@@ -20,8 +20,8 @@
       .row
         p {{targetAccount}} earns 25% of the mint price when others mint from templates they designed
       .centered.q-mb-lg
-        .col-auto
-          avatar-row(v-for="(avatar,name) in browser.visibleAvatars" :avatar="avatar" :key="name" @minted="getData()" style="max-width:90vw" ).q-ma-md
+        .col-auto.q-pt-lg
+          avatar-row(v-for="(avatar,name) in browser.visibleAvatars" :avatar="avatar" :key="name" @minted="getData()" style="max-width:90vw" ).q-ma-md.q-pb-lg
       .row
         h5 Avatars owned by {{targetAccount}} ( {{browser.ownedAvatars.length}} )
         //- q-separator(vertical spaced color="teal-8")
@@ -30,8 +30,8 @@
       q-separator(color="secondary").q-mb-sm
 
       .centered.q-mb-lg
-        .col-auto
-          avatar-row(v-for="(avatar,name) in browser.ownedAvatars" :avatar="avatar" :key="name" @minted="getData()" style="max-width:90vw").q-ma-md
+        .col-auto.q-pt-lg
+          avatar-row(v-for="(avatar,name) in browser.ownedAvatars" :avatar="avatar" :key="name" @minted="getData()" style="max-width:90vw").q-ma-md.q-pb-lg
       .centered.q-ma-md(v-if="loading")
         q-spinner(size="50px")
 
@@ -82,34 +82,33 @@ export default defineComponent({
   },
   async created() {
     this.$q.loading.show()
-    this.atomic.accountAssets = reactive({})
+    // this.atomic.accountAssets = reactive({})
     this.browser.$patch({ filter: new BrowserFilterParams() })
     this.browser.filter.creatorName = this.targetAccount
-
     this.browser.filter.showDetails = true
-    await sleep(1500)
-    await this.atomic.getAccountAssets(this.$route.params.accountName as string)
+    // await sleep(1500)
+    // await this.atomic.getAccountAssets(this.$route.params.accountName as string)
     await this.getData()
     this.$q.loading.hide()
 
   },
   computed: {
-    atomicInventory():string {
+    atomicInventory(): string {
       const config = this.contract.config
       const collection = config?.collection_name.toString() || 'alienavatars'
       const schema = config?.avatar_schema.toString() || 'alienavatars'
       const atomicHub = activeNetwork().atomicMarket
       return `${atomicHub}/profile/${this.targetAccount}?collection_name=${collection}&only_duplicate_templates=false&order=desc&schema_name=${schema}&sort=transferred#inventory`
     },
-    disableClaim():boolean {
+    disableClaim(): boolean {
       if (useUser().loggedIn.account === this.targetAccount && this.unclaimedFunds.value > 0) return false
       else return true
     },
-    unclaimedFunds():Asset {
+    unclaimedFunds(): Asset {
       return this.contract.deposits.find(el => el.balance.quantity.symbol.toString() === this.contract.config?.payment_token.sym.toString())?.balance?.quantity || Asset.from('0.0000 TLM')
     },
-    ownedTemplates():AvatarBrowserType[] {
-      const avatarsRecord:Record<string, AvatarBrowserType> = {}
+    ownedTemplates(): AvatarBrowserType[] {
+      const avatarsRecord: Record<string, AvatarBrowserType> = {}
       const edition = contractState().editions.find(el => el.edition_scope.toString() === globalState().currentEdition)
       if (!edition) return []
       for (const row of this.contract.avatars[globalState().currentEdition]) {
@@ -122,7 +121,7 @@ export default defineComponent({
         if (!price) continue
         avatarsRecord[row.avatar_name.toString()] = { meta, row, stats, price: price.price.mint_price }
       }
-      const list:AvatarBrowserType[] = Object.values(avatarsRecord)
+      const list: AvatarBrowserType[] = Object.values(avatarsRecord)
       return list
     }
   },
@@ -138,12 +137,12 @@ export default defineComponent({
     async getData() {
       console.log('refresh all data')
       this.loading = true
-      await this.contract.getConfig()
-      await this.contract.getEditions()
+      // await this.contract.getConfig()
+      // await this.contract.getEditions()
       await this.contract.getAvatars()
       void this.contract.getDeposits(Name.from(this.targetAccount))
 
-      await this.atomic.getAccountAssets(this.$route.params.accountName as string)
+      // await this.atomic.getAccountAssets(this.$route.params.accountName as string)
       void this.atomic.getManyTemplateStats(Object.keys(this.browser.visibleAvatars).map(el => parseInt(el)))
       void this.atomic.getManyTemplateStats(Object.keys(this.browser.ownedAvatars).map(el => parseInt(el)))
       this.loading = false

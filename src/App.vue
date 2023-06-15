@@ -49,7 +49,7 @@ export default defineComponent({
     await contractState().getEditions()
     await this.atomic.getAllTemplates()
     console.log('app mounted')
-    await this.atomic.getAccountAssets()
+    // await this.atomic.getAccountAssets()
     this.loading = false
   },
   methods: {

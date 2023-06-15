@@ -2,7 +2,7 @@
 div
   Transition( name="fade" )
     .centered(v-if="unpacks.length>0 || loading")
-      q-card( style="width:100%; max-width:90vw").q-ma-md.bg-boidgrey.q-pa-md.relative-position.text-white
+      q-card( style="width:100%; max-width:90vw").q-ma-md.bg-grey-10.q-pa-md.relative-position.text-white
         div
           .centered
             h5.no-margin You have cards ready to claim
@@ -19,7 +19,7 @@ div
                     h5.no-margin Opening Pack
                     q-spinner(size="30px").q-ml-md
               .centered.full-width
-                q-btn(:label="`Claim ${unpack.claimable_template_ids.length || ' '} Cards`" :disable="unpack.claimable_template_ids.length === 0" @click="claimCards(unpack.pack_asset_id)" icon="pan_tool" padding="10px" style="width:30%; min-width:200px;" size="md").q-mt-lg.bg-secondary
+                q-btn.bg-accent.text-secondary(:label="`Claim ${unpack.claimable_template_ids.length || ' '} Cards`" :disable="unpack.claimable_template_ids.length === 0" @click="claimCards(unpack.pack_asset_id)" icon="pan_tool" padding="10px" style="width:30%; min-width:200px;" size="md").q-mt-lg.bg-secondary
         div(v-if="unpacks.length>1")
           q-separator(color="white" size="1px").q-ma-md
           .centered
@@ -62,9 +62,9 @@ export default defineComponent({
     }
   },
   async mounted() {
-    this.contract.getPacks()
+    await this.contract.getPacks()
     if (!this.user.loggedIn.account) return
-    this.contract.getUnpacks()
+    await this.contract.getUnpacks()
     // await this.getAccountAssets()
 
     // interval2 = setInterval(this.getAccountAssets, ms('5m'))
@@ -100,23 +100,25 @@ export default defineComponent({
         'margin-left': `${randCache[rand][1]}px`
       }
     },
-    async claimCards(packAssetId:UInt64) {
+    async claimCards(packAssetId: UInt64) {
       try {
         await claimPack(packAssetId)
       } catch (error) {
         console.error(error)
       }
       await sleep(ms('2s'))
-      this.contract.getUnpacks()
+      await this.contract.getUnpacks()
+      await this.getAccountAssets()
+
     },
-    async claimAllCards(packAssetIds:UInt64[]) {
+    async claimAllCards(packAssetIds: UInt64[]) {
       try {
         await claimPacks(packAssetIds)
       } catch (error) {
         console.error(error)
       }
       await sleep(ms('2s'))
-      this.contract.getUnpacks()
+      await this.contract.getUnpacks()
     },
     async getAccountAssets() {
       this.status = 'loading'
@@ -135,13 +137,13 @@ export default defineComponent({
     }
   },
   computed: {
-    totalUnclaimed():number {
+    totalUnclaimed(): number {
       return this.unpacks.reduce((prev, curr) => prev + curr.claimable_template_ids.length, 0)
     },
-    unpacking():boolean {
+    unpacking(): boolean {
       return this.unpacks.filter(el => el.claimable_template_ids.length === 0).length > 0
     },
-    ownedPacks():{templateId:number, assetIds:string[], meta?:TemplateData, immutableData?:PackMeta}[] {
+    ownedPacks(): { templateId: number, assetIds: string[], meta?: TemplateData, immutableData?: PackMeta }[] {
       try {
         const targetUser = this.user.loggedIn.account
         if (!targetUser) return []
@@ -162,15 +164,15 @@ export default defineComponent({
         return []
       }
     },
-    unpacks():Unpack[] {
+    unpacks(): Unpack[] {
       return [...this.contract.unpacks].sort((a, b) => a.inserted.toMilliseconds() - b.inserted.toMilliseconds())
     }
   },
   watch: {
-    'user.loggedIn.account'(val) {
+    async 'user.loggedIn.account'(val) {
       if (val) {
-        this.getAccountAssets()
-        this.contract.getUnpacks()
+        await this.getAccountAssets()
+        await this.contract.getUnpacks()
       }
     },
     'unpacking'(val) {
@@ -179,7 +181,7 @@ export default defineComponent({
         interval = setInterval(() => this.contract.getUnpacks(), ms('2s'))
       } else if (interval) clearInterval(interval)
     },
-    async 'unpacks'(val:Unpack[]) {
+    async 'unpacks'(val: Unpack[]) {
       for (const unpack of val) {
         for (const templateId of unpack.claimable_template_ids) {
           await this.atomic.loadTemplate(templateId.toNumber())

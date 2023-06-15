@@ -25,7 +25,7 @@
       .titleBar.absolute-top(style="height:100%; width:100%;")
 
     .row.q-mt-md
-      .col.q-pl-md.q-pr-md(style="min-width:200px; width:400px;")
+      .col.q-pl-md.q-pr-md(style="min-width:200px; width:400px;" v-if="showExtras")
         .centered.full-width
           q-img( no-transition v-if="showExtras" :src="imgUrl2" @click="showMaximized($event)" style="max-height:447px; max-width: 288px;").cursor-pointer
       .col(v-if="showDetails && showExtras" style="min-width:200px;")
@@ -61,12 +61,6 @@
                   p Burned
                 .row
                   h5 {{avatar.stats.burned}}
-            //- .row.q-mt-sm
-            //-   .col
-            //-     .row
-            //-       p Last Purchase:
-            //-     .row
-            //-       h5 {{avatar.row.}}
             .row.q-mt-sm
               p Atomic Hub
             .row.q-mt-sm
@@ -85,16 +79,19 @@
                 h5(style="font-size: 15px;") {{printAsset(mintPrice)}}
             .centered.full-width.q-mt-lg
               q-btn.absolute.relative-position(:label="mintButtonText" size="lg" @click="mintAvatar()" no-wrap :disable="disableMint" color="accent" :flat="false" style=" width:250px; right:-2px; bottom: -2px; background-color: black;").text-cyan-9
-                //- .actionBar.absolute-top(style="height:100%; width:100%;")
+              //- .actionBar.absolute-top(style="height:100%; width:100%;")
               q-tooltip(v-if="!user.loggedIn.account")
-      .row(style="height:458px; width:1px;").bg-red
-      .centered.full-width(v-if="!showDetails")
-        h5 {{printAsset(mintPrice)}}
-      .centered.full-width.q-mt-sm(v-if="!showDetails").bg-accent
-        q-btn(:label="mintButtonText" size="lg" @click="mintAvatar()" :disable="disableMint" color="accent" :flat="false" style=" bottom: 0px; background-color: black;").text-cyan-9
-      .q-mt-sm
-  //- div(id="overlay" @click="hideImage()").z-max
-  //-   img(id="zoomed-image")
+      div(v-if="!showDetails && showExtras").full-width.q-pb-lg
+        .centered.full-width.q-ma-md
+          h5 {{ printAsset(mintPrice) }}
+        .centered.full-width.q-mt-sm.bg-accent
+          q-btn(:label="mintButtonText" size="lg" @click="mintAvatar()" :disable="disableMint" color="accent" :flat="false" style="background-color: black;").text-cyan-9
+      //- .row(style="height:458px; width:1px;").bg-red
+      //- .centered.full-width(v-if="!showDetails")
+      //-   h5 {{printAsset(mintPrice)}}
+      //- .q-mt-sm
+      //- div(id="overlay" @click="hideImage()").z-max
+      //-   img(id="zoomed-image")
 
 </template>
 
@@ -154,7 +151,7 @@ export default defineComponent({
       return 'color:' + color + ';' + ' text-shadow: 1px 1px 8px #3A6BF1;'
     },
     rowStyle() {
-      return (this.showDetails ? 'max-width:100%; width:897px;' : 'max-width:330px; ') + ' transition: all 80ms ease;' + ' max-height:591px;'
+      return (this.showDetails ? 'max-width:100%; width:897px;' : 'max-width:330px; ') + ' transition: all 80ms ease;' + ' max-height:660px;'
     },
     maxSupplyReached() {
       const maxMint = this.avatar.row.max_mint.toNumber()
@@ -280,9 +277,17 @@ export default defineComponent({
   },
   watch: {
     async 'showDetails'(val) {
-      this.showExtras = false
-      await sleep(50)
-      this.showExtras = true
+      if (val) {
+        this.showExtras = false
+        await sleep(100)
+        this.showExtras = true
+      } else {
+        this.showExtras = false
+        await sleep(100)
+        this.showExtras = true
+
+      }
+
     },
     'browser.filter.showDetails': {
       async handler(val) {

@@ -6,7 +6,7 @@ div
     //- q-separator(color="cyan-10" spaced)
     div.q-ma-md
       .q-mt-lg
-        q-card.q-ma-lg.q-pa-md
+        q-card.q-ma-lg.q-pa-md.bg-grey-10
           .row.items-centered
             q-btn(label="< Back" @click="designer.createTemplateMode = false")
             .col-grow
@@ -131,9 +131,9 @@ export default defineComponent({
       parts: [],
       createdTemplate: 0,
       templateNameValidation: [
-        (value:string) => value.length < 13 || 'Name must be less than 13 characters',
-        (value:string) => !value.search(/(^[a-z1-5.]{0,11}[a-z1-5]$)|(^[a-z1-5.]{12}[a-j1-5]$)/) || 'invalid name',
-        (value:string) => !contractState().avatars[globalState().currentEdition].find(el => el.avatar_name.toString() === value) || 'name not available'
+        (value: string) => value.length < 13 || 'Name must be less than 13 characters',
+        (value: string) => !value.search(/(^[a-z1-5.]{0,11}[a-z1-5]$)|(^[a-z1-5.]{12}[a-j1-5]$)/) || 'invalid name',
+        (value: string) => !contractState().avatars[globalState().currentEdition].find(el => el.avatar_name.toString() === value) || 'name not available'
       ]
     }
   },
@@ -142,7 +142,7 @@ export default defineComponent({
     startingMintPriceString() {
       return ''
     },
-    preMintCost():Asset|null {
+    preMintCost(): Asset | null {
       if (this.createdTemplate === 0) return null
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
@@ -154,7 +154,7 @@ export default defineComponent({
 
       return calculateMintPrice(avatarRow, editionData.avatar_floor_mint_price).price.mint_price
     },
-    getImg():string {
+    getImg(): string {
       if (this.createdTemplate === 0) return ''
       const meta = this.atomic.templateData[this.createdTemplate]?.immutableData as AvatarMeta
       if (!meta) return ''
@@ -163,21 +163,21 @@ export default defineComponent({
     imgUrl() {
       return ipfs(this.getImg)
     },
-    nameValid():boolean {
+    nameValid(): boolean {
       return this.templateNameValidation.every(el => el(this.templateName) === true)
     },
     templateInput: {
-      set(val:string):void {
+      set(val: string): void {
         this.templateName = val
       },
-      get():string {
+      get(): string {
         return this.templateName
       }
     },
-    templateCreationCost():Asset {
+    templateCreationCost(): Asset {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result:any = this.contract._editions.find((el:any) =>
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      const result: any = this.contract._editions.find((el: any) =>
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         el.edition_scope === this.global.currentEdition)
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (result) return result.avatar_template_price

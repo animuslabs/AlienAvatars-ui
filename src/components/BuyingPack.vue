@@ -33,7 +33,7 @@ div.relative-position
       q-separator(vertical color="secondary")
       q-btn(icon="add" @click="quantity++" size="lg")
   .centered.q-mt-sm
-    q-btn(:label="buyBtn" color="black" size="lg" @click="purchasePacks()").bg-secondary
+    q-btn(:label="buyBtn" color="black" size="lg" @click="purchasePacks()").bg-accent
   .centered.items-center(v-if="user.loggedIn.auth").q-pt-lg
     .col-auto.q-mr-md
       p Balance:
@@ -108,16 +108,16 @@ export default defineComponent({
     }
   },
   computed: {
-    buyBtn():string {
+    buyBtn(): string {
       return `Pay ${this.buyPrice}`
     },
-    disableMinus():boolean {
+    disableMinus(): boolean {
       return this.quantity === 1
     },
-    purchaseString():string {
+    purchaseString(): string {
       return `Buying ${this.quantity} ${this.pack.pack_name.toString()} ${this.quantity > 1 ? 'packs' : 'pack'}`
     },
-    pack():Packs {
+    pack(): Packs {
       return this.contract.packs[this.global.currentEdition].find(el => el.template_id.toNumber() === this.packId) || defaultPack
     },
     rarities(): number[] {
@@ -136,12 +136,12 @@ export default defineComponent({
       cardPrice.units.divide(this.meta.size)
       return cardPrice
     },
-    buyPrice():Asset {
+    buyPrice(): Asset {
       // const cardPrice = Asset.from(this.pack.base_price)
       // cardPrice.units.multiply(this.quantity)
       return Asset.from(this.pack.base_price.value * this.quantity, this.pack.base_price.symbol)
     },
-    meta():PackMeta {
+    meta(): PackMeta {
       const empty = { name: '', edition: '', size: 10, img: '', rarities: [] }
       try {
         const existing = this.atomic.templateData[this.pack.template_id.toNumber()]
@@ -151,7 +151,7 @@ export default defineComponent({
         return empty
       }
     },
-    imgUrl():string { return ipfs(this.meta.img) }
+    imgUrl(): string { return ipfs(this.meta.img) }
   },
   methods: {
     async loadBalance() {
@@ -160,7 +160,7 @@ export default defineComponent({
       await sleep(2000)
       this.loading = false
     },
-    async swap(quantiy:number) {
+    async swap(quantiy: number) {
       await ndxSwap(quantiy)
       this.loading = true
       await sleep(7000)
@@ -168,7 +168,7 @@ export default defineComponent({
       await sleep(2000)
       this.loading = false
     },
-    packCardDynamic(rand:string) {
+    packCardDynamic(rand: string) {
       console.log(rand)
       // @ts-ignore
       if (!randCache[rand] || randCache[rand].length === 0) randCache[rand] = [getRand(-12, 12), getRand(-15, 15)]
