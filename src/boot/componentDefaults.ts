@@ -1,9 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { boot } from 'quasar/wrappers'
-import { QInput, QBtn, QCard, QRouteTab, QTab } from 'quasar'
+import { QInput, QBtn, QCard, QRouteTab, QTab, LocalStorage } from 'quasar'
 // @ts-ignore
 window.global ||= window
+
+const chain = LocalStorage.getItem('chain')
+if (!chain || chain != 'wax') {
+  LocalStorage.clear()
+  LocalStorage.set('chain','wax')
+}
 
 if (import.meta.hot) {
   import.meta.hot.accept()

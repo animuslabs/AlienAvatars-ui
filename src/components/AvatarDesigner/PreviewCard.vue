@@ -42,12 +42,12 @@ export default defineComponent({
 
   },
   computed: {
-    meta():TemplateData|undefined {
+    meta(): TemplateData | undefined {
       return this.atomic.templateData[this.templateId]
     },
-    imgSrc():string|null {
+    imgSrc(): string | null {
       const data = this.meta?.immutableData
-      if (!data || !('bodypart' in data)) return null
+      if (!data || !('avatarpart' in data)) return null
       return ipfs(data.img)
     }
   },

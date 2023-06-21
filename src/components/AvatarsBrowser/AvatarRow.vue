@@ -207,7 +207,7 @@ export default defineComponent({
       const templates = Object.values(this.atomic.templateData).filter(el => el?.schemaName === this.contract.config?.parts_schema?.toString() || 'avatarparts').map(el => ({ meta: el?.immutableData as PartCardMeta, schemaName: el?.schemaName }))
       const parts = defaultPartsSet()
       Object.keys(parts).forEach((type) => {
-        parts[type] = templates.find(el => el.meta.bodypart === type && el.meta.name === this.avatar.meta[type])?.meta.rarityScore || 0
+        parts[type] = templates.find(el => el.meta.avatarpart === type && el.meta.name === this.avatar.meta[type])?.meta.rarityScore || 0
       })
       return parts
     },
@@ -219,7 +219,7 @@ export default defineComponent({
       const data: Record<string, { meta: PartCardMeta, templateId: number }> = {}
       Object.keys(parts)
         .forEach((type) => {
-          data[type] = templates.find(el => el.meta.bodypart === type && el.meta.name === this.avatar.meta[type]) || { meta: new PartCardMeta(), templateId: 0 }
+          data[type] = templates.find(el => el.meta.avatarpart === type && el.meta.name === this.avatar.meta[type]) || { meta: new PartCardMeta(), templateId: 0 }
         })
       return data
     },

@@ -27,7 +27,7 @@ export class SelectedMetaData {
   part = new AvatarPart()
 }
 
-export class BodyPartConfig {
+export class AvatarPartConfig {
   image: HTMLImageElement = new window.Image()
   x = 0
   y = 0
@@ -45,12 +45,12 @@ export class PartOffset {
 }
 
 export class BodyType {
-  head: BodyPartConfig = new BodyPartConfig()
-  top: BodyPartConfig = new BodyPartConfig()
-  torso: BodyPartConfig = new BodyPartConfig()
-  legs: BodyPartConfig = new BodyPartConfig()
-  equipment: BodyPartConfig = new BodyPartConfig()
-  background: BodyPartConfig = new BodyPartConfig()
+  head: AvatarPartConfig = new AvatarPartConfig()
+  top: AvatarPartConfig = new AvatarPartConfig()
+  torso: AvatarPartConfig = new AvatarPartConfig()
+  legs: AvatarPartConfig = new AvatarPartConfig()
+  equipment: AvatarPartConfig = new AvatarPartConfig()
+  background: AvatarPartConfig = new AvatarPartConfig()
 }
 
 export type FavoritesType = Record<string, Record<Elements, number>>
@@ -120,7 +120,7 @@ export type SelectedMetaType = Record<Elements, SelectedMetaData>
 // }
 function blankTemplateData(type:any, part:any):PartCardMeta {
   const templateData:PartCardMeta = {
-    bodypart: type,
+    avatarpart: type,
     edition: 'first',
     img: part.ipfsCard || '',
     img2: part.ipfsRaw,

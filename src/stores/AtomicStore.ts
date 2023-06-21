@@ -43,14 +43,14 @@ async function cacheImg(ipfsString) {
 }
 
 // export interface PartCardMeta {
-//   name:string, rarityScore:number, rarity:string, bodypart:Elements, info:string, url:string, img:string
+//   name:string, rarityScore:number, rarity:string, avatarpart:Elements, info:string, url:string, img:string
 // }
 export class PartCardMeta {
   name = ''
   rarityScore = 0
   rarity = ''
   edition = ''
-  bodypart:Elements = 'head'
+  avatarpart:Elements = 'head'
   info = ''
   url = ''
   img = ''
@@ -161,7 +161,7 @@ export const atomicState = defineStore({
         'alientestnft':['tool.worlds']
       }
     }
-    data.accountAssetCollectionSchemas[collection] = ['avatarparts', 'alienavatar', 'partpacks']
+    data.accountAssetCollectionSchemas[collection] = ['avatarparts', 'alienavatars','alienavatar', 'partpacks']
     return data
   },
   getters: {
@@ -172,10 +172,10 @@ export const atomicState = defineStore({
         const data = templateData.immutableData
         if (templateData.collection !== this.primaryCollection) continue
         if (templateData.schemaName !== 'avatarparts') continue
-        if (!('bodypart' in data)) continue
-        // console.log(data.bodypart)
+        if (!('avatarpart' in data)) continue
+        // console.log(data.avatarpart)
         const valid = contractState().allEditionTemplates.includes(parseInt(templateId))
-        if (valid)returnData[data.bodypart].push({ meta: data, templateId })
+        if (valid)returnData[data.avatarpart].push({ meta: data, templateId })
       }
       return returnData
     },

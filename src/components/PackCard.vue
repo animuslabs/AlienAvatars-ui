@@ -24,6 +24,7 @@ import { link } from 'src/lib/linkManager'
 import { activeNetwork } from 'src/lib/config'
 import { purchasePacks } from 'src/lib/transact'
 import { atomicState, PackMeta } from 'src/stores/AtomicStore'
+import { printAsset } from 'src/lib/utils'
 export default defineComponent({
   setup() {
     return { contract: contractState(), user: useUser(), global: globalState(), atomic: atomicState(), link }
@@ -33,15 +34,15 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.fetchMeta()
+    void this.fetchMeta()
   },
   computed: {
-    cardPrice(): Asset {
+    cardPrice(): string {
       const cardPrice = Asset.from(this.pack.base_price.toString())
       cardPrice.units.divide(this.meta.size)
-      return cardPrice
+      return printAsset(cardPrice)
     },
-    meta():PackMeta {
+    meta(): PackMeta {
       const empty = { name: '', edition: '', size: 10000000, img: '', rarities: [] }
       try {
         const existing = this.atomic.templateData[this.pack.template_id.toNumber()]

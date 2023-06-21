@@ -118,7 +118,7 @@ export function partMetaToAvatarPart(meta:PartCardMeta):AvatarPart {
     name: meta.name,
     offset: JSON.parse(meta.offset),
     rarity: meta.rarityScore,
-    type: meta.bodypart
+    type: meta.avatarpart
   }
   return part
 }

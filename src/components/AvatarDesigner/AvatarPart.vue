@@ -31,7 +31,7 @@
     q-card( style="width:240px; height:190px; right:20px; z-index: -1000;").boiddarkbg.absolute
     div(v-if="designer.filter.showDetails" style="width:120px; height:190px; right:40px;" :class="[isSelected? 'infotext-margin' : 'infotext']").bg-transparent.q-pt-sm.full-width
       .row
-        .text-h6.text-capitalize {{bodyPart.meta.rarity}}
+        .text-h6.text-capitalize {{avatarPart.meta.rarity}}
       .row.full-width
         .text-h6.text-capitalize.ellipsis  {{detailSheet.name}}
       //- q-separator( color="amber-12")
@@ -99,12 +99,12 @@ export default defineComponent({
     return { isReactive, designer: designerState(), atomic: atomicState(), contract: contractState(), ipfs }
   },
   props: {
-    bodyPart: {
+    avatarPart: {
       type: Object as PropType<PartsMeta>,
       required: true
     }
   },
-  components: { },
+  components: {},
   data() {
     return {
       view: 'image',
@@ -117,26 +117,26 @@ export default defineComponent({
     const img = this.$refs.img as QImg
     // img.on
     this.image = await this.imgUrl
-    // console.log(this.atomic.templateIssued[this.bodyPart.templateId])
+    // console.log(this.atomic.templateIssued[this.avatarPart.templateId])
   },
   computed: {
-    isSelected():boolean {
-      return this.designer.selectedParts[this.bodyPart.meta.bodypart] === parseInt(this.bodyPart.templateId)
+    isSelected(): boolean {
+      return this.designer.selectedParts[this.avatarPart.meta.avatarpart] === parseInt(this.avatarPart.templateId)
     },
-    ownedCount():number {
-      return this.atomic.accountAssets[parseInt(this.bodyPart.templateId)]?.length || 0
+    ownedCount(): number {
+      return this.atomic.accountAssets[parseInt(this.avatarPart.templateId)]?.length || 0
     },
-    detailSheet():{marketLink:string, templateLink:string, name:string, stats:TemplateStats} {
+    detailSheet(): { marketLink: string, templateLink: string, name: string, stats: TemplateStats } {
       return {
-        marketLink: atomicHubMarket(this.contract.config?.parts_schema.toString() || 'boidavatars', parseInt(this.bodyPart.templateId)),
-        templateLink: atomicHubTemplate(parseInt(this.bodyPart.templateId)),
-        name: this.bodyPart.meta.name,
-        stats: this.atomic.templateStats[this.bodyPart.templateId] || { burned: 0, issued: 0 }
+        marketLink: atomicHubMarket(this.contract.config?.parts_schema.toString() || 'boidavatars', parseInt(this.avatarPart.templateId)),
+        templateLink: atomicHubTemplate(parseInt(this.avatarPart.templateId)),
+        name: this.avatarPart.meta.name,
+        stats: this.atomic.templateStats[this.avatarPart.templateId] || { burned: 0, issued: 0 }
       }
     },
-    imgUrl():string {
-      if (!this.error) return ipfs(this.bodyPart.meta.img2)
-      else return ipfs(this.bodyPart.meta.img, true)
+    imgUrl(): string {
+      if (!this.error) return ipfs(this.avatarPart.meta.img2)
+      else return ipfs(this.avatarPart.meta.img, true)
     }
   },
   methods: {
@@ -146,7 +146,7 @@ export default defineComponent({
       this.error = true
     },
     handlePartSelection() {
-      this.designer.selectPart(parseInt(this.bodyPart.templateId), this.bodyPart.meta.bodypart)
+      this.designer.selectPart(parseInt(this.avatarPart.templateId), this.avatarPart.meta.avatarpart)
     }
   },
   watch: {

@@ -22,6 +22,6 @@
     "testdata"
   ],
   "[vue]": {
-    "editor.defaultFormatter": "Vue.volar"
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   }
 }

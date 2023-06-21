@@ -1,7 +1,7 @@
 export default [
   [
     'What is an Avatar Part Pack NFT?',
-    'Avatar Part Packs are NFTs that can be purchased with TLM and traded on external markets like atomic assets. Packs can be opened to reveal Avatar Part NFTs. Common Part Packs contain random common cards while the Rare Part Packs contain a small number of cards that are guaranteed to be of higher rarities.'
+    'Avatar Part Packs are NFTs that can be minted here and traded on external markets like atomic assets or opened. When Packs are opened they produce Avatar Part NFTs. Common Part Packs contain random common cards while the Rare Part Packs contain a small number of cards that are guaranteed to be of higher rarities.'
   ],
   [
     'What is an Avatar Part NFT?',
@@ -9,7 +9,7 @@ export default [
   ],
   [
     'What is an Avatar Template?',
-    'Avatar Templates can be created on the design page by combining 6 Avatar Part NFTs together plus paying the template creation fee. Once an Avatar Template is created anyone holding AW Tool NFTs can pay TLM to mint an NFT from the template. When minting from a template 25% of the mint cost goes to the original designer of the template. When you create an Avatar Template you get to pick a custom name for the template.'
+    'Avatar Templates can be created on the design page by combining 6 Avatar Part NFTs together plus the template creation fee. Once an Avatar Template is created anyone holding AW Tool NFTs can use TLM to mint an NFT from the template. When minting from a template 25% of the mint cost goes to the original designer of the template. When you create an Avatar Template you get to pick a custom name for the template.'
   ],
   [
     'What is the Avatar Template Rarity Score?',

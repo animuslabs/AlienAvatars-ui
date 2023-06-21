@@ -109,7 +109,7 @@ export default defineComponent({
   },
   computed: {
     buyBtn(): string {
-      return `Pay ${this.buyPrice}`
+      return `${this.buyPrice}`
     },
     disableMinus(): boolean {
       return this.quantity === 1

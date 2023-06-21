@@ -13,14 +13,11 @@ interface AvatarMintPrice {
 export function calculateMintPrice(avatar: Avatars, avatar_floor_mint_price: Asset): AvatarMintPrice {
   const result: AvatarMintPrice = {} as AvatarMintPrice
 
-  const sec_passed = Math.floor((Date.now() / 1000) - (avatar.modified.toMilliseconds() / 1000))
+  const sec_passed = Math.floor((Date.now() - avatar.modified.toMilliseconds())/1000)
   const day_sec = 24 * 60 * 60
-  // const day_sec = 60
   const days_passed = Math.floor(sec_passed / day_sec)
-  // console.log('daysPassed:', days_passed)
   const conf = contractState().currentConfig
   const nextBasePrice = avatar.base_price.value * conf.avatar_mint_pct_increase.value
-  // console.log('nextBasePrice', nextBasePrice)
   result.next_base_price = Asset.from(avatar.base_price.value + nextBasePrice, conf.payment_token.sym)
 
   // Calculate mint price based on current base price

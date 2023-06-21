@@ -3,7 +3,7 @@
 .centered.bg-black
   //- div {{ designer.selectedMeta }}
   .relative-position.q-ma-sm
-    q-img(:src="frameUrl" v-if="!designer.selectedMeta.background.name.includes('Ghost')").absolute-center.z-top
+    q-img(:src="frameUrl" v-if="!designer.selectedMeta.background.name.includes('Ghost')" ).absolute-center.z-top
     v-stage(ref="stage" :config="stageConfig")
       v-layer
         v-image(ref="background" :config="body.background")
@@ -19,7 +19,7 @@
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { defineComponent, watch, reactive } from 'vue'
-import { BodyPartConfig, BodyType, designerState, SelectedMetaData } from 'src/stores/DesignerStore'
+import { AvatarPartConfig, BodyType, designerState, SelectedMetaData } from 'src/stores/DesignerStore'
 import { Elements } from 'src/types/avatarParts'
 import { Stage } from 'konva/lib/Stage'
 // import StageDetails from 'src/components/avatarmaker/StageDetails.vue'
@@ -33,7 +33,7 @@ async function animateImage(node: Konva.Node, reverse = false) {
   node.to(params)
 }
 
-async function animateSlot(part:SelectedMetaData, image:any, vue:any) {
+async function animateSlot(part: SelectedMetaData, image: any, vue: any) {
   vue.$nextTick(async() => {
     const torsoImg = (vue.$refs[part.part.type] as any).getNode() as Konva.Node
     await animateImage(torsoImg, true)
@@ -48,7 +48,7 @@ export default defineComponent({
   components: { ActionButton },
   setup() {
     const designer = designerState()
-    const frameConfig = reactive(new BodyPartConfig())
+    const frameConfig = reactive(new AvatarPartConfig())
     return { designer, frameConfig }
   },
   data() {
@@ -59,7 +59,7 @@ export default defineComponent({
     this.stageConfig.height = 2002 * this.scale
   },
   computed: {
-    newPartSelected():Record<string, number> {
+    newPartSelected(): Record<string, number> {
       return Object.assign({}, this.designer.selectedParts) // this is needed to compare the old/new selected parts
     },
     frameUrl() {
@@ -70,7 +70,7 @@ export default defineComponent({
     newPartSelected: {
       immediate: true,
       deep: true,
-      async handler(newVal:Record<Elements, number>, oldVal:Record<Elements, number>|null) {
+      async handler(newVal: Record<Elements, number>, oldVal: Record<Elements, number> | null) {
         for (const [type, templateId] of Object.entries(newVal)) {
           if (oldVal && oldVal[type] === templateId) continue
           // console.log('rendering', type, templateId)
@@ -102,7 +102,7 @@ export default defineComponent({
         this.frameConfig.height = stage.height()
       })
     },
-    async drawImage(part:SelectedMetaData) {
+    async drawImage(part: SelectedMetaData) {
       // console.log('drawData', part)
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

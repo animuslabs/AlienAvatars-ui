@@ -17,7 +17,7 @@
       .gt-xs.full-width(style="height:100px")
       .lt-sm.full-width(style="height:160px")
       .row.justify-center.q-ma-md
-        part(v-for="p in designer.visibleParts" :bodyPart="p" :key="p.templateId" :ref="p.templateId")
+        part(v-for="p in designer.visibleParts" :avatarPart="p" :key="p.templateId" :ref="p.templateId")
         .column.items-center(v-if="designer.visibleParts.length == 0")
           p You don't own any {{ designer.activeTab }} parts
           //- url-button.q-mt-sm.pulse(label="Visit Market" url="https://google.com")
@@ -43,7 +43,7 @@ const { getScrollTarget, setVerticalScrollPosition } = scroll
 const doc = document.getElementById('')
 // const scroller:ScrollLogicalPosition = {}
 // takes an element object
-function scrollToElement(el:HTMLElement) {
+function scrollToElement(el: HTMLElement) {
   el.scrollIntoView({ block: 'center', behavior: 'auto', inline: 'center' })
   // const target = getScrollTarget(el)
   // const offset = el.scrollIntoView()

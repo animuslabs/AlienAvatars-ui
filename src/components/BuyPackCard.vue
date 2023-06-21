@@ -4,7 +4,7 @@
     q-card.relative-position(style="display: flex; flex-direction:column; min-width:220px;" ).full-width.full-height.bg-grey-10
       .row
         .col-auto
-            q-img(v-if="!statsOnly" :src="imgUrl" style="width:170px;" noSpinner).q-ma-md.q-ml-lg
+          q-img(v-if="!statsOnly" :src="imgUrl" style="width:170px;" noSpinner).q-ma-md.q-ml-lg
         .col-auto.q-ma-md.q-mr-lg
           .row.justify-center
             h5(style="text-transform: capitalize;") {{ pack.pack_name.toString() }}
@@ -13,7 +13,7 @@
             p Contains Cards:
             h6.no-margin {{ meta.size }}
             p Pack Price
-            h6.no-margin {{ pack.floor_price.toString() }}
+            h6.no-margin {{ printAsset(pack.floor_price) }}
             p Per Card Price
             h6.no-margin {{ cardPrice }}
             p Minted:
@@ -36,13 +36,13 @@ import { link } from 'src/lib/linkManager'
 import { activeNetwork } from 'src/lib/config'
 import * as transact from 'src/lib/transact'
 import { atomicState, PackMeta } from 'src/stores/AtomicStore'
-import { sleep } from 'src/lib/utils'
+import { printAsset, sleep } from 'src/lib/utils'
 import ms from 'ms'
 import ipfs from 'src/lib/ipfs'
 
 export default defineComponent({
   setup() {
-    return { contract: contractState(), user: useUser(), global: globalState(), link }
+    return { printAsset, contract: contractState(), user: useUser(), global: globalState(), link }
   },
   data() {
     return {
@@ -51,10 +51,10 @@ export default defineComponent({
     }
   },
   mounted() {
-    setTimeout(this.fetchMeta,3000)
+    setTimeout(this.fetchMeta, 3000)
   },
   computed: {
-    soldOut():boolean {
+    soldOut(): boolean {
       const templateId = this.pack.template_id.toNumber()
       const stats = this.atomic.templateStats[templateId]
       const maxSupply = this.atomic.templateData[templateId]?.maxSupply
@@ -62,23 +62,23 @@ export default defineComponent({
       if (stats.issued >= maxSupply) return true
       else return false
     },
-    buyLabel():string {
+    buyLabel(): string {
       if (this.soldOut) return 'Sold Out'
       else return 'buy'
     },
-    availableString():string {
+    availableString(): string {
       const templateId = this.pack.template_id.toNumber()
       return ` ${(this.atomic.templateStats[templateId]?.issued.toString() || '0')} / ${(this.atomic.templateData[templateId]?.maxSupply?.toString() || '0')} Max `
     },
-    disableBuy():boolean {
+    disableBuy(): boolean {
       return !this.user.loggedIn.account || this.soldOut
     },
-    cardPrice(): Asset {
+    cardPrice(): string {
       const cardPrice = Asset.from(this.pack.base_price.toString())
       cardPrice.units.divide(this.meta.size)
-      return cardPrice
+      return printAsset(cardPrice)
     },
-    meta():PackMeta {
+    meta(): PackMeta {
       const empty = { name: '', edition: '', size: 10, img: '', rarities: [] }
       try {
         const existing = this.atomic.templateData[this.pack.template_id.toNumber()]
@@ -88,7 +88,7 @@ export default defineComponent({
         return empty
       }
     },
-    imgUrl():string { return ipfs(this.meta.img) }
+    imgUrl(): string { return ipfs(this.meta.img) }
   },
   emits: ['purchase'],
   methods: {
