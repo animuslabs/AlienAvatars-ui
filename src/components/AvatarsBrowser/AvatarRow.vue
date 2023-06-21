@@ -27,7 +27,7 @@
     .row.q-mt-md
       .col.q-pl-md.q-pr-md(style="min-width:200px; width:400px;" v-if="showExtras")
         .centered.full-width
-          q-img( no-transition v-if="showExtras" :src="imgUrl2" @click="showMaximized($event)" style="max-height:447px; max-width: 288px;").cursor-pointer
+          q-img( no-transition v-if="showExtras" :src="imgUrl2" @click="showMaximized($event)" style=" max-width: 288px;").cursor-pointer
       .col(v-if="showDetails && showExtras" style="min-width:200px;")
         .q-pa-sm
           h5.text-center Traits
@@ -70,6 +70,8 @@
             .col-auto
               q-btn(label="market" :href="atomicMarket" type="a" icon="link" target="_blank" size="md")
             //- q-separator(spaced color="secondary")
+            div(style="height:120px;").full-width.q-st-md
+
             .absolute(style="bottom:70px; left:25px;")
               //- q-separator(color="secondary").q-mt-md
               .row.q-mt-sm
@@ -151,7 +153,7 @@ export default defineComponent({
       return 'color:' + color + ';' + ' text-shadow: 1px 1px 8px #3A6BF1;'
     },
     rowStyle() {
-      return (this.showDetails ? 'max-width:100%; width:897px;' : 'max-width:330px; ') + ' transition: all 80ms ease;' + ' max-height:660px;'
+      return (this.showDetails ? 'max-width:100%; width:897px;' : 'max-width:330px; ') + ' transition: all 80ms ease;' + ' max-height:1660px;'
     },
     maxSupplyReached() {
       const maxMint = this.avatar.row.max_mint.toNumber()
