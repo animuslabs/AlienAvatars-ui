@@ -1,7 +1,12 @@
 <template lang="pug">
-.centered.full-width(style="max-width:80vw; zoom:75%;")
+.centered.full-width(style="max-width:80vw;")
   q-card(:style="rowStyle").bg-grey-10.relative-position
-    .absolute-right.z-top(v-if="!browser.filter.showDetails" style="right:0px; height:0px;" )
+    div( :label="owned" style="top:-8px;right:57px; height:37px;min-width:40px;").absolute.q-pa-sm.q-ma-sm.bg-primary.z-top
+      .centered
+        p.no-margin  {{owned}}
+      q-tooltip
+        p.no-margin You Own: {{owned}}
+    .absolute-right(v-if="!browser.filter.showDetails" style="right:0px; height:0px; z-index: 100;" )
       q-btn(:icon="showDetails?'chevron_left':'chevron_right'" @click="showDetails = !showDetails").text-secondary.bg-accent
     .q-pa-sm.bg-secondary.relative-position
       .row.q-pr-sm.full-width
@@ -16,7 +21,7 @@
             .row
               h5.text-capitalize.no-margin {{ avatar.row.avatar_name }}
           .col-grow
-          .row.no-wrap.items-center(v-if="showDetails")
+          .row.no-wrap.items-center(v-if="showDetails" style="margin-right:50px;")
             .row.no-wrap.q-mr-sm
               p Designer:
             .row.no-wrap
