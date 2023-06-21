@@ -9,7 +9,7 @@ import { LocalStorage } from 'quasar'
 import { activeNetwork } from 'src/lib/config'
 import { useUser } from 'src/stores/UserStore'
 
-export const waxLink = new waxjs.WaxJS({ rpcEndpoint: activeNetwork().nodeUrl, tryAutoLogin: true, userAccount: 'sauce' })
+export const waxLink = new waxjs.WaxJS({ rpcEndpoint: activeNetwork().nodeUrl, tryAutoLogin: true })
 
 export class CloudWallet {
   userStore: ReturnType<typeof useUser>
