@@ -21,7 +21,7 @@ export const defaultConfig = Config.from({
   moderator: '',
   auto_claim_packs: false,
   whitelist_enabled: false,
-  payment_token: { sym: '4,TLM', contract: 'tsttlmtokens' },
+  payment_token: { sym: '4,TLM', contract: 'alien.worlds' },
   rng: '',
   collection_name: 'alienavatars',
   parts_schema: 'avatarparts',

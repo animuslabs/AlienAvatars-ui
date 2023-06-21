@@ -12,7 +12,7 @@ export const globalState = defineStore({
   state():GlobalStateData {
     return {
       currentEdition: 'first',
-      paymentToken: { contract: 'tsttlmtokens', symbol: '4,TLM' }
+      paymentToken: { contract: 'alien.worlds', symbol: '4,TLM' }
     }
   },
   getters: {
