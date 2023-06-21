@@ -182,6 +182,7 @@ export const atomicState = defineStore({
     // organizes AW Tool NFTs held by the user by rarity
     ownedAwToolsByRarity(): Record<Rarities, number[]> {
       const returnData = deepClone(defaultEmptyRarities)
+      console.log(returnData);
       for (const [templateId, templateData] of Object.entries(this.templateData)) {
         if (!templateData) continue
         const data = templateData.immutableData
@@ -192,7 +193,8 @@ export const atomicState = defineStore({
         if (!Object.keys(this.accountAssets).includes(templateId)) continue
         console.log(data)
         const meta = data as ToolMeta
-        returnData[meta.rarity].push(parseInt(templateId))
+        const exists = returnData[meta.rarity]
+        if(exists) returnData[meta.rarity].push(parseInt(templateId))
       }
       return returnData
     }
