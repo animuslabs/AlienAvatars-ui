@@ -157,8 +157,8 @@ export const atomicState = defineStore({
       loadAllCollectionTemplates: [contractState().currentConfig.collection_name.toString()],
       primaryCollection: collection,
       accountAssetCollectionSchemas: {
-        // 'alien.worlds': ['tool.worlds'],
-        'alientestnft':['tool.worlds']
+        'alien.worlds': ['tool.worlds'],
+        // 'alientestnft':['tool.worlds']
       }
     }
     data.accountAssetCollectionSchemas[collection] = ['avatarparts', 'alienavatars','alienavatar', 'partpacks']
@@ -185,8 +185,8 @@ export const atomicState = defineStore({
       for (const [templateId, templateData] of Object.entries(this.templateData)) {
         if (!templateData) continue
         const data = templateData.immutableData
-        // if (templateData.collection !== 'alien.worlds') continue
-        if (templateData.collection !== 'alientestnft') continue
+        if (templateData.collection !== 'alien.worlds') continue
+        // if (templateData.collection !== 'alientestnft') continue
         if (templateData.schemaName !== 'tool.worlds') continue
         if (!('rarity' in data)) continue
         if (!Object.keys(this.accountAssets).includes(templateId)) continue
