@@ -34,7 +34,7 @@ const tabs: QTabsProps = {
   contentClass: 'boid-tabs'
 }
 const nav: QTabProps[] = [
-  { icon: 'shopping_cart', label: 'Buy', name: 'buy' },
+  { icon: 'shopping_cart', label: 'Obtain', name: 'buy' },
   { icon: 'view_carousel', label: 'Open', name: 'open' }
 ]
 export default defineComponent({
