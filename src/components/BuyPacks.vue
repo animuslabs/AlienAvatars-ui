@@ -4,7 +4,7 @@ div
     .centered
       h5 Avatar Part Packs
     .centered.q-mr-md.q-ml-md
-      p Part Packs contain Avatar parts, needed to design custom Avatar Templates. Packs can be minted here or purchased on the secondary markets.
+      p Part Packs contain Avatar parts, needed to design custom Avatar Templates. Packs can be minted here or obtained on the secondary markets.
     .q-pa-md.q-mb-md
       .row
         .col-auto
