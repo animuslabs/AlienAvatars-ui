@@ -64,7 +64,7 @@ export default defineComponent({
     },
     buyLabel(): string {
       if (this.soldOut) return 'Sold Out'
-      else return 'buy'
+      else return 'obtain'
     },
     availableString(): string {
       const templateId = this.pack.template_id.toNumber()
