@@ -25,6 +25,6 @@ export default [
   ],
   [
     'I’m missing some Avatar Part NFTs needed to build my Avatar Template. How can I get the missing parts?',
-    'The easiest way to get specific part NFTs is to purchase them directly on secondary markets. If you can\'t find them on secondary markets then you can purchase and open Avatar Part Packs and hope to find the part you are looking for.'
+    'The easiest way to get specific part NFTs is to obtain them directly on secondary markets. If you can\'t find them on secondary markets then you can collect and open Avatar Part Packs and hope to find the part you are looking for.'
   ]
 ]
