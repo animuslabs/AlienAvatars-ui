@@ -24,7 +24,7 @@ div
           h5 Rare Packs
         .col-grow
         .col-auto
-          q-btn( v-if="contract.config" label="atomic hub" color="cyan-6" icon="link" type="a" target="_blank" :href="atomicHubSchemaMarket(contract.config.pack_schema.toString())" )
+          q-btn( v-if="contract.config" label="atomic hub" icon="link" type="a" target="_blank" :href="atomicHubSchemaMarket(contract.config.pack_schema.toString())" )
       q-separator(color="secondary").q-mb-sm
       .row
         p Rare packs contain less part cards but guarantee much higher card Rarity Scores than normal packs. Rare packs are also much more limited in supply.
