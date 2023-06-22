@@ -7,6 +7,7 @@ import {
 } from 'vue-router'
 
 import routes from './routes'
+import { sleep } from 'src/lib/utils'
 
 /*
  * If not building with SSR mode, you can
@@ -30,6 +31,17 @@ export default route(function(/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE)
+  })
+
+  Router.beforeEach(async(to, from, next) => {
+    if (to.path === '/stats') {
+      console.log('stats page');
+      await sleep(1000)
+      window.open('https://stats.boid.animus.is/d/m9hVAxX4z/alien-avatars?from=now-1h&to=now&orgId=1', '_blank')
+      next(false)
+    } else {
+      next();
+    }
   })
 
   return Router

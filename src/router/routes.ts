@@ -15,6 +15,21 @@ const routes: RouteRecordRaw[] = [
       { path: '/packs/open', name: 'openPacks', component: PacksPage },
       { path: '/design', name: 'design', component: DesignPage },
       {
+        path: '/stats', name: 'stats', redirect(to) {
+        console.log(to);
+          location.href = 'https://stats.boid.animus.is/d/m9hVAxX4z/alien-avatars?from=now-1h&to=now&orgId=1'
+          return ''
+        },
+      },
+      {
+        path: '/umami', name: 'umami', redirect(to) {
+        console.log(to);
+          location.href = 'https://umami.boid.com/websites/03aa8a1b-3a85-4777-a0dd-969a640ec019'
+          return ''
+        },
+      },
+
+      {
         path: '/avatars',
         name: 'avatars',
         component: AvatarsPage,

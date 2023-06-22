@@ -1,5 +1,6 @@
 <template lang="pug">
 .centered.full-width(style="max-width:80vw;")
+  //- div(v-if="showDetails &&showExtras" style="width:230px;")
   q-card(:style="rowStyle").bg-grey-10.relative-position
     div( :label="owned" style="top:-8px;right:57px; height:37px;min-width:40px;").absolute.q-pa-sm.q-ma-sm.bg-primary.z-top
       .centered
@@ -10,7 +11,7 @@
       q-btn(:icon="showDetails?'chevron_left':'chevron_right'" @click="showDetails = !showDetails").text-secondary.bg-accent
     .q-pa-sm.bg-secondary.relative-position
       .row.q-pr-sm.full-width
-        .row.items-center.q-gutter-md.full-width
+        .row.items-center.q-gutter-sm.full-width
           //- p.text-capitalize Avatar Template
           .row.no-wrap(v-if="showDetails")
             h4.text-capitalize.q-pr-sm.no-margin(:style="rarityStyle") {{ avatar.meta.rarity  }}
@@ -19,7 +20,7 @@
             .row
               h6.text-capitalize.q-pr-sm.no-margin(:style="rarityStyle") {{ avatar.meta.rarity  }}
             .row
-              h5.text-capitalize.no-margin {{ avatar.row.avatar_name }}
+              h5(style="font-size: large;").text-capitalize.no-margin {{ avatar.row.avatar_name }}
           .col-grow
           .row.no-wrap.items-center(v-if="showDetails" style="margin-right:50px;")
             .row.no-wrap.q-mr-sm
@@ -32,7 +33,7 @@
     .row.q-mt-md
       .col.q-pl-md.q-pr-md(style="min-width:200px; width:400px;" v-if="showExtras")
         .centered.full-width
-          q-img( no-transition v-if="showExtras" :src="imgUrl2" @click="showMaximized($event)" style=" max-width: 288px;").cursor-pointer
+          q-img( no-transition v-if="showExtras" :src="imgUrl2" @click="showMaximized($event)" ).cursor-pointer
       .col(v-if="showDetails && showExtras" style="min-width:200px;")
         .q-pa-sm
           h5.text-center Traits
@@ -88,11 +89,11 @@
               q-btn.absolute.relative-position(:label="mintButtonText" size="lg" @click="mintAvatar()" no-wrap :disable="disableMint" color="accent" :flat="false" style=" width:250px; right:-2px; bottom: -2px; background-color: black;").text-cyan-9
               //- .actionBar.absolute-top(style="height:100%; width:100%;")
               q-tooltip(v-if="!user.loggedIn.account")
-      div(v-if="!showDetails && showExtras").full-width.q-pb-lg
-        .centered.full-width.q-ma-md
-          h5 {{ printAsset(mintPrice) }}
-        .centered.full-width.q-mt-sm.bg-accent
-          q-btn(:label="mintButtonText" size="lg" @click="mintAvatar()" :disable="disableMint" color="accent" :flat="false" style="background-color: black;").text-cyan-9
+      div(v-if="!showDetails && showExtras").full-width
+        .centered.full-width
+          h6(style="font-size: large;") {{ printAsset(mintPrice) }}
+        .centered.full-width.bg-accent
+          q-btn(:label="mintButtonText" size="lg" @click="mintAvatar()" :disable="disableMint" color="accent" :flat="false" style="background-color: black; font-size: medium;").text-cyan-9
       //- .row(style="height:458px; width:1px;").bg-red
       //- .centered.full-width(v-if="!showDetails")
       //-   h5 {{printAsset(mintPrice)}}
@@ -158,7 +159,7 @@ export default defineComponent({
       return 'color:' + color + ';' + ' text-shadow: 1px 1px 8px #3A6BF1;'
     },
     rowStyle() {
-      return (this.showDetails ? 'max-width:100%; width:897px;' : 'max-width:330px; ') + ' transition: all 80ms ease;' + ' max-height:1660px;'
+      return (this.showDetails ? 'max-width:100%; width:897px;' : 'max-width:230px; ') + ' transition: all 280ms ease;' + ' max-height:1660px;'
     },
     maxSupplyReached() {
       const maxMint = this.avatar.row.max_mint.toNumber()

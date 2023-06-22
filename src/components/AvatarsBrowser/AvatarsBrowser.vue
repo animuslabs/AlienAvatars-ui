@@ -28,6 +28,7 @@ import { atomicState, PartsMeta } from 'src/stores/AtomicStore'
 import { designerState } from 'src/stores/DesignerStore'
 import { avatarBrowserState } from 'src/stores/AvatarBrowserStore'
 import AvatarRow from 'src/components/AvatarsBrowser/AvatarRow.vue'
+import { sleep } from 'src/lib/utils'
 const tabs: QTabsProps = {
   activeBgColor: 'secondary',
   activeColor: 'primary',

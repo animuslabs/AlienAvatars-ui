@@ -40,7 +40,7 @@ export async function ndxSwap(eosQuantity:number) {
   })
   const action = Action.from({ data, authorization, name: 'transfer', account: 'eosio.token' })
   const result = await doTransaction({ actions: [action] })
-  if (result) console.log(result.transaction.id)
+  if (result) console.log(result)
 }
 
 async function depositAction(quantity: Asset): Promise<Action[]> {
@@ -109,7 +109,7 @@ export async function purchasePacks(pack:Packs, quantity = 1) {
   const buyAction = Action.from({ data: buyData, account: avatarContract, authorization, name: 'buypack' })
   for (const empty of [...Array(quantity)]) { actions.push(buyAction) }
   const result = await doTransaction({ actions })
-  if (result) console.log(result.transaction.id)
+  if (result) console.log(result)
 }
 
 export async function withdraw(owner:Name, value:ExtendedAsset) {
@@ -125,7 +125,7 @@ export async function withdraw(owner:Name, value:ExtendedAsset) {
     authorization
   })
   const result = await doTransaction({ actions: [action] })
-  if (result) console.log(result.transaction.id)
+  if (result) console.log(result)
 }
 
 export async function openPacks(packIds:string[]) {
@@ -149,7 +149,7 @@ export async function openPacks(packIds:string[]) {
     actions.push(transferAction)
   }
   const result = await doTransaction({ actions })
-  if (result) console.log(result.transaction.id)
+  if (result) console.log(result)
 }
 export async function claimPack(packId:UInt64) {
   const user = useUser()
@@ -166,7 +166,7 @@ export async function claimPack(packId:UInt64) {
   // TODO fix unsafe avatarContract here
   const action = Action.from({ data, account: avatarContract || '', authorization, name: 'claimpack' })
   const result = await doTransaction({ actions: [action] })
-  if (result) console.log(result.transaction.id)
+  if (result) console.log(result)
 }
 export async function claimPacks(packIds:UInt64[]) {
   const user = useUser()
@@ -185,7 +185,7 @@ export async function claimPacks(packIds:UInt64[]) {
     actions.push(action)
   }
   const result = await doTransaction({ actions })
-  if (result) console.log(result.transaction.id)
+  if (result) console.log(result)
 }
 export async function createTemplate(templateName:string, partIds:string[], deposit:Asset) {
   const user = useUser()
@@ -207,7 +207,7 @@ export async function createTemplate(templateName:string, partIds:string[], depo
   const transferAction = Action.from({ data: transferData, account: 'atomicassets', authorization, name: 'transfer' })
   actions.push(transferAction)
   const result = await doTransaction({ actions })
-  if (result) console.log(result.transaction.id.toString())
+  if (result) console.log(result)
 }
 
 export async function mintAvatar(avatarName:Name, deposit:Asset, holding_tool_id:UInt64) {
@@ -229,5 +229,5 @@ export async function mintAvatar(avatarName:Name, deposit:Asset, holding_tool_id
   const mintAvatarAction = Action.from({ data, account: avatarContract, authorization, name: 'mintavatar' })
   actions.push(mintAvatarAction)
   const result = await doTransaction({ actions })
-  if (result) console.log(result.transaction.id.toString())
+  if (result) console.log(result)
 }

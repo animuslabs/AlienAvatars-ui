@@ -233,12 +233,13 @@ export default defineComponent({
         const partIds = templateIds.map(templateId => this.atomic.accountAssets[templateId][0])
         // @ts-ignore
         await transact.createTemplate(this.templateName, partIds, this.templateCreationCost)
-        void this.atomic.getAccountAssets()
-        interval = setInterval(this.findCreatedTemplate, ms('2s'))
-        this.page = 2
+
       } catch (error) {
         console.error(error)
       }
+              void this.atomic.getAccountAssets()
+        interval = setInterval(this.findCreatedTemplate, ms('2s'))
+        this.page = 2
     },
     previewCardDynamic(rand: string) {
       // @ts-ignore
