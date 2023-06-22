@@ -115,7 +115,7 @@ export default defineComponent({
       return this.quantity === 1
     },
     purchaseString(): string {
-      return `obtain ${this.quantity} ${this.pack.pack_name.toString()} ${this.quantity > 1 ? 'packs' : 'pack'}`
+      return `Obtain ${this.quantity} ${this.pack.pack_name.toString()} ${this.quantity > 1 ? 'packs' : 'pack'}`
     },
     pack(): Packs {
       return this.contract.packs[this.global.currentEdition].find(el => el.template_id.toNumber() === this.packId) || defaultPack
