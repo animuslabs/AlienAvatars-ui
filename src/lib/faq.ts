@@ -13,15 +13,15 @@ export default [
   ],
   [
     'What is the Avatar Template Rarity Score?',
-    'Avatar Templates have a rarity score which is determined by the average rarity rating of the Avatar Part NFTs used to create the avatar. The rarity score of the template determines the starting mint price of avatars from that template as well as the maximum number of NFTs that can be minted from that template. Higher rarity templates start at a higher price and a lower maximum supply.'
+    'Avatar Templates have a rarity score which is determined by the average rarity rating of the Avatar Part NFTs used to create the avatar. The rarity score of the template determines the starting mint of avatars from that template as well as the maximum number of NFTs that can be minted from that template. Higher rarity templates start at a higher price and a lower maximum supply.'
   ],
   [
     'When I create an Avatar Template do I get the first mint?',
     'No. However you’ll have the ability to pre-mint avatars from the template before anyone else.'
   ],
   [
-    'How does the avatar minting price change?',
-    'The avatar minting price can change based on demand and rarity score. The price of an avatar increases by 10% if the previous mint happened less than 24h ago. There is no cap on the price. The minting price will start a decay process when no mint happens for 1 day. The price will decay each next day as long as there is no mint. The price can’t decay lower than the starting mint price for that rarity. The price of rare avatars will decay more slowly than avatars with low rarity scores, the price decay rate ranges between 1-5% daily.'
+    'How does the avatar minting change?',
+    'The avatar minting can change based on demand and rarity score. The cost of an avatar increases by 10% if the previous mint happened less than 24h ago. There is no cap. The minting will start a decay process when no mint happens for 1 day. The decay happens each next day as long as there is no mint.'
   ],
   [
     'I’m missing some Avatar Part NFTs needed to build my Avatar Template. How can I get the missing parts?',

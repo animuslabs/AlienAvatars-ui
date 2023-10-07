@@ -6,9 +6,9 @@ q-card.relative-position(style="display: flex; flex-direction:column;" )
   q-scroll-area(style="height:100%; overflow: auto;").q-ma-sm
     p Contains Cards:
     h6.no-margin {{ meta.size }}
-    p Pack Price
+    p Pack
     h6.no-margin {{ pack.floor_price.toString() }}
-    p Per Card Price
+    p Per Card
     h6.no-margin {{ cardPrice }}
 
 </template>

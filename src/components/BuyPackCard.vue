@@ -12,9 +12,9 @@
           div(style="height:100%; overflow: auto;").q-ma-sm.q-pl-sm
             p Contains Cards:
             h6.no-margin {{ meta.size }}
-            p Pack Price
+            p Pack
             h6.no-margin {{ printAsset(pack.floor_price) }}
-            p Per Card Price
+            p Per Card
             h6.no-margin {{ cardPrice }}
             p Minted:
             h6.no-margin {{ availableString }}

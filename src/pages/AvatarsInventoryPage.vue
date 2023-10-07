@@ -18,7 +18,7 @@
         h5 Avatar Templates designed by {{targetAccount}} ( {{browser.visibleAvatars.length}} )
       q-separator(color="secondary").q-mb-sm
       .row
-        p {{targetAccount}} earns 25% of the mint price when others mint from templates they designed
+        p {{targetAccount}} earns 25% of the mint when others mint from templates they designed
       .centered.q-mb-lg
         .col-auto.q-pt-lg
           avatar-row(v-for="(avatar,name) in browser.visibleAvatars" :avatar="avatar" :key="name" @minted="getData()" style="max-width:90vw" ).q-ma-md.q-pb-lg

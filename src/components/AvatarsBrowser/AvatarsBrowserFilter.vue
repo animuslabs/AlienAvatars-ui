@@ -7,7 +7,7 @@
       q-separator(vertical)
       .col-auto
         div
-          span Price
+          span TLM
           q-btn.q-ml-sm(:icon="browser.filter.sortByPrice ? 'arrow_upward' : 'arrow_downward'" @click="browser.filter.sortByPrice = !browser.filter.sortByPrice;" size="md" round color="white" unelevated)
       q-separator(vertical)
       .col-auto

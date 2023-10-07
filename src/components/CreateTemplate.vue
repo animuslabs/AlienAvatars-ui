@@ -54,7 +54,7 @@ div
       //-   .q-mt-lg
       //-     h6 Pricing Details:
       //-     q-card.q-ma-lg.q-pa-md
-      //-       p As the owner of this template you will receive 50% of the profits whenever someone mints from your avatar template. The mint price will start at 10000 BOID and increases each time the template is minted from more than once per day. If the template is not minted from for 7 days then the price will decay back to 1000 BOID. Once an avatar NFT is minted from a template it can be transfered and swapped on external markets.
+      //-       p As the owner of this template you will receive 50% of the profits whenever someone mints from your avatar template. The mint price will start at 10000 BOID and increases each time the template is minted from more than once per day. If the template is not minted from for 7 days then the will decay back to 1000 BOID. Once an avatar NFT is minted from a template it can be transfered and swapped on external markets.
   div(v-else-if="page===2")
     .centered.q-mt-lg
       h5(style="text-transform: capitalize;") Creating Avatar Template

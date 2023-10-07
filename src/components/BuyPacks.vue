@@ -14,7 +14,7 @@ div
           q-btn( v-if="contract.config" label="atomic hub" icon="link" type="a" target="_blank" :href="atomicHubSchemaMarket(contract.config.pack_schema.toString())")
       q-separator(color="secondary").q-mb-sm
       .row
-        p Rarity distribution is the same among all common packs but the price per card is lower for larger packs. Finding rare parts in common packs is not likely.
+        p Rarity distribution is the same among all common packs but the TLM per card is lower for larger packs. Finding rare parts in common packs is not likely.
     .centered.q-gutter-lg
       div(v-for="pack of normalPacks")
         buy-pack-card(:pack="pack" @purchase="initiateBuy")

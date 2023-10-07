@@ -25,7 +25,7 @@ q-page.bg-primary
                 li Unique #[strong Avatar Templates] can be designed by combining #[strong Avatar Part NFTs].
                 li #[strong Avatar Template] Rarity is determined by the the average rarity rating of the #[strong Avatar Parts] used in the template.
                 li 25% of profits from avatar minting goes to the account who designed the template. You can claim your earnings on the Avatars page.
-                li The price to mint from an #[strong Avatar Template] increases by 10% each time someone mints. If an #[strong Avatar Template] is not minted for 24 hours then the price will drop 5%-1% (Common - Mythical) each day back to the initial starting price.
+                li To mint from an #[strong Avatar Template] increases by 10% each time someone mints. If an #[strong Avatar Template] is not minted for 24 hours then will drop 5%-1% (Common - Mythical) each day back to the initial starting TLM.
                 li To create a template or mint from a template of a certain rarity you must hold an Alien Worlds tool NFT in your inventory of the corresponding rarity.
       .col-xs-12.col-sm-6.col-md-4(style="max-width: 95vw; width:325px;")
         q-card.bg-grey-10.full-height.full-width
@@ -41,7 +41,7 @@ q-page.bg-primary
               thead
                 tr
                   th.text-left Template Rarity
-                  th.text-left Mint Price
+                  th.text-left Mint
                   th.text-left Supply
               tbody
                 tr
@@ -65,8 +65,8 @@ q-page.bg-primary
                   th.text-left {{ printAsset(basePrices.Mythical) }}
                   th.text-left {{ maxMints.Mythical }}
             .q-pt-md
-              div The mint price increases by 10% if the previous mint was less than 24 hours previous.
-              div If not minted, the price will decay 5%-1% daily.
+              div The mint increases by 10% if the previous mint was less than 24 hours previous.
+              div If not minted, decay 5%-1% daily.
   .centered
     q-card(style="width:800px; max-width:90vw")
       .row.items-center.justify-center.bg-secondary.q-pa-sm.relative-position
