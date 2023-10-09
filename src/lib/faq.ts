@@ -13,7 +13,7 @@ export default [
   ],
   [
     'What is the Avatar Template Rarity Score?',
-    'Avatar Templates have a rarity score which is determined by the average rarity rating of the Avatar Part NFTs used to create the avatar. The rarity score of the template determines the starting mint of avatars from that template as well as the maximum number of NFTs that can be minted from that template. Higher rarity templates start at a higher price and a lower maximum supply.'
+    'Avatar Templates have a rarity score which is determined by the average rarity rating of the Avatar Part NFTs used to create the avatar. The rarity score of the template determines the starting mint of avatars from that template as well as the maximum number of NFTs that can be minted from that template. Higher rarity templates start at a higher amount and a lower maximum supply.'
   ],
   [
     'When I create an Avatar Template do I get the first mint?',
